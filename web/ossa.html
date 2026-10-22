@@ -5374,27 +5374,34 @@ function startDemo(name,dose,k){
   hideHint();
   const mv=moveFor(name), sec=mkItem(name,dose||"",k).sec;
   const prev=sel&&sel.t!=="organ"?sel:null;
+  /* 22 Oct, Sahil: Watch demo was dropping the user on Body with no way back. Remember the tab the
+     demo was opened from so Done restores it instead of leaving the user on Body's muscle sheet. */
+  const prevMode=$("app").classList.contains("train")?"train":$("app").classList.contains("minding")?"mind":null;
   if($("app").classList.contains("train")) setMode("body");
   if(curLayer!=="muscle") setLayer("muscle");
-  DEMO={name,dose,k,mv,sec,prev};
+  DEMO={name,dose,k,mv,sec,prev,prevMode};
   Body.startDemo({move:mv,period:mv==="carry"?1.6:2.6,view:MUSCLES[k].face>1.57?Math.PI-MOVES[mv].view:MOVES[mv].view,mask:[[k,1],...sec.map(x=>[x,0.5])]});
   $("app").classList.add("demoing");
   if(sheetState!=="peek"){ sheetState="peek"; const app=$("app"); app.classList.add("peek"); app.classList.remove("full"); }
   renderDemo(); Body.reframe();   // framed once the sheet holds the demo (a long name wraps onto two lines and makes it taller)
 }
 function renderDemo(){
-  const d=DEMO;
+  const d=DEMO, backLbl=d.prevMode==="train"?"‹ Train":d.prevMode==="mind"?"‹ Focus":null;
   $("shIn").innerHTML=`<div class="crumb">Demo · on your body</div>
+    ${backLbl?`<button class="demo-back u-back" id="demoBack" aria-label="Back to ${d.prevMode==="train"?"Train":"Focus"}">${backLbl}</button>`:""}
     <div class="sh-top"><div><h3>${d.name}</h3><div class="one">${d.dose}</div></div></div>
     <div class="demo-leg"><span><i class="w"></i>Working · ${MUSCLES[d.k].name}</span>${d.sec.length?`<span><i class="h"></i>Helping · ${d.sec.map(x=>MUSCLES[x].name).join(", ")}</span>`:""}</div>
     ${d.mv==="still"?`<p class="corenote">No animation for this one yet. The working muscles are lit.</p>`:""}
     <p class="cue2">${MUSCLES[d.k].tip}</p>
     <div class="acts"><button class="btn" id="demoStop">Done</button><button class="btn primary" id="demoLog">Log it</button></div>`;
   $("demoStop").onclick=()=>endDemo(true);
+  if($("demoBack")) $("demoBack").onclick=()=>endDemo(true);
   $("demoLog").onclick=()=>{ const e=[d.name,d.dose,d.k]; endDemo(true); if(!sel){ sel={t:"muscle",id:d.k}; Body.setSel(sel); } quickLog(e); };
 }
 function endDemo(back){
   const d=DEMO; DEMO=null; Body.stopDemo&&Body.stopDemo(); $("app").classList.remove("demoing");
+  /* if the demo came from Train (or Focus), take the user back to that tab, not to the muscle sheet */
+  if(back&&d&&d.prevMode){ setSheet("closed"); setMode(d.prevMode==="train"?"train":"body"); if(d.prevMode==="mind"&&typeof openMind==="function") openMind(); return; }
   if(back&&d&&d.prev){ sel=d.prev; Body.setSel(sel); renderSheet(false); } else if(back&&d){ sel={t:"muscle",id:d.k}; Body.setSel(sel); renderSheet(false); } else setSheet("closed");
 }
 function showHint(){ if(!S.hinted&&Body&&Body.kind==="gl"){ $("hint").hidden=false; } }

@@ -141,3 +141,18 @@ html.kb-on .toast{bottom:calc(var(--kb) + 20px)}
 /* lift floating action bars and sticky bottom controls (Lock in, Save plan, Add to workout) above the keyboard */
 html.kb-on .rdt-oacts,html.kb-on .mv-foot,html.kb-on .u-foot,html.kb-on .dp-acts,html.kb-on .wp-acts,
 html.kb-on .fuel-acts,html.kb-on .ck-foot,html.kb-on .ps-foot,html.kb-on .mm-setup .mm-foot{padding-bottom:calc(var(--kb) + 12px)}
+
+/* 22 Oct, Sahil: Watch demo now has a back button when opened from Train or Focus (so Done doesn't dump the user on
+   Body's muscle sheet). The .u-back class gives the pill; this just floats it above the sheet title with room. */
+.demo-back{margin:0 0 var(--sp-2);align-self:flex-start}
+
+/* 22 Oct, Sahil, screenshot of RECOVERY DAY wrapping at 375 px: the dressed hero title uses var(--fs-6) + uppercase,
+   which breaks across two lines on narrow phones ("RECOVERY" / "DAY") and shoves the 3D figure down. Shrink the font
+   at 400 px and below so "Recovery day" keeps one line, with the same track and weight. */
+@media (max-width:400px){
+  .u-tp.dk-tp .tp-head{width:62%}
+  .u-tp.dk-tp .tp-head h1.tp-h{font-size:var(--fs-5);line-height:1}
+}
+@media (max-width:375px){
+  .u-tp.dk-tp .tp-head h1.tp-h{font-size:var(--fs-45)}
+}
