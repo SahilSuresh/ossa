@@ -97,13 +97,14 @@ workflows:
           # project (we set them via app.json above), so no --archive-flags override is needed.
           xcode-project build-ipa --workspace "Ossa.xcworkspace" --scheme "Ossa"
 
-      # Uploads only: internal testers get each build without external beta review.
+      # Uploads only: internal testers get each build without external beta review. The IPA is at
+      # ios/build/ios/ipa/*.ipa because the Build step cd'd into ios/ before xcode-project build-ipa.
       - name: To TestFlight
         script: |
-          app-store-connect publish --path build/ios/ipa/*.ipa \
+          app-store-connect publish --path ios/build/ios/ipa/*.ipa \
             --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
             --private-key @file:/tmp/asc.p8
 
     artifacts:
-      - build/ios/ipa/*.ipa
+      - ios/build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
