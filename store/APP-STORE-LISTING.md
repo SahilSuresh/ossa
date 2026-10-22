@@ -129,6 +129,7 @@ How they were made:
   >
   > 3. ACCESS: No account, sign-in or sample files. All data stays on the device. The intro takes about three minutes; at "Let's seal it", hold the stone hexagon or tap Not now. On the subscription screen, start the free trial (sandbox), then tap the statue and follow the steps. The notification prompt appears only after "Remind me". No free tier: if the subscription lapses, a lock screen covers the app. Restore, Terms and Privacy are on the subscription and lock screens. Subscribers also find Restore in avatar > Settings > Ossa Pro.
   > The avatar (top right on Body, top left on Train) opens Evolve, Profile (check-in, Body Score) and Settings.
+  > - To see a populated state (made-up training history, scores, posture result), tap the "Your data" heading in Settings seven times; a "Load demo data" button appears. Tap it twice (once to arm, once to confirm). "Start fresh" clears the demo.
   > - Pro adds: (1) the training plan (Train > View all > Your plan); (2) fixes from the weakest body-check and posture results, in the plan; (3) three materials (Obsidian, Chrome, Carbon fibre) in avatar > Evolve > Your look, only on iPhones that can draw them. Other finishes and materials are earned, not sold.
   > - Subscriptions: group "Ossa Pro": ossa_pro_yearly (7-day free trial), ossa_pro_monthly.
   > - Body check and Posture scan: Body > 3D. Bones (3D) unlocks at level 3.

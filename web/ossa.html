@@ -10438,8 +10438,8 @@ function renderYou(){
     ${phoneCard()}
     <div class="td-card"><div class="eyebrow">Scene</div><p class="yu-p">What's behind your body. Moving scenes pause when you're on other tabs.</p>
       <div class="scn">${SCENES.map((x,i)=>`<button class="scn-i s${i}${(S.scene??1)===i?" on":""}" data-scene="${i}" aria-pressed="${(S.scene??1)===i}"><i></i><b>${x}</b></button>`).join("")}</div></div>
-    <div class="td-card"><div class="eyebrow">Your data</div><p class="yu-p">${S.demo?"You're looking at demo data: a few weeks of made-up training and check-ins.":"Everything starts at zero and fills in as you train, check in and keep your standards."}</p>
-      <div class="td-acts"><button class="btn" id="yuDemo">${S.demo?"Start fresh":"Load demo data"}</button>${S.demo?"":`<button class="btn" id="yuReset">Reset everything</button>`}</div></div>
+    <div class="td-card"><div class="eyebrow" id="yuDataEye" style="cursor:default;user-select:none">Your data</div><p class="yu-p">${S.demo?"You're looking at demo data: a few weeks of made-up training and check-ins.":"Everything starts at zero and fills in as you train, check in and keep your standards."}</p>
+      <div class="td-acts">${(S.demo||S.demoUnlock)?`<button class="btn" id="yuDemo">${S.demo?"Start fresh":"Load demo data"}</button>`:""}${S.demo?"":`<button class="btn" id="yuReset">Reset everything</button>`}</div></div>
     <p class="tv-foot">Everything you log, including mood and stress, stays on this device.<br>Ossa is for general wellbeing. It doesn't diagnose or treat anything.</p>`;
   else b.innerHTML=`<div class="tv-head"><div class="eyebrow">Progress</div><h1>${isStart()?"Day one starts here.":"Look how far you've come."}</h1></div>
     ${!wk?`<div class="td-card td-empty"><div class="em-ico"><i></i><i></i><i></i></div><h3>No workouts yet.</h3><p>Tap any muscle on your body to learn it and train it, or start today's plan. Everything you do lights up here.</p>
@@ -10477,6 +10477,17 @@ function renderYou(){
   if($("yuRedo")) $("yuRedo").onclick=()=>{ setTab("body"); startOnboarding(); };
   if($("yuMusic")) $("yuMusic").onclick=()=>{ drawMusic(); $("musicP").classList.add("on"); };
   if($("yuSupport")) $("yuSupport").onclick=()=>toBody(()=>{ openMind(); setTimeout(()=>mindGo("support"),reduced?50:700); });
+  /* 22 Oct, Sahil: hide "Load demo data" from end users; reveal with 7 taps on the "Your data" eyebrow.
+     Apple reviewers get the tap sequence in Note 3. Taps 4+ buzz for feedback near the threshold; the
+     seventh toggles S.demoUnlock and re-renders. Hidden again after a demo is loaded + "Start fresh" clears it. */
+  if($("yuDataEye")){ $("yuDataEye").dataset.taps="0";
+    $("yuDataEye").onclick=function(){
+      const n=(+this.dataset.taps||0)+1; this.dataset.taps=String(n);
+      clearTimeout(this.resetT); this.resetT=setTimeout(()=>{ this.dataset.taps="0"; },1500);
+      if(n>=4&&n<7) Pulse.buzz(3);
+      if(n>=7){ this.dataset.taps="0"; S.demoUnlock=!S.demoUnlock; save(); toast(S.demoUnlock?"Demo mode unlocked.":"Demo mode hidden."); Pulse.buzz(10); renderYou(); }
+    };
+  }
   if($("yuDemo")) $("yuDemo").onclick=function(){
     if(this.dataset.armed!=="1"){ this.dataset.armed="1"; this.textContent=S.demo?"Tap again: clears demo data":"Tap again: replaces your data"; setTimeout(()=>{ if(this.isConnected){ this.dataset.armed=""; this.textContent=S.demo?"Start fresh":"Load demo data"; } },3000); return; }
     const keep={body:S.body,bpm:S.bpm,goal:S.goal,profile:S.profile,flagged:S.flagged,focus:S.focus,hinted:true,pro:S.pro,remind:S.remind,program:S.program,wx:S.wx&&S.wx.place?{place:S.wx.place,last:null}:undefined,dares:S.dares?{scale:1,tone:S.dares.tone||"coach",wxOpt:S.dares.wxOpt}:undefined};
