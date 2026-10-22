@@ -42,15 +42,19 @@ workflows:
           python3 tool/ios/pem.py CERTIFICATE_PRIVATE_KEY /tmp/certificate.pem "RSA PRIVATE KEY"
 
       - name: Build number
-        # One more than the latest TestFlight build in this App Store Connect app (TestFlight
-        # rejects a number it already has, whichever Codemagic account made it).
+        # Apple's get-latest-build-number has a propagation lag of a few minutes after an upload;
+        # if we query it right after a successful previous build, we can get a stale answer and
+        # end up re-using the same build number, which Apple rejects with error 90189 ("Redundant
+        # Binary Upload"). The retry loop on To TestFlight can't fix that because the IPA was
+        # already signed with the colliding number. Use epoch-minutes instead: monotonically
+        # increasing, globally unique, no API lag. Apple accepts build numbers up to 18 digits.
+        # On the first switch to this strategy the number jumps forward (fine — Apple only needs
+        # monotonic increase, not consecutive).
         script: |
           set -e
-          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" \
-            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
-            --private-key @file:/tmp/asc.p8 || echo 0)
-          echo "Latest in TestFlight: $LATEST"
-          echo "OSSA_BUILD=$((LATEST + 1))" >> $CM_ENV
+          NEXT=$(( $(date +%s) / 60 ))
+          echo "OSSA_BUILD=$NEXT (epoch-minutes)"
+          echo "OSSA_BUILD=$NEXT" >> $CM_ENV
 
       - name: Set version in app.json
         # Expo's prebuild writes CFBundleShortVersionString from app.json's `version` and
