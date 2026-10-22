@@ -1,0 +1,104 @@
+workflows:
+  ios-testflight:
+    name: Ossa for iPhone
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      node: 20
+      xcode: latest
+      cocoapods: default
+      groups:
+        - ossa_appstore
+      vars:
+        IOS_VERSION: "1.0"
+        # Ossa's record in App Store Connect (its Apple ID). Build numbers follow on from
+        # whichever TestFlight build currently sits as the latest.
+        APP_STORE_APPLE_ID: "6818619462"
+    scripts:
+      - name: Which Xcode
+        script: xcodebuild -version
+
+      - name: Install npm dependencies
+        script: |
+          set -e
+          npm ci --prefer-offline --no-audit
+
+      - name: Bundle the WebView
+        # package.json's prestart does this before every start / build; the Codemagic flow
+        # skips prestart, so build the WebView bundle (web/ossa.html -> ossaHtml.js) explicitly.
+        script: node scripts/build-html.js
+
+      - name: Keys
+        # The pastes into Codemagic's env may have lost their line breaks; tool/ios/pem.py
+        # writes proper key files and says which one is off instead of a cryptic xcodebuild error.
+        script: |
+          set -e
+          python3 tool/ios/pem.py APP_STORE_CONNECT_PRIVATE_KEY /tmp/asc.p8 "PRIVATE KEY"
+          python3 tool/ios/pem.py CERTIFICATE_PRIVATE_KEY /tmp/certificate.pem "RSA PRIVATE KEY"
+
+      - name: Build number
+        # One more than the latest TestFlight build in this App Store Connect app (TestFlight
+        # rejects a number it already has, whichever Codemagic account made it).
+        script: |
+          set -e
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" \
+            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            --private-key @file:/tmp/asc.p8 || echo 0)
+          echo "Latest in TestFlight: $LATEST"
+          echo "OSSA_BUILD=$((LATEST + 1))" >> $CM_ENV
+
+      - name: Set version in app.json
+        # Expo's prebuild writes CFBundleShortVersionString from app.json's `version` and
+        # CFBundleVersion from `ios.buildNumber`. Set both before prebuild so the generated
+        # Info.plist carries the right values; no post-prebuild sed needed.
+        script: |
+          set -e
+          python3 - <<PY
+          import json
+          with open('app.json') as f: j = json.load(f)
+          j.setdefault('expo', {})['version'] = "$IOS_VERSION"
+          j['expo'].setdefault('ios', {})['buildNumber'] = "$OSSA_BUILD"
+          with open('app.json','w') as f: json.dump(j, f, indent=2)
+          PY
+
+      - name: Expo prebuild for iOS
+        # Generates the native ios/ project from app.json + plugins (keeps the repo clean of
+        # ios/ between builds, matches EAS Build's behaviour).
+        script: npx expo prebuild --platform ios --no-install --clean
+
+      - name: CocoaPods
+        script: cd ios && pod install
+
+      - name: Signing
+        # Fetch (or create) a distribution profile for every bundle Ossa uses: the main app
+        # and the Expo-widgets extension declared in app.json.
+        script: |
+          set -e
+          ASC="--issuer-id $APP_STORE_CONNECT_ISSUER_ID --key-id $APP_STORE_CONNECT_KEY_IDENTIFIER --private-key @file:/tmp/asc.p8"
+          keychain initialize
+          for id in com.andrej.ossa com.andrej.ossa.widgets; do
+            app-store-connect fetch-signing-files "$id" --type IOS_APP_STORE --create --delete-stale-profiles \
+              --certificate-key @file:/tmp/certificate.pem $ASC
+          done
+          keychain add-certificates
+          xcode-project use-profiles
+
+      - name: Build IPA
+        script: |
+          set -e
+          cd ios
+          # Expo prebuild writes the workspace to ios/Ossa.xcworkspace with scheme "Ossa".
+          # xcode-project reads MARKETING_VERSION and CURRENT_PROJECT_VERSION from the generated
+          # project (we set them via app.json above), so no --archive-flags override is needed.
+          xcode-project build-ipa --workspace "Ossa.xcworkspace" --scheme "Ossa"
+
+      # Uploads only: internal testers get each build without external beta review.
+      - name: To TestFlight
+        script: |
+          app-store-connect publish --path build/ios/ipa/*.ipa \
+            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            --private-key @file:/tmp/asc.p8
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
