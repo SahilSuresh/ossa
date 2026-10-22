@@ -99,11 +99,22 @@ workflows:
 
       # Uploads only: internal testers get each build without external beta review. The IPA is at
       # ios/build/ios/ipa/*.ipa because the Build step cd'd into ios/ before xcode-project build-ipa.
+      # Apple's altool upload API returns 500 intermittently; retry up to three times with a 60 s pause
+      # before giving up, so a one-off blip doesn't lose the whole build cycle.
       - name: To TestFlight
         script: |
-          app-store-connect publish --path ios/build/ios/ipa/*.ipa \
-            --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
-            --private-key @file:/tmp/asc.p8
+          set +e
+          for attempt in 1 2 3; do
+            echo "Upload attempt $attempt..."
+            app-store-connect publish --path ios/build/ios/ipa/*.ipa \
+              --issuer-id "$APP_STORE_CONNECT_ISSUER_ID" --key-id "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+              --private-key @file:/tmp/asc.p8
+            rc=$?
+            if [ $rc -eq 0 ]; then exit 0; fi
+            echo "Upload failed with exit code $rc; retrying in 60 s..."
+            sleep 60
+          done
+          echo "All retries exhausted."; exit $rc
 
     artifacts:
       - ios/build/ios/ipa/*.ipa
