@@ -1,0 +1,143 @@
+/* =========================================================
+   AUDIT FIXES (19 Oct, Andrej: "go through the whole app … find inconvenient features or layouts and also
+   inconsistencies … and fix it"). Found by scripts/audit.js (every screen, automatic checks) and a review by eye.
+   ========================================================= */
+
+/* 1. Small controls get a 44×44 touch area without changing how they look
+      (the Body page's lens chips, X-ray knob and readout, Front/Back, the scene button, the aura line;
+      the workout's Finish and muscle chips; the session's plan and time chips; Swap for my cold muscles) */
+.lx-chip::after,.lx-knob::after,#lxRank::after,#lxSore::after,#rdHero .u-rkview button::after,#uScnBtn::after,.ab-line::after,
+#endW::after,.wk-chip::after,.tf-watch::after,#genOpen::after,#rdtPick::after,#tpMin::after,.dk-swap::after,#brSnd::after{
+  content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+#uScnBtn,.ab-line,#lxRank,#lxSore,#endW,.wk-chip,.tf-watch,#genOpen,#rdtPick,#tpMin,.dk-swap{position:relative}
+.cl-t{min-height:40px}
+.app.uwfull .uw .uw-toys .br-chip{min-height:40px}
+
+/* 2. No text under 12 px where people read it (Learn's stats, Body check's test counts) */
+.rdp-stats small,.ck-areas .ck-a em{font-size:var(--fs-1)}
+/* 2a. The Aura-level label sits beside a 48 px ring; keep "Aura level" on one line at 375 px (22 Oct, BUG-27) */
+.rdp-stats .rdp-s.lv b{white-space:nowrap}
+
+/* 3. The main action is always on screen: pinned to the bottom of its page when the page is taller than the phone
+      (Lock in setup and timer, Breathe, Body check, Posture scan) */
+.mm-setup .mm-foot,#brPlay,#ckGo,#psGo{position:sticky;bottom:calc(var(--sab) + var(--sp-2));z-index:3}
+.mm-setup .mm-foot{padding-top:var(--sp-3);background:linear-gradient(transparent,var(--bg) 35%)}
+#ckGo,#psGo{box-shadow:0 -16px 20px var(--bg)}
+
+/* 4. Break free, one habit: the big aura orb repeated the header's number and pushed "I feel an urge" off the
+      screen; the habit's own numbers stay (the relapse screen keeps its counting orb) */
+.cl-v>.cl-orb:not(#clOrbR){display:none}
+
+/* 5. The session's chip row scrolls sideways: fade its right edge so it reads as "there's more" */
+.u-tp .tp-acts{-webkit-mask-image:linear-gradient(90deg,var(--bg) 88%,transparent);mask-image:linear-gradient(90deg,var(--bg) 88%,transparent)}
+
+/* 6. One close control everywhere: a round X at the top right (the cold-muscle sheet had a text link) */
+.fg-top .fg-xb{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1)}
+.fg-top .fg-xb svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+/* 7. Lock in fits one phone screen: a smaller lotus, so the warning and the main button are both visible */
+.mm-v.mm-timer .mm-fig-seat{flex:1 1 0;height:auto;min-height:130px}
+.mm-setup .mm-fig-up{height:clamp(130px,22dvh,300px)}
+/* 8. Learn: the same header as the other tabs */
+#tv-explore .pl-head{padding:calc(var(--sp-3) + var(--sat)) 0 var(--sp-2)}
+.rdp-stats small{white-space:normal;line-height:1.2}
+@media (max-height:820px){ .mm-timer .mm-tiles{display:none} }
+/* 9. One back control everywhere (audit point 3): a pill that says where it goes ("‹ Rank", "‹ Train"). The Rank tab's
+      screens, Lock in, Unwind, Fuel, You, Evolve, Exercises, Kinetic chain, Train's More and Where your sets went */
+.u-back,.mindv .mv-back,.ev-back,.rcv-back{display:inline-flex;align-items:center;justify-self:start;flex:none;width:auto;max-width:100%;height:40px;min-height:40px;margin:0;
+  padding:0 14px 0 11px;border-radius:var(--r-pill);background:var(--glass-strong);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur));
+  color:var(--text-1);font-family:var(--body);font-size:var(--fs-2);font-weight:700;letter-spacing:0;line-height:1;white-space:nowrap}
+.u-back:active,.mindv .mv-back:active,.ev-back:active,.rcv-back:active{background:var(--surface-3);color:var(--text-1)}
+.u-back.uw-x{display:inline-flex;width:auto;height:40px;border-radius:var(--r-pill);padding:0 14px 0 11px}
+.u-backbar{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.dx-head,.kc-head{grid-template-columns:auto minmax(0,1fr) auto}
+.kc-head h2{text-align:left}
+.dz .dz-head{grid-template-columns:auto minmax(0,1fr) auto}
+.dk-more .p-head.dk-mhead{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.dk-more .p-head.dk-mhead>span:last-child{width:auto}
+.mm-top{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.dz .dz-hd{justify-items:start;text-align:left}
+/* 10. The aura gain pop belongs to the Body page: it no longer lingers over another tab you switch to mid-animation */
+.app:not(.rdx)>.ab-pop{display:none}
+/* the Train session's "‹ Train" / "‹ Body" (legacy #trainBack, shown and hidden by ossa.html) gets the same pill */
+.app .tb-back{height:40px;min-height:40px;padding:0 14px 0 11px!important;border-radius:var(--r-pill);background:var(--glass-strong)!important;border:1px solid var(--glass-line)!important;
+  font-family:var(--body)!important;font-size:var(--fs-2)!important;font-weight:700;letter-spacing:0!important;line-height:38px;color:var(--text-1)!important;white-space:nowrap}
+/* 11. Nothing squashed, clipped or peeking (21 Oct, Sahil: "make it look proper and not squish in"). Found by a layout
+       check of every tab at 375, 390 and 430 wide (overlapping text, clipped text, short labels forced onto two lines).
+       Layout only: no wording changed. */
+/* Train › Attributes: the rank label took so much of the row that "Upper back" was cut and its weak-link tag crushed
+   to a sliver. The name gets the whole row (the tag beside it, or under it if there's no room); the rank sits after
+   its bar */
+.dk-attr{grid-template-areas:"n n" "b r"}
+.dk-attr-n{flex-wrap:wrap;column-gap:var(--sp-2);row-gap:0}
+.dk-attr-n i{flex:none;white-space:nowrap}
+/* Learn: three stats in one row squashed every label onto two lines; Aura level takes the first row, the streak and
+   lessons share the second */
+.rdp-stats{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.rdp-stats .rdp-s.lv{grid-column:1/-1}
+.rdp-stats small{white-space:nowrap}
+/* Recover › Checks: beside a 40 px icon, "Never done · 2 min" broke after the 2. On narrower phones the icon sits on
+   top, like the Fuel and Mobility tiles above */
+@media (max-width:420px){
+  .rcv-ck{flex-direction:column;align-items:flex-start;gap:var(--sp-2);padding:var(--sp-3)}
+  .rcv-ck small{white-space:nowrap}
+}
+/* Settings › Your data (and every card's pair of buttons): a label stays on one line; two that don't fit side by side stack */
+.td-acts .btn{white-space:nowrap;min-width:max-content}
+/* Muscle ranks: long names ("Tibialis anterior", "Serratus anterior") wrap onto a second line instead of being cut */
+.rk-n>span{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.15}
+/* You: the frosted header carries on behind the Evolve / Profile / Settings switch, so cards scrolling under it no
+   longer peek out at its sides or through the gap above it */
+#tv-you .u-backbar::after{content:"";position:absolute;left:0;right:0;top:100%;height:52px;pointer-events:none;
+  background:var(--glass-2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+/* 12. Edit workout (21 Oct, Sahil: "difficult to move around … I have to scroll"): the exercise list is part of the
+       panel's scroll instead of a 260 px box scrolling inside it; your own exercises sit first, marked Yours, with a
+       delete button; "+ Add your own exercise" opens a small form (name, the muscle it works, sets, reps) */
+.rdt-xl{max-height:none;overflow:visible}
+.rdt-xow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--sp-2);align-items:stretch}
+.rdt-xo small em{font-style:normal;font-weight:700;color:var(--glow)}
+.rdt-xdel{display:grid;place-items:center;width:44px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface-1);color:var(--text-2)}
+.rdt-xdel svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.rdt-ownb{display:block;width:100%;margin-top:var(--sp-3);padding:var(--sp-3);border-radius:var(--r-sm);border:1px dashed var(--line-2);background:none;color:var(--text-1);font-size:var(--fs-2);font-weight:700;text-align:center}
+.rdt-own{display:grid;gap:var(--sp-3);margin-top:var(--sp-3);padding:var(--sp-4);border-radius:var(--r-card);border:1px solid var(--line-2);background:var(--surface-1)}
+.rdt-ol{display:grid;gap:var(--sp-1);min-width:0}
+.rdt-ol>span{font-size:var(--fs-1);font-weight:700;color:var(--text-2)}
+.rdt-ol input,.rdt-ol select{width:100%;min-width:0;height:44px;padding:0 var(--sp-3);border-radius:var(--r-sm);border:1px solid var(--line-2);background:var(--bg);color:var(--text-1);font-family:var(--body);font-size:var(--fs-3)}
+.rdt-ol input:focus,.rdt-ol select:focus{outline:none;border-color:var(--glow)}
+.rdt-orow{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--sp-3);align-items:end}
+.rdt-own .rdt-st{grid-area:auto;height:44px}   /* the list's stepper sits in a named grid area; here it's just a row */
+.rdt-oacts{display:grid;grid-template-columns:1fr auto;gap:var(--sp-2)}
+.rdt-oacts .btn{min-height:44px;white-space:nowrap}
+.rdt-onote{margin:calc(-1 * var(--sp-2)) 0 0;font-size:var(--fs-1);line-height:1.4;color:var(--text-2)}
+/* 13. An exercise demo on the Body tab (21 Oct, Sahil: the bench press "was not in the middle and it was covered up by"
+       the sheet): the scene gets the space between the header and the sheet (frameTo in ossa.html), and the lens controls
+       over it step aside until the demo ends, as they do when you fly into a region (.lx-flown, lens.css) */
+.app.demoing #rdHero .u-rkbar,.app.demoing .lx-chips,.app.demoing .lx-knob,.app.demoing .lx-track,.app.demoing .lx-line,.app.demoing #rdHero .u-rkrail,.app.demoing #rdHero .u-lvl,.app.demoing .ab-tier{opacity:0;pointer-events:none}
+#rdHero .u-rkbar,.ab-tier{transition:opacity var(--dur-2)}
+/* 14. Recovery day's list (22 Oct, Sahil: "it's overlapping"). The Train tab wraps the plan in .dk-tp, which hides .no
+       and gives .tp-r a 52 px thumbnail column — meant for the normal rows' preview, not here. On a Rest/Recover plan the
+       rest list ended up with the muscle name squashed into the first column and "3 days" sprawling across the rest.
+       The dot comes back, the three columns go back to the plan's own layout, and the whole list sits in the left half
+       so the 3D figure on the right no longer sits over the text. */
+.app .dk-tp .tp-list.rest .tp-r{grid-template-columns:28px minmax(0,1fr) auto;max-width:62%}
+.app .dk-tp .tp-list.rest .tp-r .no{display:grid;place-items:center}
+.app .dk-tp .tp-list.rest .tp-r .no i{display:block;width:8px;height:8px;border-radius:50%;background:var(--amber)}
+.app .dk-tp .tp-list.rest .tp-r .tx small{display:block}
+.app .dk-tp .tp-list.rest .tp-r .tx .tp-rb{display:block;width:100%;margin:0}
+.app .dk-tp .tp-rest .u-eyebrow,.app .dk-tp .tp-rest>.tp-restp{max-width:62%}
+
+/* 22 Oct — global keyboard-inset handling (web/ui/kb.js sets --kb on <html> while the on-screen keyboard is up).
+   Every scrolling tab container gets bottom padding equal to --kb so inputs and submit buttons stay reachable; every
+   bottom-anchored sheet or overlay lifts above the keyboard. Fixed-height Focus screens (.lu) already handle their
+   own inset through --lu-kb; this file leaves them alone. */
+:root{--kb:0px}
+html.kb-on .trainv,
+html.kb-on .mindv,
+html.kb-on .tabv,
+html.kb-on .panel.on .p-body,
+html.kb-on .psx,
+html.kb-on #stage{padding-bottom:calc(var(--kb) + 12px)}
+html.kb-on .sheet{bottom:var(--kb);transition:bottom .2s ease,transform .55s cubic-bezier(.2,.8,.2,1),max-height .55s cubic-bezier(.2,.8,.2,1)}
+html.kb-on .toast{bottom:calc(var(--kb) + 20px)}
+/* lift floating action bars and sticky bottom controls (Lock in, Save plan, Add to workout) above the keyboard */
+html.kb-on .rdt-oacts,html.kb-on .mv-foot,html.kb-on .u-foot,html.kb-on .dp-acts,html.kb-on .wp-acts,
+html.kb-on .fuel-acts,html.kb-on .ck-foot,html.kb-on .ps-foot,html.kb-on .mm-setup .mm-foot{padding-bottom:calc(var(--kb) + 12px)}

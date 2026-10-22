@@ -1,0 +1,129 @@
+OSSA: RUN IT ON YOUR PHONE AND YOUR FRIENDS' iPHONES
+
+There are two ways to run Ossa:
+  1. EXPO GO (what you've been doing). Quick, no install. Daily nudges work here.
+  2. OSSA AS ITS OWN APP (new, Samsung). Its own icon, works without your PC,
+     and adds the home-screen widget and Health Connect (steps and sleep).
+Part 1 below is Expo Go. Part 2 is the real app.
+
+==================================================================
+PART 1: EXPO GO
+==================================================================
+
+ONE-TIME SETUP ON YOUR PC
+1. Unzip ossa-expo.zip, for example into C:\Ossa
+2. Open the ossa-expo folder, click the address bar, type  powershell  and press Enter.
+3. Type  npm install  and press Enter. Wait for it to finish.
+   (The "vulnerabilities" warning is normal for Expo projects. Ignore it.)
+
+OPTION A: PHONES ON THE SAME WI-FI AS YOUR PC (simplest, most reliable)
+4. Type  npm start  and press Enter. A QR code appears. Keep the window open.
+5. Samsung: open Expo Go, tap "Scan QR code", scan it.
+   iPhone: open the normal Camera, point it at the QR code, tap the Expo Go banner.
+   Every phone must be on the same Wi-Fi as the PC.
+   If Windows asks whether to allow Node.js on the network, click Allow
+   (tick "Private networks").
+
+OPTION B: FRIENDS SOMEWHERE ELSE (over the internet)
+One-time: in PowerShell type
+     winget install --id Cloudflare.cloudflared
+   press Enter, say yes if asked, then close PowerShell and open a new one in the folder.
+6. Type  npm run share  and press Enter.
+7. After a few seconds it prints a link that starts with  exps://
+   Send that link to your friends on WhatsApp. With Expo Go installed, tapping it opens Ossa.
+   The link changes every time you run  npm run share , so send the new one each time.
+
+GOOD TO KNOW
+- The app only loads while the PowerShell window is open and your PC is on.
+- The first load takes 20-40 seconds (it's a big app).
+- Everyone's data stays on their own phone.
+- To update the app, replace the whole "web" folder (ossa.html AND the "ui" folder inside it)
+  and start again. The app needs both: ossa.html pulls in the files in web\ui.
+- To look at the app on your PC instead of a phone: type  npm run preview , open
+  http://localhost:5178 in Chrome, press F12, and switch on the phone view (375 x 812).
+- This version has new packages, so run  npm install  once before  npm start .
+- Daily nudges work in Expo Go: You > Settings > On your phone > Daily nudge.
+  The widget and Health Connect rows say "Not in Expo Go". That's expected; see Part 2.
+
+==================================================================
+PART 2: OSSA AS ITS OWN APP ON YOUR SAMSUNG (free)
+==================================================================
+Expo builds the app for you online and gives you a link to install it.
+You need a free Expo account. You do NOT need Android Studio.
+
+ONE-TIME
+1. Make a free account at  https://expo.dev/signup
+2. In PowerShell in the ossa-expo folder type
+     npx eas-cli@latest login
+   and sign in with that account.
+
+BUILD AND INSTALL
+3. Type  npm run build:android  and press Enter.
+   The first time it asks a few questions. Answer yes (press Y, then Enter) to:
+     - "create an EAS project"  and
+     - "Generate a new Android Keystore".
+4. Wait. The build runs on Expo's computers, usually 10-30 minutes on the free plan.
+   You can close PowerShell; the build carries on. The link is also on expo.dev.
+5. When it finishes you get a link and a QR code. Open it on your Samsung,
+   tap Install, and download the file.
+   If Android says it can't install apps from this source: tap Settings,
+   allow it for your browser, go back, and tap Install again.
+6. Ossa now has its own icon. It works without your PC.
+
+TURN THINGS ON (inside Ossa: You > Settings > On your phone)
+- Daily nudge: pick Morning, Lunch, Evening or an exact time. Allow notifications when asked.
+- Health Connect: tap Connect and allow Steps, Sleep and Resting heart rate.
+  To bring in Samsung Health data: open Samsung Health > Settings > Health Connect
+  and let it share. (On older phones, install "Health Connect" from the Play Store first.)
+- Widget: tap Home-screen widget > Add. Or long-press your home screen > Widgets > Ossa.
+  There's a big one (score, what your body's saying, today's session) and a small ring.
+
+UPDATING THE INSTALLED APP
+- Put the new ossa.html I send you into the "web" folder, run  npm run build:android
+  again, and install the new file over the old one. Your data stays.
+
+YOUR FRIENDS' iPHONES
+- They keep using Expo Go (Part 1). Nudges work for them too.
+- Ossa as its own iPhone app (widget and Apple Health) needs an Apple Developer
+  account ($99 a year). When you have one:  npm run build:ios  and follow the questions.
+  Each friend's iPhone has to be registered first:  npx eas-cli@latest device:create
+
+==================================================================
+PART 3: THE APP STORE (iPhone first)
+==================================================================
+Already done for you: the App ID, the "Ossa: Body Map" app in App Store Connect,
+the listing text, the price (free download), the two Ossa Pro subscriptions,
+the privacy label, RevenueCat, and getossa.app (privacy, terms, support).
+
+WHAT YOU DO ON YOUR PC (one time)
+1. Unzip this new ossa-expo.zip over the old folder (or into a fresh folder).
+2. In PowerShell in the ossa-expo folder:   npm install
+   (There's a new package for subscriptions, so this step matters.)
+3. If you haven't before:   npx eas-cli@latest login
+
+BUILD FOR THE APP STORE
+4. Type   npm run build:ios   and press Enter.
+   It asks a few things the first time:
+   - "Log in to your Apple account?"  Yes. Use your Apple Developer email and password,
+     then the 6-digit code on your iPhone. (You type these yourself; never send them to me.)
+   - "Generate a new Apple Distribution Certificate?"  Yes.
+   - "Generate a new Apple Provisioning Profile?"  Yes (it may ask twice: once for the
+     app, once for the widget).
+   - "Set up Push Notifications?"  No. Ossa's nudges are local, they don't need it.
+5. Wait 20-40 minutes. You can close PowerShell; the build carries on at expo.dev.
+
+SEND IT TO APPLE (this is NOT a review submission yet)
+6. Type   npm run submit:ios   and press Enter.
+   - If it asks how to log in, choose your Apple account again, or let it
+     "Generate a new App Store Connect API Key" (Yes).
+7. About 15-30 minutes later the build shows in App Store Connect > Ossa: Body Map > TestFlight.
+
+TRY IT ON YOUR IPHONE (free, nothing is charged)
+8. Install "TestFlight" from the App Store on your iPhone.
+9. In App Store Connect > TestFlight, add yourself as an internal tester. Open the email
+   on your iPhone and install Ossa.
+10. Go through the intro, start the free week. TestFlight purchases are test purchases:
+    nothing is charged, and a "week" lasts a few minutes.
+
+THEN TELL ME. I'll attach the build, add the screenshots, and get everything ready.
+Nothing goes to Apple for review until you say so.

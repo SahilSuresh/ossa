@@ -1,0 +1,363 @@
+/* =========================================================
+   SHELL — tab bar, screen frame, Home, Recover, Train, Profile header
+   ========================================================= */
+.app{--tabH:calc(var(--navH) + var(--sab));--ringH:var(--tabH)}
+.u-gone,#tabs.u-gone{display:none!important}
+
+/* ---------- tab bar: five tabs; the one you're on is white with a small dot in its colour ---------- */
+.u-nav{position:absolute;left:0;right:0;bottom:0;z-index:6;display:grid;grid-template-columns:repeat(5,1fr);
+  height:var(--tabH);padding:0 var(--sp-2) var(--sab);
+  background:var(--glass-2);border-top:1px solid var(--glass-line);
+  -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  transition:transform var(--dur-3) var(--ease),opacity var(--dur-2)}
+.u-nav button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:var(--navH);color:var(--text-3);transition:color var(--dur-2)}
+.u-nav-ic{position:relative;display:grid;place-items:center;width:44px;height:28px;transition:transform var(--dur-1) var(--ease)}
+.u-nav-ic svg{width:24px;height:24px;fill:currentColor;stroke:none}
+.u-nav-ic svg .s{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.u-nav-ic svg .k{fill:none;stroke:var(--bg);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.u-nav-ic svg circle.k{fill:var(--bg);stroke:none}
+.u-nav-l{font-size:var(--fs-1);font-weight:700;line-height:1.2;color:var(--text-2)}
+.u-nav button.on{color:var(--text-1)}
+.u-nav button.on .u-nav-l{font-weight:800;color:var(--text-1)}
+.u-nav button:active .u-nav-ic{transform:scale(.9)}
+/* the tab you're on: a dot at the icon's corner, in the tab's colour (Focus's is cyan).
+   A Monk Mode session running keeps a steady cyan dot on Focus (.mlive, from drawTabs; no blink) */
+.u-nav button[data-u="breathe"]{--tab-c:var(--cyan)}
+.u-nav button.on .u-nav-ic::after,.u-nav button.due .u-nav-ic::after,.u-nav.live button[data-u="train"] .u-nav-ic::after,.u-nav.mlive button[data-u="breathe"] .u-nav-ic::after{content:"";position:absolute;top:-1px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--tab-c,var(--glow))}
+/* Home wants your check-in (a ring when you're elsewhere); a live workout pulses on Train */
+.u-nav button.due:not(.on) .u-nav-ic::after{background:none;box-shadow:inset 0 0 0 1.5px var(--glow)}
+.u-nav.live button[data-u="train"] .u-nav-ic::after{animation:blink 1.4s ease-in-out infinite}
+.app.onboarding .u-nav,.app.train.tactive .u-nav,.app.train.tdone .u-nav,.app.storying .u-nav,.app.peek .u-nav,.app.full .u-nav,.app.fcfull .u-nav{transform:translateY(100%);opacity:0;pointer-events:none}
+/* Focus is the Mind screen, with the tab bar still under your thumb; a full-screen Focus view
+   (Monk Mode: fcView(…,{full:true}) sets .app.fcfull) has no tab bar and runs to the bottom */
+.app.minding .u-nav{z-index:8;transition:none}   /* in and out of a full-screen Focus view at once, like the screen itself */
+.app.minding .mindv{bottom:var(--tabH)}
+.app.minding.fcfull .mindv{bottom:0}
+.app.minding .mindv .br{min-height:calc(100dvh - 64px - var(--tabH))}
+
+/* ---------- tab views: one calm canvas ---------- */
+#tv-today,#tv-explore,#tv-you,#tv-recover{background:var(--bg)}
+#tv-today,#tv-recover{padding:0}
+.tabv{padding-left:var(--gutter);padding-right:var(--gutter)}
+.tv-head{margin:var(--sp-2) 0 var(--sp-5)}
+.tv-head h1{font-family:var(--display);font-stretch:var(--wide);font-weight:800;font-size:var(--fs-5);line-height:1.08;letter-spacing:-.01em;text-transform:none;max-width:none;text-wrap:balance}
+
+/* ---------- a screen ---------- */
+.u-screen{padding:calc(var(--sp-3) + var(--sat)) var(--gutter) var(--sp-6)}
+.u-top{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:64px;margin-bottom:var(--sp-3)}
+.u-top-tx{min-width:0}
+.u-top .u-h1{margin-top:2px}
+.u-top-r{display:flex;align-items:center;gap:var(--sp-2)}
+.u-flex{display:flex;align-items:flex-start;gap:var(--sp-3)}
+.u-avatar{display:grid;place-items:center;flex:none;width:var(--tap);height:var(--tap);border-radius:50%;
+  font-family:var(--display);font-stretch:var(--wide);font-size:var(--fs-3);font-weight:800;color:var(--on-cta);background:var(--cta)}
+.u-avatar.anon{background:var(--surface-3);color:var(--text-1);border:1px solid var(--glass-line)}
+.u-avatar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.u-list{padding-top:0;padding-bottom:0;margin-top:var(--sp-6)}
+.u-section-h + .u-list{margin-top:0}
+
+/* the streak chip: a filled flame, lime once today counts */
+/* the level, top left of the hero (Andrej, 18 Oct: "on the side, easily readable, not in the way", then "more RPG style"):
+   a hex plate with the number in the overall rank's colour, the way to the next level as a glowing ring round the plate
+   (from the top, clockwise), and beside it LEVEL and the rank points to go. Earlier that day: a huge outline behind the body. */
+.u-lvl{position:absolute;left:var(--sp-2);top:var(--sp-3);z-index:1;display:flex;align-items:center;gap:var(--sp-2);pointer-events:none;user-select:none;color:var(--c,var(--text-1))}
+.u-lvl[style*="--rk-0"],.u-lvl[style*="--rk-1"]{color:var(--text-1)}
+.u-lvl-hex{position:relative;display:grid;place-items:center;width:60px;height:60px;flex:none}
+.u-lvl-hex svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.u-lvl-hex .g{fill:var(--glass-strong);stroke:var(--line-2);stroke-width:2;stroke-linejoin:round}
+.u-lvl-hex .p{fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--c,var(--text-1)) 60%,transparent))}
+.u-lvl-hex b{position:relative;font-family:var(--display);font-size:var(--fs-5);font-weight:900;line-height:1;letter-spacing:var(--track-tight);font-variant-numeric:tabular-nums}
+.u-lvl-tx{display:grid;gap:2px}
+.u-lvl-tx small{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;line-height:1.2;color:var(--text-2)}
+.u-lvl-tx em{font-style:normal;font-size:var(--fs-1);font-weight:600;line-height:1.2;color:var(--text-3)}
+/* a new level: the plate lands with a lime flash, "LEVEL UP" beside it */
+@keyframes uiLvlUp{0%{transform:scale(1.22)}100%{transform:none}}
+.u-lvl.up{color:var(--glow)}
+.u-lvl.up .u-lvl-hex{animation:uiLvlUp 1.4s var(--ease) both}
+.u-lvl.up .u-lvl-tx small{color:var(--glow)}
+@media (prefers-reduced-motion:reduce){ .u-lvl.up .u-lvl-hex{animation:none} }
+/* the scene behind your body: a quiet round button bottom right; the five scenes as a glass strip above it */
+.u-scn-btn{position:absolute;right:var(--sp-2);bottom:var(--sp-3);z-index:2;width:36px;height:36px;color:var(--text-2);background:var(--glass-strong);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur))}
+.u-scn-btn svg{width:18px;height:18px}
+.u-scn-btn.on{color:var(--text-1);border-color:var(--line-3)}
+.u-scn-pop{position:absolute;right:var(--sp-2);bottom:calc(var(--sp-3) + 36px + var(--sp-2));z-index:2;width:216px;margin:0;padding:var(--sp-2);gap:var(--sp-1);border-radius:var(--r-card);background:var(--glass-strong);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur));transform-origin:100% 100%;animation:fxPop .25s var(--ease)}
+.u-scn-pop[hidden]{display:none}
+.u-scn-pop .scn-i{gap:4px;font-size:var(--fs-1);color:var(--text-2)}
+.u-scn-pop .scn-i.on b{color:var(--text-1)}
+.u-scn-pop .scn-i i{border-radius:var(--r-xs)}
+@media (prefers-reduced-motion:reduce){ .u-scn-pop{animation:none} }
+/* the rank colours, bottom left of the hero: five dots and names, quiet; your overall rank is the bright row */
+.u-rkrail{position:absolute;left:var(--sp-2);bottom:var(--sp-3);z-index:1;display:grid;gap:5px;pointer-events:none;user-select:none;font-size:var(--fs-1);font-weight:600;line-height:1.2;color:var(--text-3)}
+.u-rkrail span{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.u-rkrail i{width:7px;height:7px;border-radius:50%;background:var(--c);opacity:.75}
+.u-rkrail span.me{color:var(--text-1)}
+.u-rkrail span.me i{opacity:1;box-shadow:0 0 0 2px color-mix(in srgb,var(--c) 35%,transparent)}
+.u-streak{display:inline-flex;align-items:center;gap:6px;min-height:var(--tap);padding:0 16px 0 12px;border-radius:var(--r-pill);background:var(--surface-3);border:1px solid var(--glass-line);color:var(--text-1)}
+.u-streak svg{width:18px;height:18px;fill:var(--text-3);stroke:none}
+.u-streak svg path+path{fill:var(--surface-3)}
+.u-streak.on svg path:first-child{fill:var(--glow)}
+.u-streak b{font-family:var(--display);font-size:var(--fs-3);font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ---------- Home: your body, by rank ---------- */
+.u-rkhero{position:relative;height:320px;margin:0 calc(-1 * var(--sp-2));padding:var(--sp-2) var(--sp-2) 0;display:flex;justify-content:center}
+.u-rkhero .rk-leg{position:absolute;left:var(--sp-2);top:var(--sp-2);z-index:1}
+.u-rkview{position:absolute;right:var(--sp-2);top:0;z-index:1;padding:3px}
+.u-rkview button{min-height:34px;padding:0 var(--sp-3)}
+/* one glass bar top right: Front | Back | the 3D view (the 3D hero only; the flat hero keeps its two corners) */
+.u-rkbar{position:absolute;right:var(--sp-2);top:var(--sp-3);z-index:1;display:flex;align-items:center;padding:4px;border-radius:var(--r-sm);background:var(--glass-strong);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur))}
+.u-rkbar .u-rkview{position:static;padding:0;background:none;border:0;border-radius:0}
+.u-rkbar .u-rk3d{position:static;width:38px;height:34px;margin-left:var(--sp-1);padding:0 0 0 var(--sp-1);border:0;border-left:1px solid var(--glass-line);border-radius:0 8px 8px 0;background:none;color:var(--text-1)}
+.u-rkbar .u-rk3d svg{width:18px;height:18px}
+.u-rkfig{display:block;height:300px;padding:0;border-radius:var(--r-card)}
+.u-rkfig:active{opacity:.8}
+.u-rkcall{position:absolute;z-index:1;display:flex;align-items:center;gap:6px;pointer-events:none}
+.u-rkcall i{display:block;width:var(--w,30px);height:1px;background:var(--glow)}
+.u-rkcall b{padding:7px 12px;border-radius:10px;background:var(--glow);color:var(--on-accent);font-size:var(--fs-2);font-weight:900;letter-spacing:-.01em;text-transform:uppercase;white-space:nowrap}
+.u-rk3d{position:absolute;right:var(--sp-2);bottom:var(--sp-2);z-index:1;background:var(--surface-2)}
+/* the Body page with your own 3D body: the page is see-through where the figure stands */
+.u-rk3dh{display:block;height:clamp(420px,56vh,500px);padding:0;touch-action:pan-y}
+.u-rk-tap{position:absolute;inset:0;z-index:0;display:block;width:100%;height:100%;padding:0;border:0;border-radius:var(--r-card);background:none;cursor:pointer;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+.u-rk-tap:focus-visible{outline:2px solid var(--glow);outline-offset:-2px}
+.u-rk-lead{position:absolute;left:0;top:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible;opacity:0}
+.u-rk-lead polyline{fill:none;stroke:var(--cta);stroke-width:1.2}
+.u-rk-lead .r{fill:color-mix(in srgb,var(--glow) 18%,transparent);stroke:var(--glow);stroke-opacity:.45;stroke-width:1.2}
+.u-rk-lead .d{fill:var(--glow)}
+.u-rk-lead .r{transform-box:fill-box;transform-origin:center;animation:uRkPulse 2.2s ease-out infinite}
+@keyframes uRkPulse{0%{transform:scale(.55);opacity:.9}70%,100%{transform:scale(1.7);opacity:0}}
+@media (prefers-reduced-motion:reduce){ .u-rk-lead .r{animation:none} }
+.u-rk-lead.pick .r{stroke:var(--glow);stroke-opacity:.7}
+/* the name tag for a tapped muscle: bone, beside the body, following the ring */
+.u-rkcall3{left:0;top:0;will-change:transform}
+.u-rkcall3 b{display:block;background:var(--cta);color:var(--on-cta)}
+.u-rkcall3.u-pop b{animation:fxPop .4s var(--ease)}
+.u-rk3dh .rh-low{position:absolute;left:0;right:0;bottom:var(--sp-3);height:0;pointer-events:none}
+.u-home3d{padding-bottom:0}
+/* coming back to the Body page, the screen you left goes at once: it would otherwise show through where the page is see-through */
+.app.homefig .tabv.leaving:not(#tv-today){visibility:hidden}
+.u-below{position:relative;z-index:1;margin:0 calc(-1 * var(--gutter));padding:var(--sp-1) var(--gutter) var(--sp-6);background:var(--bg);box-shadow:0 -18px 18px 0 var(--bg)}
+.u-weak{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);margin-top:var(--sp-2);min-height:92px;padding:var(--sp-4);
+  border-radius:var(--r-card);background:var(--glass);border:1px solid var(--glass-line)}
+.u-weak .rk-sq{width:40px;height:40px;border-radius:var(--r-sm);background:var(--c)}
+.u-weak .rk-sq[data-t="0"],.u-weak .rk-sq[data-t="1"]{box-shadow:inset 0 0 0 1px var(--line-3)}
+.u-weak b{display:block;font-size:var(--fs-4);font-weight:800;line-height:1.2;letter-spacing:-.01em;color:var(--text-1)}
+.u-weak small{display:block;margin-top:2px;font-size:var(--fs-2);line-height:1.3;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* the eyebrow: "WEAK LINK" in lime, "YOUR PICK" in bone for a tapped muscle */
+.u-weak-eb{display:block;margin-bottom:2px;font-style:normal;font-size:var(--fs-1);font-weight:900;letter-spacing:var(--track-caps);text-transform:uppercase;line-height:1.3;color:var(--glow)}
+.u-focus .u-weak-eb{color:var(--cta);animation:fxPop .4s var(--ease)}
+
+/* ---------- Home: score ---------- */
+.u-score{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:var(--sp-5);padding:var(--sp-5) var(--sp-4) var(--sp-4)}
+.u-score-ring{width:112px;height:112px}
+.u-score-n{display:flex;flex-direction:column;align-items:center;gap:4px}
+.u-score-n .u-num{font-size:var(--fs-6)}
+.u-score-n small{font-family:var(--mono);font-size:var(--fs-1);letter-spacing:.1em;text-transform:uppercase}
+.u-pils{display:grid;gap:var(--sp-3);min-width:0}
+.u-pil{display:block}
+.u-pil-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.u-pil-h b{font-size:var(--fs-2);font-weight:500;color:var(--text-1)}
+.u-pil-h em{font-style:normal;font-family:var(--mono);font-size:var(--fs-2);font-variant-numeric:tabular-nums;color:var(--text-2)}
+.u-score-foot{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding-top:var(--sp-3);border-top:1px solid var(--line);font-size:var(--fs-2);color:var(--text-2)}
+
+/* ---------- Next up (and the bone Today card) ---------- */
+.u-next{display:grid;grid-template-columns:1fr auto;grid-template-areas:"tx fig" "go go";gap:var(--sp-3) var(--sp-2);padding:var(--sp-5) var(--sp-4) var(--sp-4);overflow:hidden}
+.u-next.bone{grid-template-columns:1fr auto;grid-template-areas:"tx go";align-items:center;padding:var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-5)}
+.u-next-tx{grid-area:tx;min-width:0}
+.u-next-h{margin-top:var(--sp-1)!important;font-size:var(--fs-4)}
+.u-next:not(.bone) .u-next-h{font-size:var(--fs-5);font-weight:800}
+.u-next .u-small{margin-top:var(--sp-1)}
+.u-next .u-chips{margin-top:var(--sp-3)}
+.u-next-fig{grid-area:fig;width:88px;height:150px;margin:-8px -4px -8px 0;opacity:.95}
+.u-next-fig svg{width:100%;height:100%}
+.u-next-go{grid-area:go;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin-top:var(--sp-2)}
+.u-next.bone .u-next-go{margin-top:0;flex-direction:column-reverse;align-items:flex-end;gap:var(--sp-1)}
+.u-next-go .u-play{margin-left:auto}
+.u-next.bone .u-link{min-height:32px;font-size:var(--fs-1)}
+
+/* ---------- quick tiles ---------- */
+.u-tiles{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
+.u-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2);min-height:128px;padding:var(--sp-4);
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card);cursor:pointer;transition:background var(--dur-1),transform var(--dur-1) var(--ease)}
+.u-tile:active{background:var(--surface-3);transform:scale(.98)}
+.u-tile .u-ic{width:36px;height:36px;border-radius:10px}
+.u-tile-l{font-size:var(--fs-2);font-weight:500;color:var(--text-1);margin-top:auto}
+.u-tile-v{display:flex;align-items:baseline;flex-wrap:wrap;gap:0 4px;line-height:1.2}
+.u-tile-v .u-num{font-size:var(--fs-4)}
+.u-tile-v small{font-size:var(--fs-1);color:var(--text-2)}
+.u-tile-add{position:absolute;top:var(--sp-3);right:var(--sp-3);display:grid;place-items:center;width:var(--tap);height:var(--tap);border-radius:12px;background:var(--surface-3);border:1px solid var(--line-2);color:var(--text-1)}
+.u-tile-add svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.u-tile-add:active{background:var(--c);color:var(--bg)}
+
+/* ---------- week ---------- */
+.u-week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.u-day{display:flex;flex-direction:column;align-items:center;gap:6px;min-height:72px;padding:var(--sp-2) 0;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);color:var(--text-2)}
+.u-day span{font-family:var(--mono);font-size:var(--fs-1);font-weight:500}
+.u-day b{display:grid;place-items:center;height:22px;font-size:var(--fs-3);font-weight:600;color:var(--text-1);font-variant-numeric:tabular-nums}
+.u-day b svg{width:18px;height:18px;fill:none;stroke:var(--glow);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.u-day em{max-width:100%;padding:0 2px;font-style:normal;font-size:var(--fs-1);line-height:1.2;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-day.u-today{border-color:var(--glow);background:var(--glow-a)}
+.u-day{border-color:var(--glass-line)}
+.u-day.u-today span{color:var(--glow)}
+.u-day.u-done{background:var(--surface-1)}
+.u-day.u-past:not(.u-done) b{color:var(--text-2)}
+
+/* ---------- for you ---------- */
+.u-ask .u-h2{margin:var(--sp-2) 0 var(--sp-4)}
+.u-ask-why{display:inline-flex;align-items:center;gap:var(--sp-2);color:var(--c)}
+.u-ask-why i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.u-lesson{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--sp-3)}
+.u-lesson b.u-h2{display:block;margin:4px 0 2px;font-size:var(--fs-3);font-family:var(--body);font-stretch:normal;font-weight:600}
+.u-lesson .u-small{display:block}
+
+/* ---------- the daily check-in: one tap, on the Body page (uiCheckCard) ---------- */
+.u-section-h.u-tight{margin-top:0}
+.u-ck-host{display:block;margin-top:var(--sp-3)}
+.u-ck{padding:var(--sp-4) var(--sp-4) var(--sp-3)}
+.u-ck-h{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:24px}
+.u-ck-h .u-link{min-height:32px;margin:-4px calc(-1 * var(--sp-1)) -4px 0}
+.u-ck-one{font-family:var(--mono);font-size:var(--fs-1);letter-spacing:.12em;text-transform:uppercase;color:var(--glow)}
+.u-ck .u-h2{margin-top:var(--sp-1)}
+.u-ck-feel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--sp-1);align-items:end;margin-top:var(--sp-3)}
+.u-ck-o{display:grid;justify-items:center;align-content:end;gap:var(--sp-2);min-height:84px;padding:var(--sp-2) 0;border-radius:var(--r-sm);-webkit-tap-highlight-color:transparent}
+.u-ck-o i{position:relative;display:grid;place-items:center;width:calc(44px * var(--s,1));height:calc(44px * var(--s,1));border-radius:50%;
+  border:1.5px solid color-mix(in srgb,var(--glow) 28%,var(--line-2));transition:border-color var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease),transform var(--dur-1) var(--ease)}
+.u-ck-o i em{width:0;height:0;border-radius:50%;background:var(--glow);transition:width .35s cubic-bezier(.3,1.5,.5,1),height .35s cubic-bezier(.3,1.5,.5,1)}
+.u-ck-o small{font-size:var(--fs-1);line-height:1.2;color:var(--text-2);text-align:center;transition:color var(--dur-2) var(--ease)}
+.u-ck-o:active i{transform:scale(.9)}
+.u-ck-o.sel i{border-color:var(--glow);box-shadow:0 0 16px color-mix(in srgb,var(--glow) 45%,transparent)}
+.u-ck-o.sel i em{width:62%;height:62%}
+.u-ck-o.sel small{color:var(--text-1)}
+.u-ck-o.pop i::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1.5px solid var(--glow);animation:fxBurst .55s var(--ease) forwards}
+.u-ck-sl{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);margin:var(--sp-3) 0 0;padding-top:var(--sp-2);border-top:1px solid var(--line);min-height:40px;font-size:var(--fs-2);color:var(--text-2)}
+.u-ck-sl>span:first-child{display:inline-flex;align-items:center;gap:var(--sp-2);min-width:0}
+.u-ck-sl b{font-weight:500;color:var(--text-1)}
+.u-ck-sl svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.u-ck-sl .u-link{min-height:36px}
+.u-ck-src{font-size:var(--fs-1);color:var(--text-3)}
+.u-ck-sl.open{padding-bottom:var(--sp-1)}
+.u-ck-chips{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--sp-1);margin-top:var(--sp-1);padding-bottom:var(--sp-1);animation:fxUp var(--dur-3) var(--ease) both}
+.u-ck-chip{min-height:40px;padding:0 2px;border-radius:var(--r-pill);border:1px solid var(--line-2);font-size:var(--fs-1);font-variant-numeric:tabular-nums;color:var(--text-2);white-space:nowrap;transition:background var(--dur-2) var(--ease),color var(--dur-2) var(--ease)}
+.u-ck-chip.on{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
+.u-ck-chip:active{transform:scale(.96)}
+.u-ck.done{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-2) var(--sp-3) var(--sp-4)}
+.u-ck-tick{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;color:var(--glow);background:color-mix(in srgb,var(--glow) 15%,var(--surface-2))}
+.u-ck-tick svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.u-ck-sum{display:grid;gap:2px;min-width:0}
+.u-ck-sum b{font-size:var(--fs-3);font-weight:600;color:var(--text-1)}
+.u-ck-sum small{font-size:var(--fs-2);line-height:1.4;color:var(--text-2)}
+.u-ck.done.in .u-ck-tick{animation:fxPop .42s var(--ease)}
+.u-ck.done.in .u-ck-tick path{stroke-dasharray:24;stroke-dashoffset:24;animation:uCkDraw .45s var(--ease) .12s forwards}
+.u-ck.done.in .u-ck-sum{animation:fxUp .4s var(--ease) both}
+@keyframes uCkDraw{to{stroke-dashoffset:0}}
+.u-ck.u-ck-hi{animation:uCkHi 1.3s var(--ease)}
+@keyframes uCkHi{0%,100%{box-shadow:0 0 0 0 transparent}30%{box-shadow:0 0 0 3px color-mix(in srgb,var(--glow) 55%,transparent)}}
+.u-ck.page{margin-top:var(--sp-4)}
+.u-ck-note{margin:var(--sp-3) 0 0;font-size:var(--fs-1);color:var(--text-3);text-align:center}
+@media (prefers-reduced-motion:reduce){
+  .u-ck.done.in .u-ck-tick,.u-ck.done.in .u-ck-sum,.u-ck.u-ck-hi,.u-ck-chips,.u-ck-o.pop i::after{animation:none}
+  .u-ck.done.in .u-ck-tick path{animation:none;stroke-dashoffset:0}
+}
+
+/* ---------- Recover ---------- */
+.u-recnow{padding:var(--sp-5) var(--sp-4) var(--sp-4) var(--sp-5);background:var(--glass);border-color:var(--glass-line)}
+.u-recnow-h{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-3)}
+.u-recnow-n{font-size:var(--fs-1);font-weight:700;color:var(--text-2);white-space:nowrap}
+.u-recnow-n b{font-family:var(--display);font-size:var(--fs-2);font-weight:900;font-variant-numeric:tabular-nums}
+.u-recnow-ok{margin:var(--sp-2) 0 0;font-size:var(--fs-3);color:var(--text-1)}
+.u-recl{display:flex;flex-direction:column;gap:var(--sp-1)}
+.u-recr{display:grid;grid-template-columns:minmax(0,1fr) 56px auto;align-items:center;gap:var(--sp-3);min-height:var(--tap);width:100%;text-align:left}
+.u-recr-n{font-size:var(--fs-3);font-weight:700;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-recr .u-bar{height:4px}
+.u-recr em{font-style:normal;font-size:var(--fs-1);font-weight:700;color:var(--text-2);text-align:right;white-space:nowrap}
+/* the one fading line under the list: not trained for NEGLECT_DAYS+ days, opens the first of them */
+.u-recfd{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);width:100%;min-height:var(--tap);margin-top:var(--sp-2);padding-top:var(--sp-2);border-top:1px solid var(--line);text-align:left}
+.u-recfd>i{width:8px;height:8px;border-radius:2px;background:var(--line-3)}
+.u-recfd b{display:block;font-size:var(--fs-3);font-weight:700;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-recfd small{display:block;font-size:var(--fs-1);font-weight:700;color:var(--text-3)}
+/* "Sore spots · 2 flagged" on the Body page and Recover */
+.u-row small .u-sore-n{font-size:inherit;font-weight:700;color:var(--alert)}
+/* Today's reset: a big dark card with a lime cap and a white play button */
+.u-recover .u-next{border-radius:var(--r-card-lg);padding:var(--sp-5);background:var(--glass);border-color:var(--glass-line)}
+.u-recover .u-next .u-eyebrow{color:var(--glow)}
+.u-recover .u-next .u-h2{font-size:var(--fs-5);font-weight:900;letter-spacing:var(--track-tight)}
+.u-recover .u-next .u-small{font-size:var(--fs-3);font-weight:700}
+.u-recover .u-next .u-play{width:64px;height:64px;background:var(--text-1);color:var(--on-cta)}
+/* Look after it: one card per row, each with a tinted icon tile */
+.u-rowcards{display:grid;gap:var(--sp-3)}
+.u-rowcards .u-row{padding:var(--sp-4);border:1px solid var(--glass-line);border-radius:var(--r-card);background:var(--glass)}
+.u-rowcards .u-row:last-child{border-bottom:1px solid var(--glass-line)}
+.u-rowcards .u-row b{font-weight:800}
+.u-rowcards .u-ic{width:44px;height:44px}
+
+/* ---------- Train ---------- */
+.app.train.thub .trainv{top:0;padding:0;background:var(--bg)}
+.app.train.thub .tb-back{display:none}
+.u-train .u-kit{width:148px}
+.u-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3);margin-top:var(--sp-3)}
+.u-stat{display:block;text-align:left;padding:var(--sp-3);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line)}
+.u-stat .u-num{display:block;font-size:var(--fs-5)}
+.u-stat .u-num small{font-family:var(--body);font-stretch:normal;font-weight:500;font-size:var(--fs-2);color:var(--text-2);margin-left:2px}
+.u-stat span{display:block;margin-top:var(--sp-1);font-size:var(--fs-1);color:var(--text-2)}
+.u-quick .u-chips{margin-bottom:var(--sp-4)}
+.u-quick-row{display:flex;align-items:center;gap:var(--sp-3)}
+.u-quick-row .u-seg{flex:1}
+.u-quick .u-small{margin-top:var(--sp-3)}
+
+/* ---------- Profile: a header with a way back ---------- */
+.u-backbar{position:sticky;top:0;z-index:2;display:grid;grid-template-columns:var(--tap) 1fr var(--tap);align-items:center;gap:var(--sp-2);
+  padding:calc(var(--sp-2) + var(--sat)) var(--sp-3) var(--sp-2);margin:0 calc(-1 * var(--gutter)) var(--sp-2);
+  background:var(--glass-2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.u-backbar .u-icon-btn{background:none;border-color:transparent}
+.u-backbar-t{text-align:center;font-size:var(--fs-3);font-weight:600}
+#tv-you{padding-top:0}
+
+/* ---------- coach marks ---------- */
+.tr-card{left:var(--gutter);right:var(--gutter);padding:var(--sp-5);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line-2)}
+.tr-card h2{margin-top:var(--sp-3)}
+.tr-row{margin-top:var(--sp-5)}
+.tr-acts .btn{min-height:var(--tap);height:var(--tap);padding:0 var(--sp-5);border-radius:12px}
+.tr-card h2{font-family:var(--display);font-stretch:var(--wide);font-weight:800;font-size:var(--fs-4)}
+.tr-card p{font-size:var(--fs-2);color:var(--text-2)}
+
+/* ---------- Body (3D): layers as a segmented control on top, the layer's name and two shortcuts below ---------- */
+.app.rdx .lsw{top:calc(var(--sat) + var(--sp-3));bottom:auto;left:var(--gutter);right:var(--gutter);display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0;padding:3px;
+  border-radius:12px;background:var(--glass-strong);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.app.rdx .lsw-i{height:38px;padding:0 4px;justify-content:center;border-radius:9px;color:var(--text-2);transition:background var(--dur-2),color var(--dur-2)}
+.app.rdx .lsw-i span{font-size:var(--fs-2)}
+.app.rdx .lsw-i i{display:none}
+.app.rdx .lsw-i.on{background:var(--line-2);color:var(--text-1)}
+.app.rdx .lsw-i.lock{opacity:.5}
+.app.rdx .hud-top{padding-top:calc(var(--sat) + 68px)}
+.app.rdx .rdx-water{top:calc(var(--sat) + 70px);left:auto;right:var(--gutter);height:40px;border-color:var(--line-2);background:var(--glass-strong)}
+.app.rdx .hud-bottom{bottom:calc(var(--tabH) + var(--sp-4));padding:0 84px 0 var(--gutter)}
+.app.rdx #dlFace{right:var(--gutter);bottom:calc(var(--tabH) + var(--sp-4));width:52px;height:52px;border-radius:16px;background:var(--glass-strong);box-shadow:inset 0 0 0 1px var(--line-2);color:var(--text-1)}
+#tv-you .seg3{top:calc(var(--sat) + 60px)}
+
+/* Focus switches like any other tab: no fade in or out, no slide of the page */
+.mindv.plain{transition:none}
+.mindv.plain .mv-body.in{animation:none}
+
+/* a breathing or Calm session gets the whole screen: no tab bar over its cue and counter (End is on screen) */
+.app:has(#breathO.on) .u-nav{transform:translateY(100%);opacity:0;pointer-events:none}
+
+/* Your day on the Profile sub-tab (the pieces that left the Body page, 18 Oct): plain content, no box.
+   Its own class since 21 Oct: it shared .u-day with the week strip's day boxes, so their rules squashed the Body
+   Score number onto its label (b{height:22px}) and its rules took the boxes off the week strip */
+.u-yday{display:block;margin:0 0 var(--sp-5);padding:0}
+.u-yday>.u-section-h:first-child{margin-top:0}
+/* the Body page ends at the weak-link card */
+/* the Body page (18 Oct): one screen, no dead space. The header, then the hero takes everything between it and the
+   weak-link card, which sits just above the tab bar; the body frames itself into whatever the hero gets. */
+.u-screen.u-home3d{display:flex;flex-direction:column;min-height:100%;box-sizing:border-box;padding-bottom:0}
+.u-home3d .u-top{flex:none;margin-bottom:0}
+.u-home3d .u-rk3dh{flex:1;height:auto;min-height:340px}
+.u-home3d .u-below{flex:none;padding:var(--sp-3) var(--gutter) var(--sp-3);box-shadow:0 -8px 8px 0 var(--bg)}
+.u-home3d .u-weak{margin-top:0}
+@media (max-height:700px){ .u-home3d .u-rk3dh{min-height:300px} .u-home3d .u-weak{min-height:84px;padding:var(--sp-3) var(--sp-4)} }
+
+/* perf (21 Oct): the old HUD sits hidden or under the tab screens on Body, Focus and the tabs; its endless animations
+   (the spinning conic edge repaints every frame) stop while it can't be seen. It still runs on the Train plan, where it shows */
+.app:is(.tabbed,.minding,.thub) #hudTop *,.app:is(.tabbed,.minding,.thub) #hudTop *::before,.app:is(.tabbed,.minding,.thub) #hudTop *::after{animation-play-state:paused!important}
+/* perf (21 Oct): the same for the old muscle markers (.nodes) wherever they're hidden, and the rank ring's pulse while the ring is faded out.
+   Each endless animation on a hidden element still cost a style pass every frame, which made every layout read in the 3D loop slow */
+:is(.app.tabbed,.app.homefig,.app.sys,.app.storying,.app.train.thub) .nodes :is(.node,.node i),:is(.app.tabbed,.app.homefig,.app.sys,.app.storying,.app.train.thub) .nodes .node::before,.nodes.off :is(.node,.node i),.nodes.off .node::before{animation-play-state:paused!important}
+.u-rk-lead:not([style]) .r,.u-rk-lead[style*="opacity: 0;"] .r{animation-play-state:paused}

@@ -1,0 +1,111 @@
+/* =========================================================
+   PRESTIGE — see prestige.js (package goals, classes .pz-). Tokens only; gold (--gold) only for prestige.
+   Lives in core's .ev-body (never scrolls): a hero card per breakpoint, the gold pill on its edge,
+   the state block and one pinned button. Also the Muscle ranks tags, the muscle sheet's row and the
+   Change list.
+   ========================================================= */
+.pz{flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-2)}
+#evV[data-view="prestige"] .ev-bar-eye{color:var(--gold)}
+
+/* the hero card: radius 24, a gold glow, the still filling it */
+.pz-hero{position:relative;flex:none;height:clamp(240px,40vh,380px);height:clamp(240px,40dvh,380px);margin-bottom:var(--sp-5);
+  border-radius:var(--r-card-lg);background:var(--bg);border:1px solid color-mix(in srgb,var(--gold) 28%,var(--line));
+  box-shadow:0 0 36px color-mix(in srgb,var(--gold) 16%,transparent)}
+.pz-pic{position:absolute;inset:0;display:grid;place-items:center;border-radius:inherit;overflow:hidden}
+.pz-pic img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-select:none;user-select:none}
+.pz-hexw{--c:var(--rk-5)}
+.pz-hex{color:var(--gold);background:var(--rk-5)}
+.pz-hex .pz-st{width:44%;height:44%;fill:var(--gold);stroke:var(--bg);stroke-width:1.2;stroke-linejoin:round}
+
+/* the gold pill on the hero's bottom edge (a 44 px hit area around the 40 px pill) */
+.pz-pill{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);z-index:1;display:inline-flex;align-items:center;gap:var(--sp-2);
+  height:40px;max-width:calc(100% - var(--sp-6));padding:0 var(--sp-5);border-radius:var(--r-pill);background:var(--gold);color:var(--on-accent);
+  font-size:var(--fs-1);font-weight:900;letter-spacing:var(--track-caps);text-transform:uppercase;white-space:nowrap}
+.pz-pill>span{overflow:hidden;text-overflow:ellipsis}
+button.pz-pill::after{content:"";position:absolute;inset:-2px -2px}
+button.pz-pill:active{transform:translateX(-50%) scale(.97)}
+.pz-pill.off{background:var(--surface-2);color:var(--gold);border:1px solid color-mix(in srgb,var(--gold) 45%,transparent)}
+.pz-pill.sw{padding-left:0}
+.pz-pill.sw .pz-sw{width:40px;height:40px;box-shadow:0 0 0 2px var(--gold)}
+
+/* material swatches (a flat stand-in where render can't draw the material) */
+.pz-sw{display:inline-block;flex:none;width:24px;height:24px;border-radius:50%;background:var(--surface-3);box-shadow:inset 0 0 0 1px var(--line-3)}
+.pz-sw-marble{background:linear-gradient(135deg,var(--mat-marble) 0 38%,var(--mat-marble-vein) 44%,var(--mat-marble) 50% 70%,var(--mat-marble-vein) 74%,var(--mat-marble) 78%)}
+.pz-sw-silver{background:radial-gradient(circle at 34% 30%,var(--text-1),var(--mat-silver) 42%,var(--line-3))}
+.pz-sw-gold{background:radial-gradient(circle at 34% 30%,var(--text-1),var(--gold) 42%,var(--rk-2))}
+
+.pz-mid{display:flex;flex-direction:column;gap:var(--sp-2);min-height:0}
+
+/* ready / running: three short rows */
+.pz-rows{display:flex;flex-direction:column;padding:0 var(--sp-3);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line)}
+.pz-row{display:grid;grid-template-columns:24px minmax(0,1fr);align-items:center;gap:var(--sp-3);min-height:44px;font-size:var(--fs-2);line-height:1.3;color:var(--text-1);border-bottom:1px solid var(--line)}
+.pz-row:last-child{border-bottom:0}
+.pz-row>span:last-child{min-width:0;padding:var(--sp-1) 0;line-height:1.25;text-wrap:balance}   /* a long muscle name wraps to a second line inside the 44 px row */
+.pz-ic{display:grid;place-items:center;width:24px;height:24px;color:var(--gold)}
+.pz-ic .pz-st{width:20px;height:20px;fill:currentColor}
+.pz-x{font-size:var(--fs-1);font-weight:900;color:var(--gold);letter-spacing:-.02em}
+
+/* running: the lap bar */
+.pz-prog{display:grid;gap:6px}
+.pz-prog-h b{font-size:var(--fs-3);font-weight:800;color:var(--gold)}
+.pz-bar{height:8px;border-radius:4px}
+.pz-prog small{font-size:var(--fs-2);color:var(--text-2)}
+
+/* locked */
+.pz-lock{display:grid;gap:var(--sp-1)}
+.pz-lock p{margin:0;font-size:var(--fs-3);font-weight:700;color:var(--text-1)}
+.pz-lock small{font-size:var(--fs-2);color:var(--text-2)}
+.pz-rows.pz-dim{opacity:.6}
+
+/* the pinned button; Start carries a small line inside */
+.pz-go{flex:none;margin-top:auto}
+.pz-start{flex-direction:column;gap:2px}
+.pz-start small{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;opacity:.72}
+
+/* the bar's Change button */
+.pz-chg{min-height:var(--tap);min-width:var(--tap);padding:0 var(--sp-2);font-size:var(--fs-2);font-weight:800;color:var(--gold)}
+.pz-chg:active{opacity:.6}
+
+/* the Change sheet */
+.pz-sh-eye{display:block;margin-bottom:var(--sp-3)}   /* the list starts below the sheet's ✕ */
+.pz-picks{display:flex;flex-direction:column}
+.pz-pick{display:grid;grid-template-columns:14px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);width:100%;min-height:var(--tap);text-align:left;border-bottom:1px solid var(--line)}
+.pz-pick:last-child{border-bottom:0}
+.pz-pick.on .pz-pick-n{color:var(--gold)}
+.pz-pick-n{display:flex;align-items:baseline;gap:var(--sp-2);min-width:0;font-size:var(--fs-3);font-weight:700;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pz-pick-n small{font-size:var(--fs-1);font-weight:600;color:var(--text-2)}
+.pz-pick em{font-style:normal;font-size:var(--fs-1);font-weight:800;color:var(--text-2);white-space:nowrap}
+.pz-pick:active{background:var(--surface-3)}
+/* many muscles at 94+ (pzChange measures): two columns of 44 px cells, the name over its state, no rank line */
+.pz-picks.pz-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:var(--sp-3)}
+.pz-picks.pz-two .pz-pick{grid-template-columns:14px minmax(0,1fr);grid-template-rows:auto auto;column-gap:var(--sp-2);row-gap:1px;align-content:center;border-bottom:0}
+.pz-picks.pz-two .pz-pick:nth-child(n+3){border-top:1px solid var(--line)}
+.pz-picks.pz-two .rk-sq{grid-row:1 / span 2}
+.pz-picks.pz-two .pz-pick-n{display:block;font-size:var(--fs-2);line-height:1.2}
+.pz-picks.pz-two .pz-pick-n small{display:none}
+.pz-picks.pz-two .pz-pick em{grid-column:2;min-width:0;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+/* still too tall (every muscle at 94+ on a small phone): the list starts just under the eyebrow; the first
+   right-hand cell keeps its text clear of the sheet's ✕, which overlaps its top corner */
+.pz-sh-eye.pz-tight{margin-bottom:2px}
+.pz-picks.pz-tight .pz-pick:nth-child(2){padding-right:var(--tap)}
+
+/* Muscle ranks: the prestige star (gold, star-shaped, so it never reads as Forged) and "Prestige ready" */
+.rk-tag.pz-star,.rk-tag.pz-ready{color:var(--gold)}
+.rk-tag.pz-star{display:inline-flex;align-items:center;gap:2px;letter-spacing:0}
+.rk-tag.pz-star .pz-st{width:11px;height:11px;fill:currentColor}
+/* the name column is about 85-100 px on a phone: "Prestige ready" wraps to two short lines instead of being cut */
+.rk-tags .rk-tag.pz-ready{white-space:normal;letter-spacing:.06em;line-height:1.2}
+
+/* the muscle sheet at 94+: a 44 px row under the score */
+.pz-sh{display:inline-flex;align-items:center;justify-content:flex-end;gap:var(--sp-1);min-height:var(--tap);margin-top:2px;padding:0 0 0 var(--sp-2);
+  font-size:var(--fs-1);font-weight:800;color:var(--gold);white-space:nowrap}
+.pz-sh .pz-st{width:12px;height:12px;fill:currentColor}
+.pz-sh-n{display:inline-flex;align-items:center;gap:1px}   /* "★2 · Black marble": the icon is the ★, set tight to its number */
+.pz-sh i{font-style:normal;font-size:var(--fs-2)}
+.pz-sh:active{opacity:.6}
+
+/* short phones */
+@media (max-height:700px){
+  .pz-hero{height:clamp(190px,34vh,240px);height:clamp(190px,34dvh,240px)}   /* 227 at 667, 193 at 568: the running state still fits */
+  .pz-prog{gap:4px}
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bio_rhythm_sync</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --lime: #D4FF00;
+            --panel: rgba(255, 255, 255, 0.05);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            margin: 0;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: #000000;
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .glass-panel {
+            background: var(--panel);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .label-sm-caps {
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: var(--lime);
+            box-shadow: 0 0 15px var(--lime);
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: scan 4s linear infinite;
+            z-index: 20;
+            opacity: 0.3;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col text-white">
+        <!-- #header_001 -->
+        <header class="flex-shrink-0 px-6 pt-12 pb-4 z-20">
+            <div class="flex justify-between items-center">
+                <button class="w-10 h-10 glass-panel rounded-full flex items-center justify-center active:scale-90">
+                    <iconify-icon icon="solar:alt-arrow-left-linear" class="text-xl"></iconify-icon>
+                </button>
+                <div class="px-4 py-1.5 glass-panel rounded-full flex items-center gap-2 border-[var(--lime)]/40">
+                    <div class="w-1.5 h-1.5 rounded-full bg-[var(--lime)] animate-pulse"></div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-[var(--lime)]">Live Sync</span>
+                </div>
+                <button class="w-10 h-10 glass-panel rounded-full flex items-center justify-center">
+                    <iconify-icon icon="solar:heart-pulse-bold" class="text-xl text-[var(--lime)]"></iconify-icon>
+                </button>
+            </div>
+        </header>
+        <!-- /#header_001 -->
+
+        <!-- #scroll-content_002 -->
+        <div class="flex-1 overflow-y-auto px-6 relative">
+            <div class="scanline"></div>
+            
+            <!-- #engine-visual_003 -->
+            <div class="relative py-8 flex flex-col items-center">
+                <div class="absolute inset-0 bg-[var(--lime)]/5 blur-[100px] rounded-full"></div>
+                <div class="relative w-full aspect-square flex items-center justify-center pulse-ring">
+                    <img src="https://media.screensdesign.com/gasset/d3d3cde5580f4d65b6472979cec0d16a_screen_image_bio_rhythm_engine_34373d8529.png" data-media-ref="generated:138036" alt="A glowing, pulsing 'engine' core inside a 3D anatomical chest cavity, emitting soft neon lime light and low-frequency energy waves, high-tech biometric UI elements, dark atmosphere, 8k resolution" class="w-4/5 h-auto z-10" data-image-aspect="1:1" data-image-background="transparent">
+                </div>
+                
+                <div class="text-center mt-4">
+                    <div class="text-[48px] font-black tracking-tighter leading-none">0.8<span class="text-xl text-[var(--lime)] ml-1">Hz</span></div>
+                    <div class="label-sm-caps text-gray-500">Pulse Frequency</div>
+                </div>
+            </div>
+
+            <!-- #biometric-data_004 -->
+            <div class="space-y-4 pb-12">
+                <div class="flex justify-between items-end mb-2">
+                    <div class="label-sm-caps text-gray-500">Heartbeat Waveform</div>
+                    <div class="text-[10px] font-bold text-[var(--lime)]">STABLE VIBE</div>
+                </div>
+                
+                <!-- #waveform_005 -->
+                <div class="h-24 glass-panel rounded-2xl overflow-hidden flex items-center justify-center p-4">
+                    <svg width="100%" height="40" viewBox="0 0 300 40" fill="none">
+                        <path d="M0 20H40L45 10L50 30L55 5L60 35L65 20H100L105 10L110 30L115 5L120 35L125 20H180L185 15L190 25L195 0L200 40L205 20H300" stroke="#D4FF00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-80" />
+                    </svg>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- #data-point-1_006 -->
+                    <div class="glass-panel p-4 rounded-2xl">
+                        <div class="text-xs text-gray-500 font-bold mb-1">Respiration</div>
+                        <div class="text-lg font-black">14 BPM</div>
+                    </div>
+                    <!-- #data-point-2_007 -->
+                    <div class="glass-panel p-4 rounded-2xl">
+                        <div class="text-xs text-gray-500 font-bold mb-1">Haptic Sync</div>
+                        <div class="text-lg font-black text-[var(--lime)]">98%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#scroll-content_002 -->
+
+        <!-- #footer_008 -->
+        <footer class="flex-shrink-0 px-6 pb-12 pt-4 bg-black">
+            <button class="w-full py-5 bg-[var(--lime)] text-black rounded-3xl font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                <iconify-icon icon="solar:bolt-circle-bold" class="text-xl"></iconify-icon>
+                Stabilize Rhythm
+            </button>
+        </footer>
+        <!-- /#footer_008 -->
+    </div>
+</body>
+</html>

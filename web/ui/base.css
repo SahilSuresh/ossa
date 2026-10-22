@@ -1,0 +1,182 @@
+/* =========================================================
+   OSSA COMPONENTS — one definition each, all built from tokens.css.
+   New screens use the u- classes. The legacy building blocks
+   (.btn, .panel, .sheet, .seg3, .eyebrow, .td-card) are re-skinned
+   at the bottom so the older screens match.
+   ========================================================= */
+
+/* ---------- type: Inter, heavy and tight for headlines, capitals tracked wide for labels ---------- */
+body{font-family:var(--body);-webkit-font-smoothing:antialiased}
+/* taps fire at once: no wait to see if it's a double-tap zoom (perf, 21 Oct). Lowest specificity, so any touch-action set elsewhere wins */
+*{touch-action:manipulation}
+.u-eyebrow{font-family:var(--body);font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2);line-height:1.3}
+.u-h1{margin:0;font-family:var(--display);font-weight:900;font-size:var(--fs-5);line-height:1.04;letter-spacing:var(--track-tight);color:var(--text-1);text-wrap:balance}
+.u-h2{margin:0;font-family:var(--display);font-weight:800;font-size:var(--fs-4);line-height:1.15;letter-spacing:-.02em;color:var(--text-1);text-wrap:balance}
+.u-p{margin:0;font-size:var(--fs-3);line-height:1.5;color:var(--text-2)}
+.u-small{font-size:var(--fs-2);line-height:1.45;color:var(--text-2)}
+.u-num{font-family:var(--display);font-weight:900;font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-.03em}
+.u-mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+/* the high-impact headline: italic 900, capitals, tight, like YOUR BODY IS THE PRODUCT */
+.u-impact{margin:0;font-family:var(--display-italic);font-style:italic;font-weight:900;text-transform:uppercase;letter-spacing:-.04em;line-height:.95;text-wrap:balance}
+.u-section-h{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);margin:var(--sp-6) 0 var(--sp-3)}
+.u-section-h .u-eyebrow{color:var(--text-2)}
+
+/* ---------- buttons ---------- */
+.u-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);min-height:var(--btn-h);padding:0 var(--sp-5);border-radius:var(--r-btn);
+  font-family:var(--body);font-size:var(--fs-3);font-weight:800;line-height:1;white-space:nowrap;letter-spacing:-.01em;
+  background:var(--surface-2);color:var(--text-1);border:1px solid var(--line-2);
+  transition:background var(--dur-1),border-color var(--dur-1),transform var(--dur-1) var(--ease),opacity var(--dur-1)}
+.u-btn:active{transform:scale(.97)}
+.u-btn[disabled]{opacity:.4;pointer-events:none}
+.u-btn.primary{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
+.u-btn.lime{background:var(--glow);border-color:var(--glow);color:var(--on-accent)}
+.u-btn.cyan{background:var(--cyan);border-color:var(--cyan);color:var(--on-accent)}
+.u-btn.gold{background:var(--gold);border-color:var(--gold);color:var(--on-accent)}
+.u-btn.primary:not(.small),.u-btn.lime:not(.small),.u-btn.cyan:not(.small),.u-btn.gold:not(.small){font-size:calc(var(--fs-3) + 2px);font-weight:900}
+.u-btn.ghost{background:none;border-color:transparent;color:var(--text-2);padding:0 var(--sp-3)}
+.u-btn.small{min-height:40px;padding:0 var(--sp-4);border-radius:var(--r-sm);font-size:var(--fs-2);font-weight:800}
+.u-btn.block{display:flex;width:100%}
+.u-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.u-link{display:inline-flex;align-items:center;min-height:var(--tap);padding:0 var(--sp-1);font-size:var(--fs-2);font-weight:500;color:var(--text-2)}
+.u-link:active{color:var(--text-1)}
+
+.u-icon-btn{display:inline-grid;place-items:center;width:var(--tap);height:var(--tap);flex:none;border-radius:var(--r-sm);color:var(--text-1);background:var(--surface-3);border:1px solid var(--glass-line)}
+.u-icon-btn.round{border-radius:50%}
+.u-icon-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.u-icon-btn:active{background:var(--surface-3)}
+
+/* the round play button that starts the thing a card is about */
+.u-play{display:inline-grid;place-items:center;width:56px;height:56px;flex:none;border-radius:50%;background:var(--cta);color:var(--on-cta);transition:transform var(--dur-1) var(--ease)}
+.u-play svg{width:20px;height:20px;fill:currentColor;margin-left:3px}
+.u-play:active{transform:scale(.94)}
+.u-play.quiet{background:var(--surface-3);color:var(--text-1);border:1px solid var(--line-2)}
+
+/* ---------- cards ---------- */
+.u-card{position:relative;display:block;width:100%;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-4)}
+button.u-card,.u-card[role="button"]{cursor:pointer;transition:background var(--dur-1),transform var(--dur-1) var(--ease)}
+button.u-card:active,.u-card[role="button"]:active{background:var(--surface-3);transform:scale(.99)}
+.u-card + .u-card{margin-top:var(--sp-3)}
+.u-card .u-h2{margin-top:var(--sp-1)}
+.u-card .u-p,.u-card .u-small{margin-top:var(--sp-1)}
+.u-card.accent{border-color:color-mix(in srgb,var(--glow) 38%,transparent)}
+.u-card.warn{border-color:color-mix(in srgb,var(--amber) 38%,transparent)}
+.u-card.dashed{border-style:dashed;border-color:var(--line-2)}
+/* the bone card: today's one thing, inverted so it's the first thing you see */
+.u-card.bone{background:var(--cta);border-color:var(--cta);color:var(--on-cta);border-radius:var(--r-card-lg)}
+.u-card.bone .u-eyebrow{color:color-mix(in srgb,var(--on-cta) 68%,var(--cta))}
+.u-card.bone .u-h1,.u-card.bone .u-h2{color:var(--on-cta)}
+.u-card.bone .u-small,.u-card.bone .u-p{color:color-mix(in srgb,var(--on-cta) 78%,var(--cta))}
+.u-card.bone .u-play{background:var(--on-cta);color:var(--cta)}
+.u-card.bone .u-link{color:color-mix(in srgb,var(--on-cta) 78%,var(--cta))}
+.u-card.bone .u-chip.static{color:var(--on-cta);border-color:color-mix(in srgb,var(--on-cta) 22%,transparent)}
+.u-acts{display:flex;gap:var(--sp-2);margin-top:var(--sp-4);flex-wrap:wrap}
+.u-acts .u-btn{flex:1}
+
+/* a list row: icon, two lines, a chevron or value */
+.u-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--sp-3);width:100%;min-height:56px;padding:var(--sp-3) 0;text-align:left;border-bottom:1px solid var(--line)}
+.u-row:last-child{border-bottom:0}
+.u-row b{display:block;font-size:var(--fs-3);font-weight:700;color:var(--text-1)}
+.u-row small{display:block;font-size:var(--fs-2);color:var(--text-2);margin-top:2px}
+.u-row em{font-style:normal;font-size:var(--fs-2);color:var(--text-2)}
+.u-row .u-ic{width:36px;height:36px}
+.u-chev{width:16px;height:16px;fill:none;stroke:var(--text-3);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* a small square icon holder, tinted by --c */
+.u-ic{display:inline-grid;place-items:center;flex:none;width:40px;height:40px;border-radius:var(--r-sm);color:var(--c,var(--text-1));background:var(--surface-3);background:color-mix(in srgb,var(--c,var(--text-1)) 14%,var(--surface-2))}
+.u-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- chips and segmented control ---------- */
+.u-chips{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.u-chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 var(--sp-3);border-radius:var(--r-pill);font-size:var(--fs-2);font-weight:700;color:var(--text-2);background:var(--surface-3);border:1px solid var(--glass-line)}
+.u-chip.static{min-height:26px;padding:0 10px;border-radius:var(--r-xs);font-size:var(--fs-1);background:none}
+.u-chip.lime{color:var(--glow);border-color:color-mix(in srgb,var(--glow) 35%,transparent)}
+button.u-chip{min-height:var(--tap);padding:0 var(--sp-4);color:var(--text-1);transition:background var(--dur-1),border-color var(--dur-1),color var(--dur-1)}
+button.u-chip.on,button.u-chip[aria-pressed="true"],button.u-chip[aria-checked="true"]{background:var(--text-1);border-color:var(--text-1);color:var(--bg)}
+
+.u-seg{position:relative;display:grid;grid-auto-columns:1fr;grid-auto-flow:column;padding:4px;border-radius:var(--r-sm);background:var(--surface-3);border:1px solid var(--glass-line)}
+.u-seg button{position:relative;z-index:1;min-height:38px;padding:0 var(--sp-3);border-radius:8px;font-size:var(--fs-2);font-weight:800;color:var(--text-2);transition:color var(--dur-2),background var(--dur-2)}
+.u-seg button.on,.u-seg button[aria-selected="true"]{color:var(--text-1);background:var(--line-2)}
+
+/* ---------- glass: a see-through panel over the 3D body or a scene ---------- */
+.u-glass{background:var(--glass);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur))}
+/* the same look over plain black, where a blur would change nothing (cheaper) */
+.u-glass.flat{-webkit-backdrop-filter:none;backdrop-filter:none}
+/* Rule: blur only over the canvas or scrolling content, about four blurred things per screen at most.
+   Small pills and chips over the moving body use --glass-strong without blur instead. */
+
+/* ---------- hexagons: badges, ranks, trophies ----------
+   <span class="u-hexw" style="--c:var(--rk-3);--on-c:var(--on-rk-3)"><span class="u-hex">III</span></span>
+   The glow sits on the wrapper because clip-path clips shadows. */
+.u-hex{display:inline-grid;place-items:center;flex:none;width:var(--hx,48px);aspect-ratio:.866;clip-path:var(--hex);background:var(--c,var(--text-1));color:var(--on-c,var(--on-cta));font-family:var(--display);font-weight:900;line-height:1;text-align:center}
+.u-hex.ghost{background:var(--surface-2);color:var(--text-3)}
+.u-hexw{display:inline-grid;place-items:center;flex:none;filter:drop-shadow(0 0 24px color-mix(in srgb,var(--c,var(--text-1)) 40%,transparent))}
+
+/* ---------- progress ---------- */
+.u-ring{position:relative;display:inline-grid;place-items:center;flex:none}
+.u-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.u-ring circle{fill:none;stroke-linecap:round}
+.u-ring .t{stroke:var(--surface-3)}
+.u-ring .f{stroke:var(--c,var(--glow));transition:stroke-dasharray .9s var(--ease)}
+.u-bar{position:relative;display:block;height:6px;border-radius:3px;background:var(--surface-3);background:color-mix(in srgb,var(--text-1) 10%,transparent);overflow:hidden}
+.u-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--c,var(--glow));transition:width .9s var(--ease)}
+
+/* a check in a lime circle (done), or an empty ring (to do) */
+.u-tick{display:inline-grid;place-items:center;flex:none;width:24px;height:24px;border-radius:50%;background:var(--glow);color:var(--on-accent)}
+.u-tick svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.u-tick.todo{background:none;border:2px solid var(--line-2)}
+.u-tick.going{background:none;border:2px solid var(--glow)}
+
+/* Fragile is #4A4A4A, faint on black: its 2D marks carry a thin light outline so they still read (3:1) */
+[data-t="1"]{box-shadow:inset 0 0 0 1px var(--line-3)}
+
+/* ---------- empty state ---------- */
+.u-empty{text-align:center;padding:var(--sp-6) var(--sp-4);color:var(--text-2)}
+.u-empty .u-h2{margin-bottom:var(--sp-2)}
+
+.u-foot{margin:var(--sp-6) 0 0;text-align:center;font-size:var(--fs-1);color:var(--text-2)}
+.u-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* =========================================================
+   LEGACY RE-SKIN — the older building blocks, brought onto the tokens
+   ========================================================= */
+body{font-size:var(--fs-3)}
+button:focus-visible,input:focus-visible,select:focus-visible,[role="button"]:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+
+.btn{min-height:var(--btn-h);height:auto;padding:0 var(--sp-4);border-radius:var(--r-btn);font-family:var(--body);font-size:var(--fs-3);font-weight:800;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1)}
+.btn.primary{background:var(--cta);border-color:var(--cta);color:var(--on-cta);font-weight:900;box-shadow:none}
+.btn.primary:hover{background:var(--cta)}
+.btn.big{min-height:var(--btn-h)}
+.btn[disabled]{opacity:.4}
+.icon-btn{min-width:var(--tap);min-height:var(--tap)}
+.linkbtn{min-height:var(--tap);font-size:var(--fs-2);color:var(--text-2)}
+
+.eyebrow{font-family:var(--body);font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);color:var(--text-2)}
+
+.panel{background:var(--bg)}
+.p-head{min-height:60px;padding:calc(var(--sp-2) + var(--sat)) var(--sp-3) var(--sp-2) var(--gutter);border-bottom:1px solid var(--line)}
+.p-head h2{font-family:var(--display);font-size:var(--fs-4);font-weight:900;text-transform:none;letter-spacing:-.02em}
+.p-body{padding:var(--sp-4) var(--gutter) var(--sp-7)}
+
+.sheet{background:var(--surface-1);border-top:1px solid var(--line);border-radius:var(--r-sheet) var(--r-sheet) 0 0}
+.grab{min-height:28px}
+.grab::before{width:40px;height:5px;border-radius:3px;background:var(--line-3)}
+.sh-top h3{font-family:var(--display);font-size:var(--fs-5);font-weight:900;letter-spacing:var(--track-tight)}
+.blk h4,.grp h4{font-family:var(--body);font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);color:var(--text-2)}
+.blk p{color:var(--text-1)}
+.blk p + p{color:var(--text-2)}
+.crumb,.latin,.ex small,.mrow small,.res small,.day .dn{font-size:var(--fs-1)}
+.tip{border-radius:var(--r-card);background:var(--surface-2);border-color:var(--line);color:var(--text-1)}
+
+.seg3{position:sticky;top:0;z-index:3;margin:0 0 var(--sp-5);padding:3px;border:1px solid var(--glass-line);border-radius:var(--r-sm);background:var(--glass-2);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur));overflow:hidden}
+.seg3>i{top:3px;bottom:3px;left:3px;width:calc((100% - 6px)/var(--n));border-radius:8px;background:var(--line-2)}
+.seg3 button{padding:0;min-height:38px;font-size:var(--fs-2);font-weight:800;color:var(--text-2)}
+.seg3 button.on{color:var(--text-1)}
+
+.td-card{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card)}
+.td-card h3{font-family:var(--display);font-weight:800;font-size:var(--fs-4);letter-spacing:-.02em}
+.td-card p{font-size:var(--fs-2);color:var(--text-2)}
+.gn-bar{min-height:64px;border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line)}
+.gn-bar small{font-size:var(--fs-2);color:var(--text-2)}
+.tv-foot{font-size:var(--fs-1);color:var(--text-2)}
+
+.toast{font-family:var(--body);font-size:var(--fs-2);font-weight:600;border-radius:var(--r-card);background:var(--surface-3);border:1px solid var(--line-2);color:var(--text-1)}

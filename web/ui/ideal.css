@@ -1,0 +1,51 @@
+/* =========================================================
+   IDEAL SELF — see ideal.js (package goals, classes .idl-). Tokens only.
+   Lives in core's .ev-body (a flex column that never scrolls): a fixed hero per breakpoint,
+   one line, "Close the gap" (3 rows, 2 on short phones) and the bone button pinned last.
+   ========================================================= */
+.idl{flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-2)}
+
+/* the hero: the still on black, Front/Back bottom-left, the gauge overlapping bottom-right */
+.idl-hero{position:relative;flex:none;height:clamp(260px,44vh,400px);height:clamp(260px,44dvh,400px)}
+.idl-pic{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden}
+.idl-pic img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:lighten;pointer-events:none;-webkit-user-select:none;user-select:none}
+.idl-pic .rk-fig{position:absolute;inset:0;margin:auto;height:100%;width:auto;max-width:100%}
+/* Front/Back: each button is the full 44 px tap target; the selected look sits 3 px inside it */
+.idl-fb{position:absolute;left:0;bottom:0;width:140px;padding:0}
+.idl-fb button{min-height:44px}
+.idl-fb button.on,.idl-fb button[aria-selected="true"]{background:none}
+.idl-fb button::before{content:"";position:absolute;inset:3px;z-index:-1;border-radius:6px;background:none;transition:background var(--dur-2)}
+.idl-fb button.on::before,.idl-fb button[aria-selected="true"]::before{background:var(--line-2)}
+.idl-gauge{position:absolute;right:0;bottom:0;display:grid;place-content:center;justify-items:center;gap:var(--sp-1);width:120px;height:120px;
+  border-radius:var(--r-card-lg);background:var(--glass-strong);border:1px solid var(--glass-line)}
+.idl-gauge b{font-size:var(--fs-6);font-weight:800;color:var(--c)}
+.idl-gauge.full b{font-size:var(--fs-5)}   /* "100%" is one digit wider */
+.idl-gauge small{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2);text-align:center;max-width:108px;line-height:1.2}
+
+/* the next rank chip in the bar's right slot */
+.idl-chip{display:inline-flex;align-items:center;height:32px;padding:0 var(--sp-3);border-radius:var(--r-pill);white-space:nowrap;
+  background:var(--c);color:var(--on-c);font-size:var(--fs-1);font-weight:900;letter-spacing:.04em}
+
+.idl-line{margin:0;font-size:var(--fs-2);line-height:1.4;color:var(--text-2)}
+
+/* close the gap */
+.idl-gap{display:flex;flex-direction:column;gap:6px;min-height:0}
+.idl-rows{display:flex;flex-direction:column;padding:0 var(--sp-3);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line)}
+.idl-row{display:grid;grid-template-columns:14px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);width:100%;min-height:56px;text-align:left;border-bottom:1px solid var(--line)}
+.idl-row:last-child{border-bottom:0}
+.idl-row:active{background:var(--surface-3)}
+.idl-rt{display:grid;min-width:0}
+.idl-rt b{font-size:var(--fs-3);font-weight:700;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.idl-rt small{margin-top:2px;font-size:var(--fs-1);color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.idl-go{flex:none;margin-top:auto}
+
+/* short phones: a smaller hero and gauge, two rows (the hero grows with the screen: 571 px on an SE leaves room) */
+@media (max-height:700px){
+  .idl-hero{height:clamp(200px,40vh,280px);height:clamp(200px,40dvh,280px)}   /* 267 at 667, 227 at 568: two rows still fit an SE with insets */
+  .idl-gauge{width:96px;height:96px;border-radius:var(--r-card)}
+  .idl-gauge b{font-size:var(--fs-5)}
+  .idl-gauge small{max-width:86px}
+  .idl-row:nth-child(n+3){display:none}
+  .idl-row:nth-child(2){border-bottom:0}
+}

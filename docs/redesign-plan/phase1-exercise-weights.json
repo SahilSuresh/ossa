@@ -1,0 +1,1994 @@
+{
+ "muscles": [
+  "front_delt",
+  "side_delt",
+  "rear_delt",
+  "biceps",
+  "triceps",
+  "forearms",
+  "glute_max",
+  "glute_med",
+  "quads",
+  "hamstrings",
+  "adductors",
+  "gastrocnemius",
+  "tibialis",
+  "pec_major",
+  "serratus",
+  "abs",
+  "obliques",
+  "traps",
+  "lats",
+  "erectors",
+  "pec_minor",
+  "rhomboids",
+  "soleus"
+ ],
+ "stretches": [
+  "Behind-the-back chest opener",
+  "Cross-body shoulder stretch",
+  "Wall biceps stretch",
+  "Overhead triceps stretch",
+  "Wrist flexor stretch",
+  "Figure-four stretch",
+  "Cross-over glute stretch",
+  "Kneeling quad stretch",
+  "Standing hamstring stretch",
+  "Frog stretch",
+  "Wall calf stretch",
+  "Kneeling shin stretch",
+  "Doorway pec stretch",
+  "Side-lying open book",
+  "Cobra stretch",
+  "Standing side bend",
+  "Upper trap stretch",
+  "Bench lat stretch",
+  "Child's pose",
+  "Doorway stretch, arm high",
+  "Hug stretch",
+  "Bent-knee calf stretch"
+ ],
+ "mobility": [
+  "Shoulder dislocates with a band",
+  "Arm circles",
+  "Sleeper stretch",
+  "Elbow circles",
+  "Wall angels",
+  "Wrist circles",
+  "90/90 hip switches",
+  "Hip circles",
+  "Deep squat hold",
+  "Leg swings",
+  "Cossack squat",
+  "Ankle rocks",
+  "Ankle circles",
+  "Thoracic extension over a foam roller",
+  "Quadruped scapular circles",
+  "Cat-cow",
+  "Seated thoracic rotation",
+  "Chin tucks",
+  "Dead hang",
+  "Wall slides",
+  "Thread the needle"
+ ],
+ "exercises": [
+  {
+   "name": "Overhead press",
+   "primary": "front_delt",
+   "listedUnder": [
+    "front_delt"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "side_delt",
+    "triceps",
+    "traps"
+   ],
+   "sec": {
+    "triceps": 0.35,
+    "side_delt": 0.35,
+    "traps": 0.2,
+    "serratus": 0.2,
+    "abs": 0.2
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "push",
+   "judgement": false,
+   "note": "Standing barbell press. Serratus and upper traps rotate the shoulder blade up as the bar goes overhead. Standing, so the trunk braces (unlike the seated press)."
+  },
+  {
+   "name": "Arnold press",
+   "primary": "front_delt",
+   "listedUnder": [
+    "front_delt"
+   ],
+   "sources": [
+    "MUSCLES.ex"
+   ],
+   "secToday": [
+    "side_delt",
+    "triceps"
+   ],
+   "sec": {
+    "side_delt": 0.35,
+    "triceps": 0.35,
+    "traps": 0.2,
+    "serratus": 0.2
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "push",
+   "judgement": false,
+   "note": "Rotating dumbbell press: front delt first, more side delt than a plain press."
+  },
+  {
+   "name": "Front raise",
+   "primary": "front_delt",
+   "listedUnder": [
+    "front_delt"
+   ],
+   "sources": [
+    "MUSCLES.ex"
+   ],
+   "secToday": [
+    "side_delt"
+   ],
+   "sec": {
+    "side_delt": 0.2,
+    "pec_major": 0.2
+   },
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "push",
+   "judgement": true,
+   "note": "Kept SEC side_delt; added upper chest (clavicular pec helps raise the arm forward)."
+  },
+  {
+   "name": "Landmine press",
+   "primary": "front_delt",
+   "listedUnder": [
+    "front_delt",
+    "serratus"
+   ],
+   "sources": [
+    "MX.lv",
+    "MUSCLES.ex"
+   ],
+   "secToday": [
+    "front_delt",
+    "pec_major",
+    "triceps"
+   ],
+   "sec": {
+    "triceps": 0.35,
+    "pec_major": 0.35,
+    "serratus": 0.35,
+    "obliques": 0.2
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "push",
+   "judgement": true,
+   "note": "Dual-listed (front_delt, serratus). Primary front_delt: it is an angled overhead press and the front delt moves the arm. Serratus gets a clear-helper share for the reach at the top; obliques resist the twist of a one-arm press. SEC listed front_delt itself, dropped."
+  },
+  {
+   "name": "Seated dumbbell overhead press",
+   "primary": "front_delt",
+   "listedUnder": [
+    "front_delt"
+   ],
+   "sources": [
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "triceps": 0.35,
+    "side_delt": 0.35,
+    "traps": 0.2,
+    "serratus": 0.2
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "push",
+   "judgement": false,
+   "note": "No SEC row. Same split as the overhead press; seated, so no core credit."
+  },
+  {
+   "name": "Pike push-up",
+   "primary": "front_delt",
+   "listedUnder": [
+    "front_delt"
+   ],
+   "sources": [
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "triceps": 0.35,
+    "pec_major": 0.2,
+    "side_delt": 0.2,
+    "serratus": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "push",
+   "judgement": false,
+   "note": "No SEC row. Bodyweight overhead press."
+  },
+  {
+   "name": "Lateral raise",
+   "primary": "side_delt",
+   "listedUnder": [
+    "side_delt"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "traps"
+   ],
+   "sec": {
+    "traps": 0.2
+   },
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "push",
+   "judgement": false,
+   "note": "Upper traps chip in near the top."
+  },
+  {
+   "name": "Cable lateral raise",
+   "primary": "side_delt",
+   "listedUnder": [
+    "side_delt"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "traps"
+   ],
+   "sec": {
+    "traps": 0.2
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "push",
+   "judgement": false
+  },
+  {
+   "name": "Wide-grip upright row",
+   "primary": "side_delt",
+   "listedUnder": [
+    "side_delt"
+   ],
+   "sources": [
+    "MUSCLES.ex"
+   ],
+   "secToday": [
+    "traps",
+    "front_delt"
+   ],
+   "sec": {
+    "traps": 0.35,
+    "front_delt": 0.2,
+    "biceps": 0.2
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "pull",
+   "judgement": true,
+   "note": "Upper traps are a big mover in any upright row; wide grip shifts it towards the delts, so 0.35 not 0.6."
+  },
+  {
+   "name": "Lean-away lateral raise",
+   "primary": "side_delt",
+   "listedUnder": [
+    "side_delt"
+   ],
+   "sources": [
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {
+    "traps": 0.2
+   },
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "push",
+   "judgement": false,
+   "note": "No SEC row. One arm, holding a post; dumbbell or cable."
+  },
+  {
+   "name": "Prone Y-raise",
+   "primary": "traps",
+   "listedUnder": [
+    "side_delt",
+    "traps"
+   ],
+   "sources": [
+    "EQX",
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "rear_delt"
+   ],
+   "sec": {
+    "side_delt": 0.6,
+    "rear_delt": 0.35
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "pull",
+   "judgement": true,
+   "note": "Dual-listed (side_delt bw, traps). Primary traps: the Y-raise is the standard lower-trap drill. The middle delt does much of the lifting in a Y, so side delt is a major helper; rear delt a clear one. It is the only bodyweight side-delt move."
+  },
+  {
+   "name": "Face pull",
+   "primary": "rear_delt",
+   "listedUnder": [
+    "rear_delt"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "rhomboids",
+    "traps"
+   ],
+   "sec": {
+    "rhomboids": 0.35,
+    "traps": 0.35
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "pull",
+   "judgement": false
+  },
+  {
+   "name": "Reverse fly",
+   "primary": "rear_delt",
+   "listedUnder": [
+    "rear_delt"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "rhomboids",
+    "traps"
+   ],
+   "sec": {
+    "rhomboids": 0.35,
+    "traps": 0.35
+   },
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "pull",
+   "judgement": false,
+   "note": "Mid traps and rhomboids squeeze the blades together, as in the face pull and prone T-raise."
+  },
+  {
+   "name": "Rear-delt row",
+   "primary": "rear_delt",
+   "listedUnder": [
+    "rear_delt"
+   ],
+   "sources": [
+    "MUSCLES.ex"
+   ],
+   "secToday": [
+    "rhomboids",
+    "lats"
+   ],
+   "sec": {
+    "rhomboids": 0.35,
+    "traps": 0.2,
+    "lats": 0.2,
+    "biceps": 0.2
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "pull",
+   "judgement": false,
+   "note": "Elbows-out row. Kept SEC lats at a minor share."
+  },
+  {
+   "name": "Band pull-apart",
+   "primary": "rear_delt",
+   "listedUnder": [
+    "rear_delt",
+    "rhomboids"
+   ],
+   "sources": [
+    "MX.lv",
+    "MUSCLES.ex"
+   ],
+   "secToday": [
+    "rear_delt"
+   ],
+   "sec": {
+    "rhomboids": 0.35,
+    "traps": 0.35
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "pull",
+   "judgement": true,
+   "note": "Dual-listed (rear_delt, rhomboids). Primary rear_delt: it pulls the arms apart (horizontal abduction), the rear delt's job. Rhomboids and mid traps squeeze the blades together, same split as the reverse fly. Rhomboid plans that use it rely on the planner's slot credit. Needs a band."
+  },
+  {
+   "name": "Prone T-raise",
+   "primary": "rear_delt",
+   "listedUnder": [
+    "rear_delt"
+   ],
+   "sources": [
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "rhomboids": 0.35,
+    "traps": 0.35
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "pull",
+   "judgement": false,
+   "note": "No SEC row. Mid traps work hard in the T."
+  },
+  {
+   "name": "Barbell curl",
+   "primary": "biceps",
+   "listedUnder": [
+    "biceps"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "forearms"
+   ],
+   "sec": {
+    "forearms": 0.2
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "pull",
+   "judgement": false
+  },
+  {
+   "name": "Incline dumbbell curl",
+   "primary": "biceps",
+   "listedUnder": [
+    "biceps"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {
+    "forearms": 0.2
+   },
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "pull",
+   "judgement": false,
+   "note": "SEC empty today; added a small forearm share (brachioradialis) to match other curls."
+  },
+  {
+   "name": "Hammer curl",
+   "primary": "biceps",
+   "listedUnder": [
+    "biceps"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "forearms"
+   ],
+   "sec": {
+    "forearms": 0.6
+   },
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "pull",
+   "judgement": true,
+   "note": "Neutral grip makes the brachioradialis (forearm) a major helper."
+  },
+  {
+   "name": "Backpack curl",
+   "primary": "biceps",
+   "listedUnder": [
+    "biceps"
+   ],
+   "sources": [
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "forearms": 0.35
+   },
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "pull",
+   "judgement": true,
+   "note": "No SEC row. Holding a backpack by its handle is a hammer-ish grip. Listed in EQX bodyweight column, but per the kit rules a backpack is db."
+  },
+  {
+   "name": "Close-grip bench press",
+   "primary": "triceps",
+   "listedUnder": [
+    "triceps"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "pec_major",
+    "front_delt"
+   ],
+   "sec": {
+    "pec_major": 0.6,
+    "front_delt": 0.2
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "push",
+   "judgement": true,
+   "note": "Still a heavy chest press. Tucked elbows make it triceps-led, so the front delt is a minor helper."
+  },
+  {
+   "name": "Overhead cable extension",
+   "primary": "triceps",
+   "listedUnder": [
+    "triceps"
+   ],
+   "sources": [
+    "MUSCLES.ex"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "push",
+   "judgement": false
+  },
+  {
+   "name": "Dips",
+   "primary": "triceps",
+   "listedUnder": [
+    "triceps",
+    "pec_minor"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "pec_major",
+    "triceps",
+    "front_delt"
+   ],
+   "sec": {
+    "pec_major": 0.6,
+    "front_delt": 0.35,
+    "pec_minor": 0.35
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "push",
+   "judgement": true,
+   "note": "Dual-listed (triceps, pec_minor). Primary triceps: upright dips are triceps-led and pec minor is a small blade stabiliser, not a mover. Pec major is a major helper (more with a forward lean). Pec minor keeps a clear share for holding the blade down. Needs dip bars. SEC listed triceps itself, dropped."
+  },
+  {
+   "name": "Cable pushdown",
+   "primary": "triceps",
+   "listedUnder": [
+    "triceps"
+   ],
+   "sources": [
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "push",
+   "judgement": false,
+   "note": "No SEC row."
+  },
+  {
+   "name": "Overhead dumbbell extension",
+   "primary": "triceps",
+   "listedUnder": [
+    "triceps"
+   ],
+   "sources": [
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "push",
+   "judgement": false,
+   "note": "No SEC row."
+  },
+  {
+   "name": "Bench dips",
+   "primary": "triceps",
+   "listedUnder": [
+    "triceps"
+   ],
+   "sources": [
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "front_delt": 0.35,
+    "pec_major": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "push",
+   "judgement": false,
+   "note": "No SEC row."
+  },
+  {
+   "name": "Farmer's carry",
+   "primary": "forearms",
+   "listedUnder": [
+    "forearms"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "traps",
+    "abs",
+    "obliques"
+   ],
+   "sec": {
+    "traps": 0.35,
+    "obliques": 0.2,
+    "abs": 0.2
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "carry",
+   "judgement": false,
+   "note": "Upper traps hold the shoulders up; trunk resists leaning. Bodyweight plans carry bags, which counts as db."
+  },
+  {
+   "name": "Dead hang",
+   "primary": "forearms",
+   "listedUnder": [
+    "forearms"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "lats"
+   ],
+   "sec": {
+    "lats": 0.2
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "pull",
+   "judgement": false,
+   "note": "Needs a bar. Same string is also lats' mobility item (MX.lats.mob)."
+  },
+  {
+   "name": "Wrist curl",
+   "primary": "forearms",
+   "listedUnder": [
+    "forearms"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "none",
+   "judgement": false
+  },
+  {
+   "name": "Hip thrust",
+   "primary": "glute_max",
+   "listedUnder": [
+    "glute_max"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "hamstrings",
+    "quads"
+   ],
+   "sec": {
+    "hamstrings": 0.35,
+    "quads": 0.2
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "hinge",
+   "judgement": false,
+   "note": "Barbell in the gym, dumbbell at home (EQX db)."
+  },
+  {
+   "name": "Walking lunge",
+   "primary": "glute_max",
+   "listedUnder": [
+    "glute_max"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "quads",
+    "glute_max",
+    "adductors"
+   ],
+   "sec": {
+    "quads": 0.6,
+    "adductors": 0.35,
+    "glute_med": 0.2,
+    "hamstrings": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "lunge",
+   "judgement": true,
+   "note": "Kept under glute_max (long stride). Many coaches would call it quad-led, hence quads 0.6. SEC listed glute_max itself, dropped."
+  },
+  {
+   "name": "Cable kickback",
+   "primary": "glute_max",
+   "listedUnder": [
+    "glute_max"
+   ],
+   "sources": [
+    "MUSCLES.ex"
+   ],
+   "secToday": [
+    "hamstrings"
+   ],
+   "sec": {
+    "hamstrings": 0.2
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "hinge",
+   "judgement": false
+  },
+  {
+   "name": "Glute bridge",
+   "primary": "glute_max",
+   "listedUnder": [
+    "glute_max"
+   ],
+   "sources": [
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {
+    "hamstrings": 0.35,
+    "quads": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "hinge",
+   "judgement": false,
+   "note": "No SEC row. Same split as the hip thrust."
+  },
+  {
+   "name": "Single-leg glute bridge",
+   "primary": "glute_max",
+   "listedUnder": [
+    "glute_max"
+   ],
+   "sources": [
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "hamstrings": 0.35,
+    "glute_med": 0.35
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "hinge",
+   "judgement": true,
+   "note": "No SEC row. One leg makes glute med hold the pelvis level."
+  },
+  {
+   "name": "Side-lying hip abduction",
+   "primary": "glute_med",
+   "listedUnder": [
+    "glute_med"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "none",
+   "judgement": false
+  },
+  {
+   "name": "Banded lateral walk",
+   "primary": "glute_med",
+   "listedUnder": [
+    "glute_med"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {
+    "glute_max": 0.2
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "none",
+   "judgement": false,
+   "note": "SEC empty; added upper glute max, which helps in the half-squat stance. Needs a band."
+  },
+  {
+   "name": "Single-leg Romanian deadlift",
+   "primary": "hamstrings",
+   "listedUnder": [
+    "glute_med",
+    "hamstrings"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "hamstrings",
+    "glute_max",
+    "glute_med"
+   ],
+   "sec": {
+    "glute_max": 0.6,
+    "glute_med": 0.35,
+    "erectors": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "hinge",
+   "judgement": true,
+   "note": "Dual-listed (glute_med, hamstrings). Primary hamstrings: it is a hinge and the hamstrings lengthen under load; glute med only steadies the pelvis. Glute med keeps a clear share, so glute-med sessions still credit it. SEC listed both."
+  },
+  {
+   "name": "Back squat",
+   "primary": "quads",
+   "listedUnder": [
+    "quads"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "glute_max",
+    "adductors",
+    "erectors"
+   ],
+   "sec": {
+    "glute_max": 0.6,
+    "adductors": 0.35,
+    "erectors": 0.35
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "squat",
+   "judgement": false,
+   "note": "Heavy bar on the back: glutes are a major helper and the erectors work hard to hold the torso."
+  },
+  {
+   "name": "Bulgarian split squat",
+   "primary": "quads",
+   "listedUnder": [
+    "quads"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "glute_max",
+    "adductors"
+   ],
+   "sec": {
+    "glute_max": 0.6,
+    "adductors": 0.35,
+    "glute_med": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "lunge",
+   "judgement": false
+  },
+  {
+   "name": "Leg extension",
+   "primary": "quads",
+   "listedUnder": [
+    "quads"
+   ],
+   "sources": [
+    "MUSCLES.ex"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "squat",
+   "judgement": false
+  },
+  {
+   "name": "Goblet squat",
+   "primary": "quads",
+   "listedUnder": [
+    "quads"
+   ],
+   "sources": [
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "glute_max": 0.6,
+    "adductors": 0.35,
+    "abs": 0.2
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "squat",
+   "judgement": false,
+   "note": "No SEC row. Front-loaded, so the trunk braces more than in a back squat."
+  },
+  {
+   "name": "Romanian deadlift",
+   "primary": "hamstrings",
+   "listedUnder": [
+    "hamstrings",
+    "erectors"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "hamstrings",
+    "glute_max",
+    "erectors",
+    "forearms"
+   ],
+   "sec": {
+    "glute_max": 0.6,
+    "erectors": 0.6,
+    "forearms": 0.2
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "hinge",
+   "judgement": true,
+   "note": "Dual-listed (hamstrings, erectors). Primary hamstrings: they move the hip through a long stretch; erectors hold the spine still. Erectors get a major-helper share because RDL is erectors' first exercise (MUSCLES.erectors.ex[0]) and holds the back under heavy load. SEC listed hamstrings itself, dropped."
+  },
+  {
+   "name": "Lying leg curl",
+   "primary": "hamstrings",
+   "listedUnder": [
+    "hamstrings"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "gastrocnemius"
+   ],
+   "sec": {
+    "gastrocnemius": 0.2
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "hinge",
+   "judgement": false
+  },
+  {
+   "name": "Nordic curl",
+   "primary": "hamstrings",
+   "listedUnder": [
+    "hamstrings"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "gastrocnemius"
+   ],
+   "sec": {
+    "gastrocnemius": 0.2
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "hinge",
+   "judgement": false,
+   "note": "Needs something to hook the heels under."
+  },
+  {
+   "name": "Copenhagen plank",
+   "primary": "adductors",
+   "listedUnder": [
+    "adductors"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "obliques"
+   ],
+   "sec": {
+    "obliques": 0.35
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "core",
+   "judgement": false,
+   "note": "A side plank with the top leg on a bench."
+  },
+  {
+   "name": "Sumo squat",
+   "primary": "adductors",
+   "listedUnder": [
+    "adductors"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "quads",
+    "glute_max"
+   ],
+   "sec": {
+    "quads": 0.6,
+    "glute_max": 0.6
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "squat",
+   "judgement": true,
+   "note": "Kept under adductors. Quads and glutes still do much of the work."
+  },
+  {
+   "name": "Adductor machine",
+   "primary": "adductors",
+   "listedUnder": [
+    "adductors"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "none",
+   "judgement": false
+  },
+  {
+   "name": "Standing calf raise",
+   "primary": "gastrocnemius",
+   "listedUnder": [
+    "gastrocnemius"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "soleus"
+   ],
+   "sec": {
+    "soleus": 0.35
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "calf",
+   "judgement": false,
+   "note": "Straight knee favours gastrocnemius; soleus still works."
+  },
+  {
+   "name": "Single-leg calf raise",
+   "primary": "gastrocnemius",
+   "listedUnder": [
+    "gastrocnemius"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "soleus"
+   ],
+   "sec": {
+    "soleus": 0.35
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "calf",
+   "judgement": false
+  },
+  {
+   "name": "Jump rope",
+   "primary": "gastrocnemius",
+   "listedUnder": [
+    "gastrocnemius"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "soleus",
+    "tibialis"
+   ],
+   "sec": {
+    "soleus": 0.35,
+    "tibialis": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "calf",
+   "judgement": false,
+   "note": "Needs a rope."
+  },
+  {
+   "name": "Tibialis raise",
+   "primary": "tibialis",
+   "listedUnder": [
+    "tibialis"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "calf",
+   "judgement": false
+  },
+  {
+   "name": "Heel walk",
+   "primary": "tibialis",
+   "listedUnder": [
+    "tibialis"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "calf",
+   "judgement": false
+  },
+  {
+   "name": "Banded toe raise",
+   "primary": "tibialis",
+   "listedUnder": [
+    "tibialis"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "calf",
+   "judgement": false,
+   "note": "Needs a band."
+  },
+  {
+   "name": "Barbell bench press",
+   "primary": "pec_major",
+   "listedUnder": [
+    "pec_major"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "front_delt",
+    "triceps"
+   ],
+   "sec": {
+    "triceps": 0.35,
+    "front_delt": 0.2,
+    "serratus": 0.15
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "push",
+   "judgement": true,
+   "note": "Brief's anchor: 35% triceps. Front delt 0.2 and serratus 0.15 follow the design mock (22%, 12%)."
+  },
+  {
+   "name": "Incline dumbbell press",
+   "primary": "pec_major",
+   "listedUnder": [
+    "pec_major"
+   ],
+   "sources": [
+    "MUSCLES.ex"
+   ],
+   "secToday": [
+    "front_delt",
+    "triceps"
+   ],
+   "sec": {
+    "front_delt": 0.35,
+    "triceps": 0.35
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "push",
+   "judgement": true,
+   "note": "The incline loads the front delt more than a flat press (0.35 against 0.2)."
+  },
+  {
+   "name": "Push-ups",
+   "primary": "pec_major",
+   "listedUnder": [
+    "pec_major"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "EQX"
+   ],
+   "secToday": [
+    "triceps",
+    "front_delt",
+    "serratus"
+   ],
+   "sec": {
+    "triceps": 0.35,
+    "front_delt": 0.2,
+    "serratus": 0.2,
+    "abs": 0.2,
+    "pec_minor": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "push",
+   "judgement": true,
+   "note": "Same split as the bench. Plank position adds a little trunk work; pec minor helps push the shoulder blades apart at the top."
+  },
+  {
+   "name": "Incline push-ups",
+   "primary": "pec_major",
+   "listedUnder": [
+    "pec_major"
+   ],
+   "sources": [
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {
+    "triceps": 0.35,
+    "front_delt": 0.2,
+    "serratus": 0.2,
+    "pec_minor": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "push",
+   "judgement": false,
+   "note": "No SEC row. Hands raised; same muscles as a push-up, lighter."
+  },
+  {
+   "name": "Dumbbell bench press",
+   "primary": "pec_major",
+   "listedUnder": [
+    "pec_major"
+   ],
+   "sources": [
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "triceps": 0.35,
+    "front_delt": 0.2,
+    "serratus": 0.15
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "push",
+   "judgement": true,
+   "note": "No SEC row. Same split as the barbell bench."
+  },
+  {
+   "name": "Push-up plus",
+   "primary": "serratus",
+   "listedUnder": [
+    "serratus",
+    "pec_minor"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "pec_major",
+    "triceps"
+   ],
+   "sec": {
+    "pec_major": 0.6,
+    "triceps": 0.35,
+    "pec_minor": 0.35,
+    "front_delt": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "push",
+   "judgement": true,
+   "note": "Dual-listed (serratus, pec_minor). Primary serratus: the 'plus' (pushing the floor away) is the standard serratus drill. Pec minor helps protract the blade but less. It is a full push-up first, so pec major is a major helper and the front delt matches Push-ups. Pec-minor plans use it at every kit level (MX.pec_minor.lv[0], both EQX columns)."
+  },
+  {
+   "name": "Wall slide",
+   "primary": "serratus",
+   "listedUnder": [
+    "serratus"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "rear_delt"
+   ],
+   "sec": {
+    "traps": 0.35,
+    "front_delt": 0.2
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "push",
+   "judgement": true,
+   "note": "Forearms on the wall, slide up and reach. Lower traps help rotate the blade up and the front delt raises the arm. SEC rear_delt dropped: that belongs to the back-to-wall wall angel. Typed isolation, not mobility, because serratus plans rely on it as training."
+  },
+  {
+   "name": "Hanging leg raise",
+   "primary": "abs",
+   "listedUnder": [
+    "abs"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "obliques",
+    "forearms"
+   ],
+   "sec": {
+    "forearms": 0.35,
+    "obliques": 0.35
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "core",
+   "judgement": false,
+   "note": "Needs a bar; holding the hang is real grip work."
+  },
+  {
+   "name": "Ab wheel rollout",
+   "primary": "abs",
+   "listedUnder": [
+    "abs"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "lats",
+    "obliques"
+   ],
+   "sec": {
+    "lats": 0.35,
+    "obliques": 0.35,
+    "serratus": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "core",
+   "judgement": false,
+   "note": "Needs an ab wheel. Lats pull you back in."
+  },
+  {
+   "name": "Plank",
+   "primary": "abs",
+   "listedUnder": [
+    "abs"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "obliques"
+   ],
+   "sec": {
+    "obliques": 0.35
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "core",
+   "judgement": false
+  },
+  {
+   "name": "Dead bug",
+   "primary": "abs",
+   "listedUnder": [
+    "abs"
+   ],
+   "sources": [
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "obliques": 0.35
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "core",
+   "judgement": false,
+   "note": "No SEC row. Bodyweight drill even though EQX lists it in the dumbbells column."
+  },
+  {
+   "name": "Pallof press",
+   "primary": "obliques",
+   "listedUnder": [
+    "obliques"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "abs"
+   ],
+   "sec": {
+    "abs": 0.35
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "core",
+   "judgement": false,
+   "note": "Cable; a band works at home."
+  },
+  {
+   "name": "Side plank",
+   "primary": "obliques",
+   "listedUnder": [
+    "obliques"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "glute_med"
+   ],
+   "sec": {
+    "glute_med": 0.35
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "core",
+   "judgement": false,
+   "note": "Glute med holds the hip up."
+  },
+  {
+   "name": "Cable woodchop",
+   "primary": "obliques",
+   "listedUnder": [
+    "obliques"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "abs"
+   ],
+   "sec": {
+    "abs": 0.35,
+    "front_delt": 0.2
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "core",
+   "judgement": true,
+   "note": "Shoulders pass the force of the twist to the cable."
+  },
+  {
+   "name": "Barbell shrug",
+   "primary": "traps",
+   "listedUnder": [
+    "traps"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "forearms"
+   ],
+   "sec": {
+    "forearms": 0.35
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "pull",
+   "judgement": false,
+   "note": "Heavy holds work the grip."
+  },
+  {
+   "name": "Rack pull",
+   "primary": "traps",
+   "listedUnder": [
+    "traps"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "erectors",
+    "glute_max",
+    "forearms"
+   ],
+   "sec": {
+    "erectors": 0.6,
+    "glute_max": 0.35,
+    "forearms": 0.35,
+    "hamstrings": 0.2
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "hinge",
+   "judgement": true,
+   "note": "Kept under traps. A partial deadlift: erectors work as hard as the traps, so a coach might make erectors the primary."
+  },
+  {
+   "name": "Dumbbell shrug",
+   "primary": "traps",
+   "listedUnder": [
+    "traps"
+   ],
+   "sources": [
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "forearms": 0.35
+   },
+   "type": "isolation",
+   "kit": "db",
+   "pattern": "pull",
+   "judgement": false,
+   "note": "No SEC row."
+  },
+  {
+   "name": "Pull-up",
+   "primary": "lats",
+   "listedUnder": [
+    "lats"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "biceps",
+    "rhomboids",
+    "forearms"
+   ],
+   "sec": {
+    "biceps": 0.35,
+    "rhomboids": 0.2,
+    "forearms": 0.35
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "pull",
+   "judgement": true,
+   "note": "Bodyweight but needs a bar, which is why home plans use the inverted row. Lats lead; holding your bodyweight is real grip work, as in the hanging leg raise."
+  },
+  {
+   "name": "Lat pulldown",
+   "primary": "lats",
+   "listedUnder": [
+    "lats"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "biceps",
+    "rhomboids"
+   ],
+   "sec": {
+    "biceps": 0.35,
+    "rhomboids": 0.2
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "pull",
+   "judgement": false,
+   "note": "Lats lead; rhomboids are a minor helper in vertical pulls."
+  },
+  {
+   "name": "Single-arm dumbbell row",
+   "primary": "lats",
+   "listedUnder": [
+    "lats"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "rhomboids",
+    "biceps",
+    "rear_delt"
+   ],
+   "sec": {
+    "rhomboids": 0.35,
+    "biceps": 0.35,
+    "rear_delt": 0.2
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "pull",
+   "judgement": false
+  },
+  {
+   "name": "Inverted row",
+   "primary": "rhomboids",
+   "listedUnder": [
+    "lats",
+    "rhomboids"
+   ],
+   "sources": [
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "lats": 0.6,
+    "biceps": 0.35,
+    "rear_delt": 0.2,
+    "traps": 0.2
+   },
+   "type": "compound",
+   "kit": "bw",
+   "pattern": "pull",
+   "judgement": true,
+   "note": "Dual-listed (lats, rhomboids). No SEC row. Primary rhomboids: a horizontal row to the chest is upper-back-led, matching the app's seated cable and chest-supported rows. Lats are a major helper, so bodyweight lat plans still earn 0.6 per set."
+  },
+  {
+   "name": "Back extension",
+   "primary": "erectors",
+   "listedUnder": [
+    "erectors"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "glute_max",
+    "hamstrings"
+   ],
+   "sec": {
+    "glute_max": 0.6,
+    "hamstrings": 0.6
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "hinge",
+   "judgement": true,
+   "note": "Needs a back-extension bench. With a neutral spine it is a hip hinge: glutes and hamstrings share the lifting, as in the RDL."
+  },
+  {
+   "name": "Bird dog",
+   "primary": "erectors",
+   "listedUnder": [
+    "erectors"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "glute_max",
+    "abs"
+   ],
+   "sec": {
+    "glute_max": 0.35,
+    "abs": 0.2,
+    "obliques": 0.2
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "core",
+   "judgement": false
+  },
+  {
+   "name": "Doorway pec stretch",
+   "primary": "pec_minor",
+   "listedUnder": [
+    "pec_minor"
+   ],
+   "sources": [
+    "MUSCLES.ex"
+   ],
+   "secToday": [],
+   "sec": {},
+   "type": "mobility",
+   "kit": "bw",
+   "pattern": "none",
+   "judgement": true,
+   "note": "A stretch listed as pec minor's third exercise (MUSCLES.pec_minor.ex). Also pec major's stretch (MX.pec_major.stretch). As training it would earn full primary load; suggest a mobility multiplier or swapping it out."
+  },
+  {
+   "name": "Weighted dips",
+   "primary": "triceps",
+   "listedUnder": [
+    "pec_minor"
+   ],
+   "sources": [
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {
+    "pec_major": 0.6,
+    "front_delt": 0.35,
+    "pec_minor": 0.35
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "push",
+   "judgement": true,
+   "note": "No SEC row. Listed only under pec_minor (MX.pec_minor.lv[2]) but given the same primary as Dips: pec minor is a stabiliser, not the mover. Pec-minor gym plans then credit pec minor 0.35 per set."
+  },
+  {
+   "name": "Seated cable row",
+   "primary": "rhomboids",
+   "listedUnder": [
+    "rhomboids"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "lats",
+    "biceps",
+    "rear_delt"
+   ],
+   "sec": {
+    "lats": 0.6,
+    "biceps": 0.35,
+    "rear_delt": 0.2,
+    "traps": 0.2
+   },
+   "type": "compound",
+   "kit": "gym",
+   "pattern": "pull",
+   "judgement": true,
+   "note": "A close-grip cable row pulled to the waist is very lat-heavy, hence lats 0.6."
+  },
+  {
+   "name": "Chest-supported row",
+   "primary": "rhomboids",
+   "listedUnder": [
+    "rhomboids"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [
+    "lats",
+    "rear_delt",
+    "biceps"
+   ],
+   "sec": {
+    "lats": 0.35,
+    "rear_delt": 0.35,
+    "biceps": 0.35,
+    "traps": 0.2
+   },
+   "type": "compound",
+   "kit": "db",
+   "pattern": "pull",
+   "judgement": false
+  },
+  {
+   "name": "Seated calf raise",
+   "primary": "soleus",
+   "listedUnder": [
+    "soleus"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [],
+   "sec": {
+    "gastrocnemius": 0.2
+   },
+   "type": "isolation",
+   "kit": "gym",
+   "pattern": "calf",
+   "judgement": false,
+   "note": "SEC empty; bent knee leaves the gastrocnemius only a minor share."
+  },
+  {
+   "name": "Bent-knee calf raise",
+   "primary": "soleus",
+   "listedUnder": [
+    "soleus"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv",
+    "EQX"
+   ],
+   "secToday": [],
+   "sec": {
+    "gastrocnemius": 0.2
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "calf",
+   "judgement": false,
+   "note": "SEC empty; as seated calf raise."
+  },
+  {
+   "name": "Wall-sit calf raise",
+   "primary": "soleus",
+   "listedUnder": [
+    "soleus"
+   ],
+   "sources": [
+    "MUSCLES.ex",
+    "MX.lv"
+   ],
+   "secToday": [
+    "quads"
+   ],
+   "sec": {
+    "quads": 0.35,
+    "gastrocnemius": 0.2
+   },
+   "type": "isolation",
+   "kit": "bw",
+   "pattern": "calf",
+   "judgement": false,
+   "note": "The wall sit holds the quads hard."
+  }
+ ],
+ "applied": [
+  "Barbell bench press: front_delt 0.35 to 0.2, serratus added at 0.15. The balance reviewer's high-confidence call beats anatomy's 0.5 and matches the design mock (connectivity_map: triceps 35%, anterior delt 22%, serratus 12%). Balance asked for serratus 0.1, which isn't an allowed step, so it went to 0.15, the nearest one.",
+  "Dumbbell bench press: front_delt 0.35 to 0.2, serratus added at 0.15. Same lift as the barbell bench (balance, high).",
+  "Close-grip bench press: front_delt 0.35 to 0.2 (balance, medium). Anatomy said 0.35 is 'fine either way', so there was no conflict.",
+  "Push-ups and Incline push-ups: front_delt 0.35 to 0.2. The reviewers conflicted (0.5 against 0.2) and balance wins on weights. Both wanted every flat press on one value.",
+  "Incline dumbbell press: front_delt 0.5 to 0.35 (balance wins on weights over anatomy's 0.6). It stays above the flat presses and removes the only 0.5 in the table.",
+  "Push-up plus: front_delt stays at 0.2. That now matches Push-ups, which is what anatomy asked for ('match Push-ups, whatever value that ends on').",
+  "Push-ups and Incline push-ups: pec_minor added at 0.2 (balance, low). Without it pec minor stays at 0 in most programmes. In simulation it lifts to about 39 (Stable) and stops there, so helper work alone can't carry it to the top.",
+  "Pull-up and Lat pulldown: rhomboids 0.35 to 0.2 (balance, medium). Default plan goes from 15 to 19 weeks to Unbreakable; programmes stay at 12.",
+  "Prone Y-raise: side_delt 0.35 to 0.6. Balance wins on weights, and its anatomical reason holds (the middle delt does much of the lifting in a Y). Bodyweight side delts go from a 44-week to a 30-week median.",
+  "Band pull-apart: rhomboids 0.6 to 0.35 (anatomy, medium). This matches reverse fly, T-raise and face pull. Both reviewers want slot protection fixed in the planner, and balance wants rhomboids slower anyway.",
+  "Reverse fly: traps 0.2 to 0.35 (anatomy, medium). Same horizontal-abduction family as face pull, T-raise and band pull-apart. Default plan unchanged; programmes traps 22 to 20 weeks.",
+  "Overhead press: abs added at 0.2 (anatomy, medium). The draft's own seated-press note ('seated, so no core credit') implies a standing press braces.",
+  "Back squat: erectors 0.2 to 0.35 (anatomy, medium). Erectors in programmes now reach Unbreakable at a median of 47 weeks; before, they never did.",
+  "Back extension: hamstrings 0.35 to 0.6 (anatomy, medium). With a neutral spine it's a hip hinge, so it mirrors the RDL. No effect in the plan simulations.",
+  "Pull-up: forearms 0.2 to 0.35 (anatomy, medium), so it no longer credits grip less than the hanging leg raise. Forearms go from 13 to 11 weeks on the default plan and from 40 to 38 in programmes, still mid-pack.",
+  "Wall slide: rear_delt removed, front_delt added at 0.2 (anatomy decides which muscles help). The app's version is the forearms-on-wall serratus drill; the rear delt came from the wall angel, which the app lists separately. No balance effect.",
+  "Notes rewritten on every changed row. The Back squat note no longer claims the brief anchors 'glutes 0.6 in a squat'; the brief only anchors bench at 35% triceps (REDESIGN-BRIEF.md line 48). judgement set to true on Barbell bench, Dumbbell bench, Close-grip bench, Push-ups and Pull-up.",
+  "Checks run: all 83 names match MUSCLES.ex, MX.lv and EQX character for character; every weight is on an allowed step; no row lists its primary as a helper; every key is in GLORDER. Simulation inputs and outputs are in the scratchpad at exweights/editor (final.json, finalW.js, final_report.txt)."
+ ],
+ "rejected": [
+  "Anatomy: Barbell bench, Dumbbell bench and Push-ups front_delt to 0.5, and Incline dumbbell press to 0.6. Balance (high on bench) wins on weights. At 0.35 or more the front delt ranks mostly from presses (11 weeks, 58% from helper work) and overtakes the side delts, which get direct work. The design mock says 22%.",
+  "Anatomy: Push-up plus front_delt to 0.5. Anatomy's own rule was to match Push-ups, and Push-ups ended at 0.2.",
+  "Anatomy: Pull-up and Lat pulldown traps 0.2. The lower traps really do work here, but traps get no direct work in the default plan and already reach Unbreakable at week 22. This change would take them to week 16. Balance wins on weights.",
+  "Anatomy: Single-arm dumbbell row traps 0.2 (low). Same concern about traps (programmes 22 to 20 weeks), and only one reviewer, at low confidence.",
+  "Anatomy: Romanian deadlift adductors 0.2 (low). It would help slow adductors (programmes 37 to 26 weeks), but it adds to the lift that already gives the most credit, and only one reviewer suggested it, at low confidence.",
+  "Balance: Lateral raise, Cable lateral raise and Lean-away lateral raise traps to 0.1. That isn't an allowed step. At 0.15, the nearest one, traps move only from 22 to 24 weeks on the default plan and not at all in programmes. The real fix is the per-session helper cap.",
+  "Balance: Landmine press serratus 0.6 (low). It is there to protect a plan slot, and both reviewers say that belongs in the planner. It made no change to the median in simulation.",
+  "Balance: Romanian deadlift glute_max 0.35 (low). In simulation it moves glute max by about one week. Anatomy supports 0.6, and balance itself says the session cap is the real fix.",
+  "Anatomy's pattern-tag and kit-meaning points: it proposed no concrete change, so the tags are left as they are and the question goes to Andrej."
+ ],
+ "forAndrej": [
+  "Bench front delts: the plan page (docs/redesign-plan, line 314) told you 'front delts 50%', but the design mock shows 22%. I've used 20%. At 35-50% the front delts rank up mostly from pressing and overtake the side delts. If you keep 20%, the plan page needs fixing, and so does its '+3, +2, +1' bench example.",
+  "Slot credit: with one primary per exercise, some plan slots stop training the muscle they were chosen for: Band pull-apart (rhomboids), Inverted row (lats), Prone Y-raise (side delts), Single-leg RDL (glute med), Dips and Weighted dips (pec minor), Landmine press (serratus), and RDL (erectors, Saturday). Both reviewers say fix this in the planner: give the slot muscle at least 60% credit, or swap the exercise. Which do you want?",
+  "Helper cap: helper credit adds up within a session, so two small helpers can earn +1 every session forever. I suggest capping each muscle's helper load at 1.8 per session (half of a 3-set primary). That mainly slows glutes (the fastest everywhere, about 8 weeks to Unbreakable) and traps.",
+  "Traps get no direct work in the default plan but still reach Unbreakable by week 22. Pull-ups and pulldowns do work the lower traps; I left that out so traps don't get even faster. Worth revisiting once the cap is in.",
+  "Stretches: the Doorway pec stretch is pec minor's third exercise and would earn full training credit. So would posture moves that have no row in the table (Thoracic extension over a foam roller, Chin tucks, Cat-cow). Should stretches and posture drills earn nothing?",
+  "Pec minor: the ranks screen calls it 'Upper chest', but no incline press credits it. On the default plan it never moves, because Thursday 'Recover' builds no exercises. Push-ups now lift it to about Stable in programmes and no further. Relabel it, and decide how people should train it.",
+  "Tibialis, soleus and erectors aren't in any split, so tibialis stays Unranked for every programme user. Add them to a day, or accept it?",
+  "Primaries a coach could argue with: Rack pull (traps, not erectors), Walking lunge (glutes, not quads), Sumo squat (adductors), Prone Y-raise (traps, with side delts at 60%). Are you happy with these?",
+  "Kit tags: Backpack curl and Farmer's carry are tagged as dumbbell moves but are the bodyweight choices. Pull-up, Dips and Dead hang are tagged gym but the code treats them as bodyweight. Settle whether 'kit' means 'needs equipment' before any code filters by it.",
+  "Pattern tags for single-joint leg moves don't follow one rule: Leg extension is 'squat', leg curls are 'hinge', Adductor machine is 'none'. This only matters if patterns end up driving push/pull balance or exercise swaps."
+ ],
+ "notes": "METHOD. A node vm script sliced and evaluated the tables. It never read lines 3502/3503 (it refuses any line over 200k chars). Nothing under C:\\Ossa was written. Scratch files are in C:\\Users\\andre\\AppData\\Local\\Temp\\claude\\C--Ossa-ossa-expo\\920f0a08-9b44-4cb2-8f0d-4f92fd3d3028\\scratchpad\\exweights: extract2.js (extraction by regex), proposal.js (the table), build.js (validator), exercises.json (final output). The validator checks that every name matches exactly, every key is in GLORDER, weights are 0.1-0.6, there are at most 4 helpers and no helper is the primary. All passed.\n\nWARNING: web/ossa.html is being edited by another process during this run. git shows it modified, and 34 lines were inserted between GLORDER and MX mid-run, so MX is now at 5380, SEC at 5884, EQX at 9280, loadOf at 5951 and finishWorkout at 7777. I re-extracted by regex and the tables are byte-identical to the first pass.\n\nCOUNTS. 23 muscles. 83 distinct training names. 66 SEC rows, all of them training names. 17 training names have no SEC row: Seated dumbbell overhead press, Pike push-up, Lean-away lateral raise, Prone T-raise, Backpack curl, Cable pushdown, Overhead dumbbell extension, Bench dips, Glute bridge, Single-leg glute bridge, Goblet squat, Incline push-ups, Dumbbell bench press, Dead bug, Dumbbell shrug, Inverted row, Weighted dips. 13 SEC rows are []. 8 names are dual-listed, as the brief said. 22 distinct stretch names, 21 distinct mobility names.\n\nSTRING OVERLAPS (join keys, keep all exactly):\n- 'Doorway pec stretch' is a training item (MUSCLES.pec_minor.ex[2]) and also pec_major's stretch.\n- 'Dead hang' is forearms training and also the lats mobility item.\n- 'Wall slide' (serratus training) and 'Wall slides' (pec_minor mobility) are different strings.\n- 'Cross-body shoulder stretch' is shared by side_delt and rear_delt, 'Ankle rocks' by gastrocnemius and soleus, and 'Cat-cow' by abs and erectors.\n\nCHANGES VS SEC:\n- Dropped only the 6 self-references: Landmine press front_delt, Band pull-apart rear_delt, Dips triceps, Walking lunge glute_max, Single-leg RDL hamstrings, RDL hamstrings. No other SEC muscle was removed.\n- Added 28 helpers to existing rows, plus small shares on 4 rows that were [] today: Incline dumbbell curl, Banded lateral walk, Seated calf raise, Bent-knee calf raise.\n- One single-listed primary changed: Weighted dips goes from pec_minor to triceps, to match Dips.\n\nBIG BEHAVIOUR CHANGE TO DECIDE. Today the primary depends on context. mkItem(name, dose, primary) gets the muscle the session picked the exercise for (sessionFor, sessionForDay0, pickEx/genSession, add-to-today). A canonical primary changes this. For example, Push-up plus picked for pec_minor would credit serratus 1.0 and pec_minor only 0.35. After canonicalisation, pec_minor's only primary is the Doorway pec stretch. Serratus, erectors and glute_med have 2 primaries each. Suggestion for Phase 1: when an item is picked for muscle k and k is not the canonical primary, credit k at 1.0 (context override) or at max(weight, 0.6). This is Andrej's call. Log it in DECISIONS.md.\n\nWEIGHT MATHS (3 sets, gain = round(load*(1-s/125)), with a floor of 1 only when load >= 1):\n- w=0.2 gives load 0.72. That is +1 below score 38, then 0. Minor helpers stop counting from mid-Strong upwards unless a session stacks them.\n- w=0.35 gives 1.26: always at least +1, about the same as today's flat 0.4/set (load 1.2).\n- w=0.6 gives 2.16: +2 at low scores.\n- The primary gives 3.6.\nOther places that apply the flat 0.4 and need the new weights: loadOf (~5951), finishWorkout (~7782), and quick-add logLoad (~5759). The exercise sheet also reads SEC (~5054). Nothing in web/ui reads SEC or defines exercise names.\n\nCONVENTIONS.\n- Weight tiers: 0.6 / 0.35 / 0.2. 0.5 is used once (Incline dumbbell press front_delt).\n- kit = the least kit the exercise is normally done with. Bars and stations are gym: Pull-up, Dips, Weighted dips, Hanging leg raise, Dead hang, Back extension. This matches the app never offering them at home. Bands, an ab wheel, a rope and household anchors count as bw. Backpacks and bags count as db, per the task rule. So Backpack curl and Farmer's carry are db even though EQX lists them in its bw column, and Dead bug is bw though EQX lists it under db.\n- pattern: isolation lifts take their muscle's family. Curls, shrugs and rear-delt work are pull. Raises and extensions are push. Leg curl, nordic and kickback are hinge. Leg extension is squat. 'calf' covers all lower-leg work, including tibialis. 'none' covers hip abduction/adduction, wrist curl and the stretch.\n- type: static core holds and stability drills are isolation. Rollout, woodchop, carry and jump rope are compound.\n\nTALLIES. Type: compound 40, isolation 42, mobility 1. Kit: gym 29, db 22, bw 32. Pattern: push 23, pull 20, hinge 10, core 9, calf 9, none 5, squat 4, lunge 2, carry 1. judgement:true on 23 names."
+}

@@ -1,0 +1,305 @@
+{
+ "wrongOrUnverifiedClaims": [
+  {
+   "area": "3d / brief §3",
+   "claim": "MESH_M/MESH_F hold only lo, hi, nv, ni, pos, nrm and idx: no UVs, muscle ids, bones, skin weights or morph targets.",
+   "verdict": "confirmed",
+   "evidence": "I grepped the field names on web/ossa.html lines 3502 and 3503 (without printing them). Both lines have only lo:[ hi:[ nv: ni: pos:\" nrm:\" idx:\"."
+  },
+  {
+   "area": "brief §3 (monk_mode rows)",
+   "claim": "The brief says there is no character pose system today.",
+   "verdict": "wrong",
+   "evidence": "A procedural 13-bone rig already exists. RIG is at ossa.html:4359-4363, skinWeights (2-bone linear blend, computed in JS) at 4368-4397, the VS skinning with uB[13] at 3946-3947, and MOVES at 4442+. Body.live(p,a) sits at about 4873, and figLive applies a slump pose every 5 minutes (6727-6735). What the mesh lacks is authored bones or morphs, not a pose system."
+  },
+  {
+   "area": "3d / vessel",
+   "claim": "Muscle identity is worked out per pixel: the FS takes the nearest of the PARTS ellipsoids in rest space, mirrored with abs(x). Per-muscle values reach the shader as float arrays.",
+   "verdict": "confirmed",
+   "evidence": "ossa.html:4245-4249 has q=vec3(abs(vR.x),…), the part() loop, and id=int(P[pid*5].w+.5). The uniforms at 4175 are uS[N], uWk[N], uFd[N], uRc[N] and others. The FS's float uniform arrays come to 7×23 + 5×9 = 206, which matches the 3D mapper's count."
+  },
+  {
+   "area": "vessel (injury_mapping)",
+   "claim": "x > 0 is the figure's RIGHT, per the 'R' bones and the RIG comment, so uVul codes 2 = right (x>0) and 3 = left.",
+   "verdict": "wrong",
+   "evidence": "At yaw 0, cam() at 4600-4603 gives rt = cross(fw,(0,1,0)) = (+1,0,0). The VS at 3951-3952 projects with dot(rel,uRt) and nothing flips x. Front muscles sit at +z (pec_major z=+0.057, 3692), so the camera is looking at the figure's front. +x therefore appears on the viewer's right, which is the figure's anatomical LEFT. The heart organ is at x=+0.03 (ossa.html:9129 {id:'heart',p:[0.03,1.31,0.125]}), which agrees. The 'R' in the RIG comment (4359) and in boneMats means the viewer's right. The 3D mapper's reading is correct. Still check it on screen with a one-sided flag before building any UI on it."
+  },
+  {
+   "area": "vessel / evolve",
+   "claim": "finishWorkout credits the primary muscle n×1.2 and each secondary n×0.4, with gain = min(100−s, max(l≥1?1:0, round(l×(1−s/125)))). quickLog credits only the primary, but logs secondary load.",
+   "verdict": "confirmed",
+   "evidence": "ossa.html:7748-7750 and 5721-5725. quickLog logs n sets of load where finishWorkout logs n×1.2 for the same sets (BUG-05). quickLog also never writes S.lifts or S.workouts, so S.tally (Evolve) and rep density (Train) never see quickLog work."
+  },
+  {
+   "area": "vessel / train",
+   "claim": "SEC is name → array of secondary keys with no weights. 17 of the 83 names are missing.",
+   "verdict": "confirmed",
+   "evidence": "SEC is at ossa.html:5850-5872. I checked 7 of the 17 named gaps against the SEC block (Goblet squat, Dumbbell bench press, Inverted row, Pike push-up, Glute bridge, Dead bug, Incline push-ups): all are absent but used elsewhere in the file. The full 17/83 count is unverified. Only 3 places read SEC directly (5020, 5725, 5890). Everything else reads it.sec as an array (5919, 7579, 7657, 7748, 11099; ranks.js:41,107; shell.js:123; train.js:131,175; workout.js:52). So converting SEC in place to {muscle:w} is safe only if mkItem keeps producing a sec array, as the vessel plan's secOf() does."
+  },
+  {
+   "area": "vessel / evolve",
+   "claim": "An overall rank exists (an average of region means), shown as a tile and on the Ranks hero, never stored and never celebrated.",
+   "verdict": "confirmed",
+   "evidence": "overall() and rScore are at ossa.html:3905-3906. The tile is at shell.js:196. finishWorkout keeps only o0/o1 in TR.result (7773), and nothing celebrates it."
+  },
+  {
+   "area": "native (dare_generator)",
+   "claim": "'There is no XP or other currency' (and DECISIONS.md:89 says 'Ossa has no XP system').",
+   "verdict": "wrong",
+   "evidence": "Learn has XP: S.learn={xp,done,days}, RD_LV levels, and rdAward at ossa.html:10609-10623. The UI shows 'total XP' and 'Level N' (10645-10647), and the body fact gives '+5 XP' (6704). The Focus mapper is right, and DECISIONS.md:89 needs correcting."
+  },
+  {
+   "area": "3d / vessel",
+   "claim": "Rank mode zeroes the neglect fade, so the Body page never shows fading. fadeOf is a const.",
+   "verdict": "confirmed",
+   "evidence": "The FS at ossa.html:4279 reads if(uRk>0.5){…fd=0.;}, and fadeOf is a const at 3881. One addition the mappers missed: declaring `function fadeOf` (or any name that is a const or let in ossa.html, such as sessionsN, RANKS, MOVES or UI_TABS) in a web/ui file throws a SyntaxError for the whole inlined script. That blanks the app, not just the feature. The in-place const→function edit has to happen first."
+  },
+  {
+   "area": "all (override mechanics)",
+   "claim": "web/ui files are included after the legacy code, and the last function declaration wins, so overrides apply everywhere.",
+   "verdict": "confirmed",
+   "evidence": "This needs one qualification. Redeclared function declarations are hoisted and apply from boot, including at ossa.html:5930, where let TR=…sessionForDay() runs before the includes at 11873-11878. The house wrappers are IIFE reassignments (ranks.js:98-100, train.js:353-356) and only take effect when their include line runs, after 5930. So a wrapper cannot change boot-time behaviour, and a redeclaration cannot call the original. The Recover mapper's 'Redefine renderSys (keeping the original for heart)' has to be an IIFE wrap, not a declaration."
+  },
+  {
+   "area": "native / focus / recover",
+   "claim": "The App.js bridge handles buzz (arrays play one Success haptic; ≤6 selection, ≤10 Light, else Medium), remind, widget, health, iap, link (https:/mailto: only) and share:image. It has no location, no background event and no keep-awake.",
+   "verdict": "confirmed",
+   "evidence": "App.js:24-31, 89-121 (link regex at 113, share:image at 121), and 138-140 (only 'fg' on active). expo-location, expo-keep-awake and expo-splash-screen are not in node_modules or package.json."
+  },
+  {
+   "area": "recover / native / focus",
+   "claim": "Any {at,title,body,go} added to remindPlan gets scheduled even when daily nudges are off. Native cancels everything and reschedules each time.",
+   "verdict": "confirmed",
+   "evidence": "ossa.html:10086 sets on=!!(S.remind&&S.remind.on!==false)||rl.length>0, and remindPlan is at 10279. native/reminders.js:46-66 runs cancelAllScheduledNotificationsAsync, skips anything under 30 s and caps at 60. The foreground handler uses shouldPlaySound:false (reminders.js:10-18). Whether content with no sound field is silent is unconfirmed."
+  },
+  {
+   "area": "project context / CLAUDE.md",
+   "claim": "'Web-only changes don't need a new EAS build.'",
+   "verdict": "wrong",
+   "evidence": "That is true only for testing in Expo Go. App.js:7 imports ./ossaHtml into the JS bundle, and package.json has no expo-updates (node_modules has only expo-updates-interface). So every change, web-only or not, reaches TestFlight and users only in a new binary. Expo Go also can't run HealthKit, RevenueCat or widgets, so the bio-rhythm RHR and the Vault prices can't be checked without a build. The native and recover mappers say this correctly; the phase plan should state it plainly to Andrej."
+  },
+  {
+   "area": "evolve",
+   "claim": "sessionsN() = S.workouts.length is capped at 90, so the 100-session milestone is unreachable, and after 90 sessions 'up' is always false, so the milestone buzz and the streak screen stop.",
+   "verdict": "confirmed",
+   "evidence": "sessionsN is at ossa.html:7373, and the shift at >90 is at 7770 (n0 is read before the push at 7745). See also workout.js:137 (up=N>R.n0) and :167-172 (first=up&&…). This is a live bug today, so fix it in Phase 1, not Phase 5."
+  },
+  {
+   "area": "evolve",
+   "claim": "RK_STEPS is at 3382 and RANKS at 3380 (Forged II = 67).",
+   "verdict": "wrong",
+   "evidence": "The value is right, but the lines are wrong: RANKS is at ossa.html:7380 and RK_STEPS at 7382."
+  },
+  {
+   "area": "train / vessel (screens that show our body)",
+   "claim": "Body.glowShot gives our body lit per muscle for the Kinetic chain and density heroes.",
+   "verdict": "confirmed",
+   "evidence": "It does, but in the ICE demo colouring, not rank colours (it sets demoMask/demoE at ossa.html:4905-4911). Rank-coloured shots need the vessel's proposed rankShot, or setRank(true) plus snapshot() (4913-4915). Three mappers propose three different capture APIs: rankShot, cardShot, and setRank+snapshot."
+  },
+  {
+   "area": "3d",
+   "claim": "If any of the four programs fails to compile or link, makeGLBody returns null and the app silently falls back to the 2D body. There is no context-loss handling.",
+   "verdict": "confirmed",
+   "evidence": "ossa.html:4507-4514. Grepping for webglcontextlost and createTexture finds nothing."
+  },
+  {
+   "area": "native",
+   "claim": "Open-Meteo's free API is non-commercial only, so ground rule 4 (Open-Meteo, free, no key) doesn't hold for an app that sells a subscription.",
+   "verdict": "unverified",
+   "evidence": "I didn't re-fetch the terms. The claim matches Open-Meteo's published terms as I know them. Treat it as a blocking legal question for Andrej before any weather code, and before build 9 if the fetch goes native."
+  },
+  {
+   "area": "native / look",
+   "claim": "There is no splash config, so iOS shows a white launch screen.",
+   "verdict": "unverified",
+   "evidence": "app.json has no splash key and no expo-splash-screen plugin, but assets/splash-icon.png exists and is modified per git status. Whether the screen is white needs checking on a phone."
+  },
+  {
+   "area": "focus / native",
+   "claim": "The camera permission string still promises fingertip pulse reading, which nothing in the app reaches.",
+   "verdict": "confirmed",
+   "evidence": "app.json NSCameraUsageDescription says '…with the flash to read your pulse from your fingertip'. The Focus mapper reports Pulse.camera has no caller; I didn't re-grep that. This is a guideline 5.1.1 risk if the feature stays unreachable, so fix the string in the native batch."
+  },
+  {
+   "area": "look / native",
+   "claim": "web/ isn't in git; there is only an 'Initial commit'.",
+   "verdict": "confirmed",
+   "evidence": "git log shows only b9b62ea, and git status lists ?? web/, docs/, native/ and scripts/. There is also an untracked nested folder C:\\Ossa\\ossa-expo\\ossa-expo\\ (an old App.js, native/ and app.json) that no mapper mentioned. It will pollute repo-wide greps and the EAS upload unless .easignore covers it."
+  },
+  {
+   "area": "look / 3d",
+   "claim": "Rank colours are hard-coded in the shader's rkC and kept in step with --rk-0…5 by hand.",
+   "verdict": "confirmed",
+   "evidence": "ossa.html:4188 rkC is (.165,.188,.173)…(.557,.894,.945), which equals #2A302C…#8EE4F1. tokens.css:46-51 has the same values."
+  }
+ ],
+ "gaps": [
+  {
+   "gap": "There is no migration or versioning plan for saved state. S has no schema version, and at load the whole saved state is thrown away (the user is silently reset to fresh) unless every SEED key exists in s.scores. Six phases each add S fields (S.vul or S.vuln, S.tally, S.neural, S.monk, S.fuel, S.recNudge or S.nudge, S.path, S.prestige, S.trophies, S.wx, S.card) with lazy init spread across files. There is no backup or export, and everything lives only in WKWebView localStorage under origin https://ossa.app.",
+   "whereItBelongs": "Phase 1 (first data change): one boot-time migrate2() in a single web/ui file, guarded with try/catch and setting S.v=2; a one-time copy of the pre-2.0 state to a second localStorage key; and a rule never to add or rename keys in SEED/GLORDER.",
+   "evidence": "ossa.html:3863-3866: `if(s&&s.scores&&Object.keys(SEED).every(k=>k in s.scores)) S=s;`, KEY='corpus-v4' at 3831, and save() writes the whole of S each time (3868)."
+  },
+  {
+   "gap": "Lifetime history is being lost every day: S.log keeps 60 days, S.workouts 90 sessions and S.lifts 20 entries per lift. The Evolve plan builds S.tally in Phase 5, and Train captures per-exercise data in Phase 2, so the backfill gets worse the longer they wait.",
+   "whereItBelongs": "Phase 1, in the same finishWorkout edit as the kinetic-chain weights: write S.workouts[i].{t,end,ex,rp}, start S.tally, and fix the sessionsN 90-cap.",
+   "evidence": "ossa.html:3886, 7766, 7770, 7373."
+  },
+  {
+   "gap": "No mapper covered onboarding beyond colours. Step 1 copy ('See your body. Fix what hurts.') doesn't match the new concept. The rank ladder (step 5) and the 3D tissue use the palette. The aches step writes S.flagged, which now overlaps with the new flag model. The reminder step (17) is the only notification permission ask, and the recovery nudge and Monk Mode both depend on it. The onboarding paywall becomes the Vault. onboarding.js:342 still says 'Body Score'.",
+   "whereItBelongs": "Phase 0: a token and look check of all 17 steps at 390×844 and 375×667. Phase 1: an optional 'flag it' bridge from aches. Phase 5: the Vault and Pro welcome. Ask Andrej whether the welcome copy changes.",
+   "evidence": "docs/UI-SYSTEM.md:78-104; ossa.html:8281 (S.flagged=OBD.aches); shader onboarding tissue at 3997-4017; web/ui/onboarding.js:342."
+  },
+  {
+   "gap": "Accessibility and reduced motion are only partly covered. `reduced` is read once at load and never updates. The new continuous effects (red pulse, aura shimmer, CSS rain, the haptic heartbeat) need still or off paths, plus a setting for haptics. No plan addresses BUG-07 (silent toast, the whole sheet as a live region), yet the new RP toasts ('Chest +3 RP, Triceps +1 RP') rely on toasts. The new panels (injury map, Discovery, Kinetic chain, Fuel, dare) need roles and labels, and the 3D-only states need a text equivalent. The WebView doesn't follow Dynamic Type, and iOS Reduce Transparency is unhandled for the new 5%-white glass.",
+   "whereItBelongs": "Phase 0 as rules in UI-SYSTEM.md (each new effect needs a reduced-motion state, a text equivalent and a VoiceOver label), then checked at the end of each phase. Fix BUG-07 in Phase 1.",
+   "evidence": "ossa.html:3908 `const reduced=matchMedia(...).matches`; docs/BUGS.md BUG-07; DECISIONS 2026-10-04 'never colour alone'."
+  },
+  {
+   "gap": "Small-phone (375×667) checks are planned for only some screens. The injury map overlay, Kinetic chain hero, Fuel sysCard, Ideal Self, trading card preview, Vault (trial timeline, plan cards and CTA), dare page, bio-rhythm and Monk completion have no 375×667 deliverable. The workout gets taller, and the rank-up hexagon needs the max-height rule.",
+   "whereItBelongs": "Every phase's showAtEnd: add a 375×667 shot for every new or restyled screen.",
+   "evidence": "CLAUDE.md asks for checks at 390×844 and 375×667. The existing short-phone rules are at train.css:210-227."
+  },
+  {
+   "gap": "BUGS.md items that phases touch but no plan schedules. BUG-01/02/03 (fading never shows on Recover; 100% vs 92%) are in the same stateOf, wkInfo and readyText code Phase 1 rewrites. BUG-05 (quick-logging a stretch starts a 48 h recovery; quickLog uses n where finishWorkout uses n×1.2) sits in the quickLog that Phase 1 changes. BUG-06 (S.done not reset at midnight) affects the Monk timer, the 45-min nudge and fuel day keys. BUG-08 (dead commitLog) should be deleted, not ported. BUG-09 (demo Pec minor 'neglected 60 days') will top Discovery's Recommended. BUG-10 (lastSession future timestamp) feeds the fuel recovery clock. The line numbers in BUGS.md are stale (stateOf is now at 3901, not 2720).",
+   "whereItBelongs": "Phase 1: 01, 02, 03, 05, 08, 10. Phase 2: 09 (demo seed). Phase 3/4: 06 for the timers.",
+   "evidence": "docs/BUGS.md; ossa.html:3891-3901, 5721-5725."
+  },
+  {
+   "gap": "Licences screen: ossNotices credits only MediaPipe, and two mappers each wrap it (Look adds Inter; Native adds Inter plus the weather credit). Nobody owns it, and the OFL text for the bundled font isn't shipped at all today.",
+   "whereItBelongs": "Phase 0, with one owner (shell.js): Inter OFL notice now. Phase 6 appends the weather credit to the same list.",
+   "evidence": "ossa.html:7350; store/APP-STORE-LISTING.md:90."
+  },
+  {
+   "gap": "Store copy and policy beyond Phase 7. The subtitle 'Rank every muscle, fix aches' and review note §3 (tabs including Breathe) and §6 (Archivo/Geist) need updating. The privacy label needs Coarse Location if weather coordinates leave the phone. The privacy policy at getossa.app isn't in the repo. The camera string mentions the pulse reading. The app name differs across three files. The trading card reverses the 2026-10-04 'no sharing' decision and Discovery's '+' reverses 'no add to workout'; both need a DECISIONS entry.",
+   "whereItBelongs": "A decisions pass in Phase 0, with copy edits in Phase 7.",
+   "evidence": "store/APP-STORE-LISTING.md:8, 69-72, 90; app.json NSCameraUsageDescription; DECISIONS.md:31-37."
+  },
+  {
+   "gap": "Paywall rules. DECISIONS 2026-10-15 says the billed price is most prominent, prices come only from the store, and the Today line and Pro welcome name only features that really exist. The Vault design's 'SAVE 45%' badge and per-month framing must stay below the billed price. Pro materials can't be listed until they render. The 'unlocks are earned, never bought' rule (comment at ossa.html:7391) conflicts with selling materials. Nothing yet says the onboarding paywall and the Settings paywall stay one component (pwMount).",
+   "whereItBelongs": "Phase 5 Vault, with a copy checklist reviewed by Andrej.",
+   "evidence": "DECISIONS.md:95-97, 122; ossa.html:7391, 10120, 10178."
+  },
+  {
+   "gap": "Demo data is fixed per phase rather than once. demoData() has workouts:[], no mind log, no tally and no fuel, its highest score is 64, and Pec minor has no log. Every new screen's 'show at end' depends on seeding from the console, and store screenshots will use 'Load demo data'.",
+   "whereItBelongs": "Phase 1: a single demo seed update covering S.workouts with ex/rp, mind sessions and a 96 muscle behind a preview flag. Extend it per phase.",
+   "evidence": "ossa.html:3863-3864; docs/BUGS.md BUG-09."
+  },
+  {
+   "gap": "The 'Body Score' (four pillars from the check-in) isn't placed in the new concept. Its pillars change colour (Look), Fuel changes its formula (Recover), and it competes with RP, overall rank, Neural XP and Learn XP as another number.",
+   "whereItBelongs": "An Andrej decision in Phase 0, so Phase 4's pillar change and the card's 'Body Score off by default' line up.",
+   "evidence": "ossa.html:9040 (pillars), 9045-9055; shell.js:184-185."
+  },
+  {
+   "gap": "Process note: the native mapper sent a live request to api.met.no with 'andrejgazi25-test' (part of Andrej's email) in the User-Agent, and curled external services. Repo files weren't changed, but it shared user-identifying text with a third party without asking.",
+   "whereItBelongs": "Tell Andrej in the plan's preamble. In future, only the main session runs network checks, and never with identifying strings.",
+   "evidence": "The native mapper's own orderNotes, last paragraph."
+  }
+ ],
+ "orderingIssues": [
+  "The same six screens are restyled twice or three times. Look restyles ranks, rank-up, workout, streak and recover in Phase 0. Vessel restyles ranks and rank-up again in Phase 1 (with a 128 px hexagon against Look's 64 px, and Body.rankShot figures). Train restyles the workout again in Phase 2a (name at 44 px against Look's ~40 px), and Recover restyles Recover and Streak again. Pick one owner: Phase 0 does every pure-look change, and later phases only add data slots (fade and flag tags, kinetic chips, fuel tags), leaving room for them as Look suggests.",
+  "The shader colour change has two plans. Look edits the rkC literals in place in Phase 0; 3D replaces rkC with a uRkC uniform read from tokens (the Body FX foundation). Do the uRkC version once in Phase 0, together with the FX hook, the compile-fallback and context-loss handling, so Phase 1's red pulse and Phase 3's aura start from it. Otherwise the fragment-shader string gets edited by four phases.",
+  "The Phase 1 kinetic-chain table (83 rows, a judgement call) blocks Phase 1 and Phase 2's Kinetic chain map, so it has to be in Andrej's hands early. Deliver it as a review table at the end of Phase 0, merged with Train's EXI tags (type, kit, pattern, canonical primary for the 8 dual-listed lifts) into one data deliverable, not two in different phases.",
+  "Data capture should start in Phase 1, not Phases 2 and 5. Add S.workouts[i].{t,end,ex,rp}, S.lifts[i].p and S.tally (lifetime count, region days, best e1RM) to Phase 1's finishWorkout change, and fix sessionsN at the same time. Retention windows (60 days, 90 sessions, 20 per lift) mean every week of delay loses history that trophies, rep density and the recovery nudge need.",
+  "Left/right must be settled at the very start of Phase 1, with a one-sided test flag shown on screen, before S.vul's side field and the injury UI are built. The mappers disagree (see the conflicts), and the display convention (anatomical or mirrored) is a product question.",
+  "Run two risky geometry spikes early (Phase 1 timeframe, behind a preview flag): the lotus or seated Monk pose, and the per-vertex muscle weights for the Tank/Scout morph. Their screenshots decide the Phase 3 and Phase 5 designs.",
+  "The currency decision (one XP or separate; GRIT; whether Learn XP gets renamed) is needed before Phase 3. Focus defines Neural XP, Phase 5 trophies and the card read it, and Phase 6's '+50 GRIT' depends on it. Settle it in the Phase 0 Q&A.",
+  "Native batching. Native wants build 9 at the end of Phase 2; Recover wants the native batch at the end of Phase 4. Build 9 must contain every native item later phases rely on: location and weather (Phase 6), keep-awake and the bg event (Phase 3 Monk), haptic styles (Phase 3 heartbeat), the notification sound (Monk), widgets v3 (needs final rank colours, Phase 1), the splash, the camera-string fix and the Android notification colour. That means the Phase 6 weather source and the Phase 3 native extras must be decided before Phase 2 ends. Also, Expo Go can't show HealthKit, RevenueCat or widgets, so the Phase 3 bio-rhythm RHR and Phase 5 Vault prices can only be checked on a TestFlight build. Plan a build after Phase 5 or accept checking them only in the release candidate.",
+  "The Body FX 'bodyStage' helper (keeping the 3D stage visible under a new screen) is needed by Phase 1 (injury map), Phase 3 (aura, Monk, bio-rhythm) and Phase 5 (Ideal Self, prestige). Build it in Phase 1 with the injury map. Vessel's setTab('body') overlay and Focus's see-through Mind panel are two ad-hoc alternatives.",
+  "Phase 6 weather dares could ship earlier than planned (they are small), but they are gated by a licence decision and by build 9. Decide the weather source in the Phase 0 Q&A, not in Phase 6.",
+  "The Vault restyle with today's real Pro perks is a pure look change on the existing paywall, which also shows in onboarding. Do it in Phase 0 so onboarding doesn't show the old paywall for five phases; only Pro materials wait for Phase 5.",
+  "Phase 7 depends on the app-name and version decisions (screenshots, subtitle, ASC version) and on the 8 Oct rejection reason being read in App Store Connect. Ask for both now, not at Phase 7.",
+  "Holding 1.0 until Phase 7, with no expo-updates, means months without a release and every fix needs a binary. The phase plan should show where a shippable 1.0 could be cut (for example after Phase 1 or 2)."
+ ],
+ "crossAreaConflicts": [
+  "Flag state shape. 3D proposes S.vuln = [{id:'m:<key>'|'j:<key>', side:'l'|'r'|'b', from, to}]. Vessel proposes S.vul = [{id, t:'m'|'j', side:'l'|'r'|null, at, off}]. They have different field names, side encodings and id formats. Pick one, owned by Phase 1's vessel.js.",
+  "Left/right. 3D says +x is anatomical left (correct by the camera maths and the heart at x=+0.03). Vessel's uVul codes 2 = right (x>0) and 3 = left are inverted.",
+  "Shader plumbing for flags. 3D uses a packed uFx[23] vec4 (x vuln-left, y vuln-right, z material, w inflate), uJnt[14], uRkC[6] and uFxT, injected through window.BODY_FX, with a 30 fps gate. Vessel uses separate uVul[N], uVJ[6] and uVulK, reuses the uSysB.w clock, and has a ~20 fps gate. Two incompatible designs for the same FS string.",
+  "Fade in rank mode. 3D: lvl*=1-0.75*fd plus dither or static. Vessel: mix(heat, grey, fd×.75) and lvl×(1−.5×fd). Pause maths: 3D uses pausedDays from S.vuln via JOINTS[j].reg (regions). Vessel uses vxIdle from S.vul via a new JOINTS[j].m (muscle lists). Different granularity for 'which muscles a knee flag pauses'.",
+  "Kinetic weights. Vessel converts SEC in place to {muscle:w} with secOf/kcOf/SEC_DEF and a vxCredit helper. Train expects SECW[name]={muscle:0..1} plus its own EXI[name].k canonical primary and exPrimary(). Evolve and Train refer to 'the Phase 1 shared gain function' under no agreed name. Vessel and Train both plan to edit train.js:175 (trTargets).",
+  "S.workouts additions are split across phases: Vessel adds rp:{}, Train adds ex:[{n,k,s,r,kg}] and t, Recover needs the workout end time, and Evolve keeps a separate S.tally. Define one entry shape in Phase 1.",
+  "Recovery nudge. Recover proposes S.recNudge {d,end,title,ks,at,snooze,n,done,off} plus S.resetOn, go:'reset', in recover.js. Native proposes S.nudge {on,at,ks,snoozed}, go:'flow', in native.js. Both wrap finishWorkout, remindPlan and nativeOpen, and their copy differs ('3 minutes for your chest' vs 'Your chest did the work').",
+  "Wrapper pile-up on the same functions. finishWorkout is edited in place by Vessel and wrapped by Train (density.js), Recover and Native, with Evolve wrapping drawDone. remindPlan is wrapped by Focus, Recover and Native; nativeOpen by Focus, Recover and Native; ossNotices by Look and Native; renderSys by Recover and Focus; stateOf, recoveredPct, hoursLeft and fadeOf are redeclared by Vessel and Recover. Recommend Phase 1 adds three small registries (onWorkoutDone hooks, REMIND_EXTRA providers, OPEN_ROUTES) and one owner file for the recovery and fade engine.",
+  "Currency. Focus has Neural XP stored on S.mind.log entries with S.neural {v,lv,seenLv}, keeps Learn XP separate, and renames Learn's to 'Learn level'. Native says no XP exists and proposes S.xp {total,log} or GRIT. Evolve uses RP for the path bonus and prestige laps. 'Level' already means three things: rank levels I/II/III, Learn Level N, and the proposed Aura Level 14.",
+  "Aura rendering. 3D puts a head rim in FS plus a BG_FS halo via injected chunks, driven by uNeural. Focus uses a separate WebGL canvas (aura.js) placed with Body.project, which means a second WebGL context alongside the body and possibly rdAlienMake.",
+  "Monk pose and stance. 3D uses MONK_SIT via Body.live (keeps rank colouring) and wraps figLive. Focus uses Body.startDemo({move:'monk_sit'}), which switches the FS to the ICE demo colouring (uDemoOn), inside the onboarding glass scene (obStart). Chest glow: 3D adds uHeart/uChest in the main FS branch; Focus reuses the onboarding-branch heart.",
+  "Heartbeat haptics. 3D: buzz(14) then buzz(8) after 210 ms at the RHR. Focus: buzz(14) then buzz(9) after 210 ms, tempo = RHR×(1+0.15×share recovering) clamped 48-80. Native: new 'haptic' rigid/soft styles about 120 ms apart via bridge v2.",
+  "Recovering colour. Look: tan #C5A059 as designed (the same as Stable). Recover: a separate token unlike any rank. 3D's AMB follows whichever is chosen.",
+  "Prestige. 3D: S.prestige[k]={n, mat, at} and Body.setMats(map); a whole-body skin goes in a new S.skin. Evolve: S.prestige[k]={lv, lap, mats[], mat, at}, Body.setMats(matIndex[]), and Pro materials stored in the existing S.finish via Body.setFinish.",
+  "Archetype. 3D: S.arch={path, since} and Body.setMorph({tank,scout}). Evolve: S.path={arch, at, next, n} and Body.setArch(arch, amount). Ideal Self: 3D Body.setGhost({on, inflate, colour}); Evolve Body.setGhost?.(targetScores).",
+  "Body capture. Vessel: Body.rankShot(yaw). 3D: Body.cardShot({w,h,yaw,…}). Evolve: Body.setRank(true) + Body.snapshot(). Train: Body.glowShot (demo colours).",
+  "Showing the 3D body under a new screen. 3D: bodyStage({cls,box,cam}) with a .bstage class. Vessel: setTab('body') with a 'panel u-own' overlay. Focus: making the opaque Mind panel see-through.",
+  "Dares ownership. Native moves the dare block out of ranks.js into a new dares.js and redefines dareToday. Evolve edits dareToday in ranks.js for the Tank/Scout mix.",
+  "Red token. Look: --danger becomes #FF3B30 with --alert aliasing it. Vessel: add --alert to replace --danger for flags. Train: red reserved for injury. Agree one name.",
+  "Native build timing. Native: build 9 at the end of Phase 2, release build 10 after Phase 6. Recover: one native batch at the end of Phase 4.",
+  "Neglect thresholds disagree: stateOf calls a muscle 'fading' at 7 days, the visual fade runs from 10 to 21 days, dares use 21 days, and Discovery's 'Neglected' reads stateOf. Phase 1 should set one rule."
+ ],
+ "extraQuestionsForAndrej": [
+  {
+   "question": "When you flag your left knee, should it appear on the figure's left (anatomical, as if facing another person) or on the side nearest your own left hand (mirror)?",
+   "why": "The model is symmetric and the code's 'R' labels mean the viewer's right. Today, +x on screen is the figure's anatomical left (the heart is drawn there). Injury flags make this visible for the first time.",
+   "recommendation": "Anatomical, which matches the heart already drawn on the figure's left. The text always names the side ('Left knee'). A one-sided test on screen comes first."
+  },
+  {
+   "question": "Should 'Vessel' appear in the app's wording (Vessel Engine, Vessel Vault, Vessel Trading Card)?",
+   "why": "The designs use it everywhere. Today's copy says 'your body' and 'Ossa Pro', and the App Store product is 'Ossa Pro'.",
+   "recommendation": "Keep 'Vessel' as an internal name only. The user sees 'your body', 'Your card' and 'Ossa Pro', with 'Vault' only as the label over materials."
+  },
+  {
+   "question": "Does 1.0 really wait for all seven phases, or can we cut a release earlier?",
+   "why": "There's no over-the-air updates (no expo-updates), so every fix needs a new build and review. Holding 1.0 for every phase means months with nothing live.",
+   "recommendation": "Ship 1.0 after Phase 1 (new look plus the Vessel Engine), then release the later phases as updates."
+  },
+  {
+   "question": "Add expo-updates in the native batch so later web-only changes can reach phones without a new binary?",
+   "why": "Today the web code is baked into each build. Over-the-air updates would let small fixes and phases ship faster, within Apple's rules for interpreted code.",
+   "recommendation": "Discuss before build 9. If yes, it goes in that build; if not, plan one build per release."
+  },
+  {
+   "question": "One rule for which effects may move on the Body page?",
+   "why": "On 15 Oct you decided the Body page figure stays still. Three new effects want to move there: the injury pulse, the aura and fading. Moving effects also keep the phone drawing frames and use battery.",
+   "recommendation": "The Body page stays still: a steady red tint, a still faint halo, and fading shown as a dimmed rank colour. Pulsing and shimmering only on their own screens."
+  },
+  {
+   "question": "Settle the currencies now: RP for muscles, XP for the Focus aura, and nothing new for dares?",
+   "why": "Learn already has XP and levels. The designs add aura XP, GRIT, RP and the '1.5× RP' perk, and 'Level' already means rank levels I-III and Learn levels.",
+   "recommendation": "RP for muscles only. XP only for the Focus aura, with Learn's renamed 'Learn level'. No GRIT: dares count towards a trophy."
+  },
+  {
+   "question": "Should a backup of your current saved data be taken automatically the first time 2.0 opens?",
+   "why": "Everything lives only on the phone and there is no export. 2.0 changes the shape of saved data in several places, and the current loader silently starts fresh if saved data doesn't match.",
+   "recommendation": "Yes: a one-time silent copy on the phone, plus a hidden 'Restore pre-2.0 data' in Settings for TestFlight."
+  },
+  {
+   "question": "Phase 0's restyle: only the six designed screens, or every screen including onboarding, Mind/Breathe, Learn, the paywall and lessons?",
+   "why": "Tokens reach everything, but screens without a design (onboarding, Mind violets, lesson player) will look half-converted until someone looks at them.",
+   "recommendation": "Every screen gets the token, Inter and black pass with a screenshot sheet. Hand-tuning only for the six designed screens plus onboarding and the paywall."
+  },
+  {
+   "question": "Does Body Score stay in 2.0, and where?",
+   "why": "With RP, overall rank, aura XP and Learn XP, the four-pillar Body Score is a fifth number. The fuel plan changes its formula, and the card hides it by default.",
+   "recommendation": "Keep it, lower on the Body page, and leave it off the card and widget."
+  },
+  {
+   "question": "Can store screenshots use 'Load demo data'?",
+   "why": "New screens (prestige, trophies, aura level 14) can't be reached by a real new user for months. Apple requires screenshots to show the real app.",
+   "recommendation": "Yes, with a better demo seed that stays plausible (no prestige in store shots unless it's reachable within weeks)."
+  },
+  {
+   "question": "Commit a git baseline before any change, and one commit per phase?",
+   "why": "web/, native/, docs/ and scripts/ are untracked, the shader edits are in place in an 11.9k-line file, and the only safety net so far has been folder copies.",
+   "recommendation": "Yes: a folder backup plus a git baseline, and a commit at the end of each phase (only when you say)."
+  }
+ ],
+ "biggestRisks": [
+  "One untracked 11.9k-line ossa.html with a single fragment shader edited by Phases 0, 1, 3 and 5. A single GLSL error on an iPhone (ANGLE/Metal is stricter than desktop Chrome) silently drops everyone to the flat 2D body (makeGLBody returns null, ossa.html:4507-4514). Mitigation: Phase 0 FX foundation with a plain-shader fallback, context-loss handling, a git baseline, and a phone check every phase.",
+  "Override mechanics. Redeclaring in web/ui any name that is a const or let in ossa.html (fadeOf, sessionsN, MOVES, RANKS, UI_TABS) is a SyntaxError that blanks the whole app. Hoisted redeclarations run at boot (TR at 5930) and hit TDZ on web/ui consts. IIFE wrappers don't run at boot. Six phases plan overlapping wrappers of finishWorkout, remindPlan, nativeOpen, stateOf/recoveredPct/fadeOf and renderSys, so registries and one owner per engine function are needed.",
+  "Saved-state loss. No schema version, a loader that resets to fresh if any SEED key is missing, a dozen new S fields from different files, and no backup. A bad migration or crash in an override at boot erases a user's only copy.",
+  "Shipping cadence. No expo-updates, 1.0 held for seven phases, every change needs a binary, and Expo Go can't test HealthKit, RevenueCat or widgets. Native needs from Phases 3-6 must be predicted before build 9.",
+  "Left/right inversion of injury flags. The mappers disagree; the code shows +x = anatomical left.",
+  "Legal and licensing. Open-Meteo's free tier is likely non-commercial (ground rule 4 may be wrong). Inter's OFL and the weather credit aren't in the licences screen. Selling materials breaks 'earned, never bought'. The camera permission string promises an unreachable feature.",
+  "Health-claim drift. Fuel 'speeds recovery' (a game rule on recoveredPct that changes every 'ready' time app-wide), a heartbeat tempo derived from resting heart rate, weight-based protein targets (13+ users), and the 'Sore spots' copy. All must stay game rules with plain disclaimers.",
+  "New palette legibility. Strong #FFFFFF equals the text colour and nearly the bone button and the 3D selection glow. Fragile #4A4A4A is about 2.1-2.4:1 on black. Tan 'recovering' equals Stable. Lime and gold are hard to tell apart for red-green colour-blind users.",
+  "Performance and battery. 5%-white glass blurred over a 30-60 fps WebGL canvas, continuous pulses, shimmer and heartbeat loops, and a possible second WebGL context for the aura on older iPhones during a 45-minute workout.",
+  "Privacy process. A mapper already sent part of Andrej's email to api.met.no in a User-Agent. Later work must keep identifiers out of every network request, and weather coordinates leaving the phone will change the App Privacy label."
+ ]
+}

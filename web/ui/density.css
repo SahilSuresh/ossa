@@ -1,0 +1,89 @@
+/* =========================================================
+   WHERE YOUR SETS WENT and PAST SESSIONS — see density.js. Tokens only. Class prefix dz-.
+   ========================================================= */
+
+/* ---------- the two panels: #densP (a session) and #densL (the list) ---------- */
+.panel.dz{background:var(--bg)}
+.dz .dz-head{display:grid;grid-template-columns:var(--tap) minmax(0,1fr) var(--tap);align-items:center;gap:var(--sp-2);min-height:72px;
+  padding:calc(var(--sp-2) + var(--sat)) var(--sp-3) var(--sp-2);border-bottom:0}
+.dz-hd{display:grid;justify-items:center;gap:2px;min-width:0;text-align:center}
+.dz-hd .u-eyebrow{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dz .dz-hd h2{flex:none;margin:0;max-width:100%;font-family:var(--display);font-size:var(--fs-4);font-weight:900;line-height:1.15;letter-spacing:-.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dz .dz-body{flex:1;padding:0 var(--gutter) calc(var(--sp-6) + var(--sab))}
+.dz-in{display:grid;grid-template-columns:minmax(0,1fr)}
+.dz-in>.u-section-h:first-child{margin-top:var(--sp-3)}
+
+/* ---------- summary, notes ---------- */
+.dz-sum{margin:0;text-align:center;font-size:var(--fs-2);font-weight:600;color:var(--text-2);font-variant-numeric:tabular-nums}
+.dz-note{margin:var(--sp-3) 0 0;padding:var(--sp-3);border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--line);font-size:var(--fs-2);line-height:1.45;color:var(--text-2)}
+
+/* ---------- the picture: your body lit where the sets went, and the Most work chip ---------- */
+.dz-hero{display:flex;justify-content:center;align-items:center;gap:var(--sp-2);height:240px;margin-top:var(--sp-3);overflow:hidden}
+.dz-hero .dz-shot{display:block;height:100%;width:auto;max-width:100%;object-fit:contain;-webkit-user-drag:none;user-select:none}
+.dz-hero.two .dz-shot{max-width:calc(50% - var(--sp-1))}
+.dz-hero.dz-heat .heat{height:auto;max-height:100%}
+.dz-chip{position:relative;display:flex;align-items:center;gap:var(--sp-2);width:max-content;max-width:100%;margin:calc(-1 * var(--sp-2)) auto 0;
+  min-height:40px;padding:0 var(--sp-4) 0 var(--sp-2);border-radius:var(--r-pill);background:var(--bg);border:1px solid color-mix(in srgb,var(--glow) 55%,transparent);
+  font-size:var(--fs-2);font-weight:600;color:var(--text-2)}
+.dz-chip b{font-weight:800;color:var(--glow-soft);white-space:nowrap}
+.dz-chip>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dz-chip-ic{display:inline-grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:var(--glow);color:var(--on-accent)}
+.dz-chip-ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- This session | Your last 4 weeks ---------- */
+.dz-seg{margin-top:var(--sp-5)}
+.dz-seg button::after{content:"";position:absolute;left:0;right:0;top:calc((100% - var(--tap)) / 2);bottom:calc((100% - var(--tap)) / 2)}   /* a 44px hit area on a 38px segment */
+
+/* ---------- the split: zone cards (or the region's muscles) ---------- */
+.dz-focus{scroll-margin-top:var(--sp-2)}
+.dz-zcs{display:grid;gap:var(--sp-3)}
+.dz-zc{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--sp-1) var(--sp-3);
+  padding:var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-5);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.dz-zc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--glow)}
+.dz-zc.none::before{background:var(--line-2)}
+.dz-zt{display:grid;gap:2px;min-width:0}
+.dz-zt b{font-family:var(--display);font-size:var(--fs-4);font-weight:800;letter-spacing:-.02em;line-height:1.15;color:var(--text-1)}
+.dz-zt small{font-size:var(--fs-2);line-height:1.35;color:var(--text-2)}
+.dz-n{display:grid;justify-items:end;gap:2px;font-variant-numeric:tabular-nums}
+.dz-n b{font-family:var(--display);font-size:var(--fs-5);font-weight:900;line-height:1;letter-spacing:-.03em;color:var(--glow)}
+.dz-n small{font-size:var(--fs-1);font-weight:700;color:var(--text-2);white-space:nowrap}
+.dz-zc.none .dz-n b{color:var(--text-3)}
+.dz-barw{position:relative;grid-column:1 / -1;display:block;margin-top:var(--sp-2)}
+.dz-barw .u-bar{height:6px}
+.dz-mk{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;border-radius:1px;background:var(--text-1)}
+.dz-key{display:flex;align-items:center;gap:var(--sp-2);margin:var(--sp-3) 0 0;font-size:var(--fs-1);color:var(--text-2)}
+.dz-key i{flex:none;width:2px;height:14px;border-radius:1px;background:var(--text-1)}
+.dz-cmp{margin:var(--sp-3) 0 0;font-size:var(--fs-3);line-height:1.45;color:var(--text-1)}
+
+/* ---------- every muscle, the lifts ---------- */
+.dz-ms .dz-mrow{position:relative}
+.dz-mrow .rk-sq{width:14px;height:14px;border-radius:4px;background:var(--c)}
+.dz-mrow>span{min-width:0}
+.dz-mrow b,.dz-lrow b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dz-mrow em{font-weight:700;color:var(--text-1);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dz-mrow.on b{color:var(--glow-soft)}
+.dz-mrow.on::before{content:"";position:absolute;left:calc(-1 * var(--sp-4));top:var(--sp-3);bottom:var(--sp-3);width:3px;border-radius:0 2px 2px 0;background:var(--glow)}
+.dz-lrow{grid-template-columns:minmax(0,1fr) auto}
+.dz-lrow>span{min-width:0}
+.dz-mob{margin-top:var(--sp-5)}
+.dz-mob b{display:block;font-size:var(--fs-3);font-weight:800;color:var(--text-1)}
+.dz-felt{margin:var(--sp-4) 0 0;font-size:var(--fs-2);color:var(--text-2)}
+.dz-foot{margin-top:var(--sp-5);line-height:1.5}
+
+/* ---------- Past sessions rows (the hub, the list) ---------- */
+.dz-srow>span:nth-child(2){min-width:0}
+.dz-srow b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dz-date{display:grid;justify-items:center;align-content:center;width:40px;height:40px;border-radius:var(--r-sm);background:var(--surface-3)}
+.dz-date b{font-family:var(--display);font-size:var(--fs-3);font-weight:900;line-height:1;color:var(--text-1);font-variant-numeric:tabular-nums}
+.dz-date small{margin-top:2px;font-size:var(--fs-1);font-weight:700;line-height:1;color:var(--text-2)}
+.dz-more{margin-top:var(--sp-5)}
+
+/* ---------- Workout complete ---------- */
+.u-card.u-list.dz-done{margin:var(--sp-4) 0 0}
+
+/* ---------- short phones: a smaller picture ---------- */
+@media (max-height:700px){
+  .dz-hero{height:168px}
+  .dz .dz-head{min-height:60px}
+}

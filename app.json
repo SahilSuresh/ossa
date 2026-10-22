@@ -1,0 +1,186 @@
+{
+  "expo": {
+    "name": "Ossa",
+    "slug": "ossa",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.andrej.ossa",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Ossa uses the camera for your posture scan. It's read on your phone and never uploaded.",
+        "NSHealthShareUsageDescription": "Ossa reads your steps, sleep and resting heart rate so your Body Score reflects your real day.",
+        "NSHealthUpdateUsageDescription": "Ossa doesn't write to Apple Health.",
+        "NSLocationDefaultAccuracyReduced": true
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.andrej.ossa",
+      "adaptiveIcon": {
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.VIBRATE",
+        "android.permission.health.READ_STEPS",
+        "android.permission.health.READ_SLEEP",
+        "android.permission.health.READ_RESTING_HEART_RATE",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ],
+      "blockedPermissions": [
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "backgroundColor": "#000000",
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 26
+          }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#D4FF00"
+        }
+      ],
+      "react-native-health-connect",
+      [
+        "react-native-health",
+        {
+          "healthSharePermission": "Ossa reads your steps, sleep and resting heart rate so your Body Score reflects your real day."
+        }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "OssaBody",
+              "label": "Ossa · Body",
+              "description": "Your streak, your body in rank colours and today's session.",
+              "minWidth": "250dp",
+              "minHeight": "120dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "maxResizeWidth": "420dp",
+              "maxResizeHeight": "220dp",
+              "resizeMode": "horizontal|vertical",
+              "previewImage": "./assets/widget-preview.png",
+              "updatePeriodMillis": 1800000
+            },
+            {
+              "name": "OssaRing",
+              "label": "Ossa · Body (small)",
+              "description": "Your streak and your body in rank colours.",
+              "minWidth": "110dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 2,
+              "targetCellHeight": 2,
+              "previewImage": "./assets/widget-preview-small.png",
+              "updatePeriodMillis": 1800000
+            }
+          ]
+        }
+      ],
+      [
+        "expo-widgets",
+        {
+          "bundleIdentifier": "com.andrej.ossa.widgets",
+          "groupIdentifier": "group.com.andrej.ossa",
+          "widgets": [
+            {
+              "name": "OssaBody",
+              "displayName": "Ossa",
+              "description": "Your streak, your body in rank colours and today's session.",
+              "ios": {
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium",
+                  "accessoryCircular",
+                  "accessoryRectangular",
+                  "accessoryInline"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Ossa uses your approximate location to show the weather where you are. You can type a town instead.",
+          "locationAlwaysAndWhenInUsePermission": "Ossa uses your approximate location to show the weather where you are. You can type a town instead.",
+          "locationAlwaysPermission": "Ossa uses your approximate location to show the weather where you are. You can type a town instead.",
+          "motionUsagePermission": "Ossa doesn't use motion activity.",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#000000",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 120,
+          "resizeMode": "contain"
+        }
+      ],
+      "./plugins/withAndroidWorkFix",
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "andrejsah",
+          "project": "ossa",
+          "url": "https://sentry.io/"
+        }
+      ]
+    ],
+    "scheme": "ossa",
+    "extra": {
+      "eas": {
+        "build": {
+          "experimental": {
+            "ios": {
+              "appExtensions": [
+                {
+                  "targetName": "ExpoWidgetsTarget",
+                  "bundleIdentifier": "com.andrej.ossa.widgets",
+                  "entitlements": {
+                    "com.apple.security.application-groups": [
+                      "group.com.andrej.ossa"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "projectId": "f14dc3a8-955e-49a4-8e67-441d13eae8f0"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f14dc3a8-955e-49a4-8e67-441d13eae8f0",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    }
+  }
+}

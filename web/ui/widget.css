@@ -1,0 +1,33 @@
+/* =========================================================
+   WIDGET PREVIEWS (Ossa 2.0, Build 9): Settings › On your phone shows the two home-screen widgets
+   as the phone draws them (native/OssaWidget.ios.js, native/widget.android.js): black, the lime flame,
+   the streak, the weak link in lime, the overall rank in its colour, today's session and the rank body.
+   320×150 and 150×150 are the Android widget picker pictures at 1x (assets/widget-preview*.png are 3x).
+   The legacy .wg classes in ossa.html belong to the old Body Score preview and are left alone.
+   ========================================================= */
+.wg3{flex:none;box-sizing:border-box;display:flex;align-items:center;gap:var(--sp-3);width:320px;height:150px;padding:var(--sp-4);
+  border-radius:var(--r-card-lg);background:var(--bg);border:1px solid var(--line);color:var(--text-1);font-family:var(--body);overflow:hidden}
+.wg3.sm{width:150px;gap:var(--sp-1);padding:14px}
+.wg3 .wg3-l{flex:1;min-width:0;align-self:stretch;display:flex;flex-direction:column}
+.wg3 .wg3-fl{flex:none;display:block;width:20px;height:20px}
+.wg3 .wg3-fl svg{display:block;width:100%;height:100%;fill:var(--glow);stroke:none}
+.wg3 .wg3-fl svg path+path{fill:var(--bg)}
+.wg3 .wg3-n{font-size:var(--fs-5);color:var(--text-1)}
+.wg3 .wg3-u{font-size:var(--fs-1);font-weight:800;line-height:1.2;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+.wg3 .wg3-top{display:flex;align-items:center;gap:var(--sp-2);min-width:0}
+.wg3 .wg3-st{display:grid;gap:2px;min-width:0}
+.wg3 .wg3-note{font-size:var(--fs-1);font-weight:600;line-height:1.2;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wg3 .wg3-weak{margin:var(--sp-2) 0 0;font-size:var(--fs-2);font-weight:800;line-height:1.2;font-style:normal;color:var(--glow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wg3 .wg3-rk{display:flex;gap:6px;margin:3px 0 0;font-size:var(--fs-1);font-weight:800;line-height:1.2;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);white-space:nowrap}
+.wg3 .wg3-rk b{font-weight:800;color:var(--c)}
+.wg3 .wg3-pill{margin-top:auto;display:flex;align-items:center;gap:5px;padding:6px 8px;border-radius:var(--r-sm);background:var(--surface-3);font-size:var(--fs-1);font-weight:600;line-height:1.2;white-space:nowrap;overflow:hidden}
+.wg3 .wg3-pill i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--text-3)}
+.wg3 .wg3-pill i.go{background:var(--glow)}
+.wg3 .wg3-pill small{flex:none;font-size:var(--fs-1);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--glow)}
+.wg3 .wg3-pill span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.wg3 .wg3-fig{flex:none;height:100%;aspect-ratio:262/396}
+.wg3 .wg3-fig.one{aspect-ratio:124/396}
+.wg3 .wg3-fig svg{display:block;width:100%;height:100%}
+/* the small one: flame, number and unit at the top, the weak link at the foot, one side of the body */
+.wg3.sm .wg3-n{margin-top:var(--sp-1)}
+.wg3.sm .wg3-weak{margin-top:auto;font-size:var(--fs-1);white-space:normal;overflow:visible}

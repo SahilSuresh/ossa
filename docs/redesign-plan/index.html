@@ -1,0 +1,669 @@
+<title>Ossa 2.0 Build Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,800;0,900;1,900&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one long column of phases on Ossa's own black, a sticky phase rail, decisions inline in each phase, answer sheet at the end. */
+:root{
+  color-scheme:dark;
+  --bg:#000000; --panel:#0D0D0D; --panel-2:#161616; --line:#242424; --line-2:#363636;
+  --text:#FFFFFF; --text-2:#A3A3A3; --text-3:#6E6E6E;
+  --bone:#F5F2EB; --lime:#D4FF00; --cyan:#00E5FF; --gold:#FFD700; --red:#FF3B30; --stable:#C5A059;
+  --display:'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --hex:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  --r:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--display);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:28px 96px}
+a{color:inherit}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text-2)}
+.impact{font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.035em;line-height:.92}
+.muted{color:var(--text-2)}
+.mono{font-family:var(--mono);font-size:12px}
+:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+
+/* header */
+.hero{display:grid;gap:14px;padding-block:8px 28px}
+.hero h1{font-size:clamp(44px,9vw,88px)}
+.hero h1 span{color:var(--lime)}
+.lede{font-size:18px;max-width:62ch;color:var(--text-2)}
+.lede b{color:var(--text)}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.fact{border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700}
+.fact b{font-weight:900}
+
+/* sticky rail */
+.rail{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(0,0,0,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-inline:-20px;padding-inline:20px}
+.rail-in{display:flex;gap:6px;overflow-x:auto;padding-block:10px;scrollbar-width:none}
+.rail-in::-webkit-scrollbar{display:none}
+.rail a{flex:none;display:flex;align-items:center;gap:8px;text-decoration:none;font-size:13px;font-weight:700;color:var(--text-2);padding:6px 10px 6px 6px;border-radius:999px;border:1px solid transparent}
+.rail a:hover{color:var(--text);border-color:var(--line-2)}
+.hx{display:inline-grid;place-items:center;width:26px;aspect-ratio:.875;clip-path:var(--hex);background:var(--c,var(--bone));color:#000;font-weight:900;font-size:12px;flex:none}
+
+/* sections */
+section{padding-top:56px;scroll-margin-top:64px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.sec-h h2{font-size:clamp(26px,4vw,34px);font-weight:900;letter-spacing:-.03em}
+
+/* at a glance */
+.glance{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.g{display:grid;gap:8px;align-content:start;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;text-decoration:none}
+.g:hover{border-color:var(--line-2)}
+.g .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.g .hx{width:34px;font-size:15px}
+.g h3{font-size:18px;font-weight:900;letter-spacing:-.02em}
+.g p{font-size:13px;color:var(--text-2)}
+.size{display:flex;gap:3px}
+.size i{width:12px;height:4px;border-radius:2px;background:var(--line-2)}
+.size i.on{background:var(--c,var(--bone))}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:3px 7px;background:var(--panel-2);color:var(--text-2);white-space:nowrap}
+.tag.build{background:var(--lime);color:#000}
+
+/* found */
+.found{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.box h3{font-size:13px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}
+.box.good h3{color:var(--lime)}
+.box.warn h3{color:var(--red)}
+ul.clean{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+ul.clean li{display:grid;grid-template-columns:14px 1fr;gap:10px;font-size:14px}
+ul.clean li::before{content:"";width:6px;height:6px;margin-top:8px;border-radius:50%;background:var(--dot,var(--text-3))}
+.good ul li{--dot:var(--lime)}
+.warn ul li{--dot:var(--red)}
+.chosen{margin-top:12px}
+.chosen li{--dot:var(--bone)}
+
+/* phase */
+.phase{border-top:1px solid var(--line)}
+.ph-head{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;margin-bottom:20px}
+.ph-head .hx{width:64px;font-size:28px}
+.ph-head h2{font-size:clamp(30px,5vw,46px)}
+.ph-head .goal{font-size:16px;color:var(--text-2);margin-top:6px;max-width:64ch}
+.ph-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+
+.shots{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:22px}
+.shot{margin:0;display:grid;gap:6px;width:128px}
+.shot button{all:unset;cursor:zoom-in;border-radius:12px;overflow:hidden;border:1px solid var(--line);display:block;background:var(--panel)}
+.shot button:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.shot img{display:block;width:100%;height:auto;aspect-ratio:520/1127;object-fit:cover;object-position:top}
+.shot figcaption{font-size:12px;font-weight:700;color:var(--text-2);line-height:1.3}
+.shot figcaption b{display:block;color:var(--text);font-weight:800}
+.pair{display:flex;gap:8px;padding:8px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.pair .shot{width:112px}
+.pair .shot.today button{border-color:var(--line-2)}
+.lbl{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+.lbl.t{color:var(--text-3)}
+.lbl.d{color:var(--lime)}
+
+.cols{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:12px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-width:0}
+.col h3{font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--text-2);margin-bottom:14px}
+.chg{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.chg li{display:grid;gap:4px;font-size:14px;min-width:0}
+.files{display:flex;flex-wrap:wrap;gap:4px}
+.file{font-family:var(--mono);font-size:11px;color:var(--text-2);background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;overflow-wrap:anywhere}
+.file.new{color:var(--lime);border-color:rgba(212,255,0,.25)}
+.see{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.see li{display:grid;grid-template-columns:20px 1fr;gap:10px;font-size:14px}
+.see li::before{content:"";width:14px;height:14px;margin-top:3px;border-radius:4px;border:1.5px solid var(--c,var(--bone))}
+.risk{margin-top:12px;font-size:13px;color:var(--text-2);display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.risk b{color:var(--red);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:900;padding-top:2px}
+
+/* decisions */
+.decide{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.decide-h{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline;margin-bottom:6px}
+.decide-h h3{font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--lime)}
+.q{padding-block:14px;border-top:1px solid var(--line);display:grid;gap:8px}
+.q:first-of-type{border-top:0}
+.q .qt{font-weight:800;font-size:15px}
+.q .why{font-size:13px;color:var(--text-2);max-width:72ch}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opt span{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;padding:8px 12px;border-radius:12px;border:1px solid var(--line-2);color:var(--text-2);background:var(--bg);line-height:1.3}
+.opt input:checked+span{border-color:var(--lime);color:var(--text);background:rgba(212,255,0,.07)}
+.opt input:focus-visible+span{outline:2px solid var(--lime);outline-offset:2px}
+.opt em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#000;background:var(--lime);border-radius:4px;padding:1px 5px}
+.opt em.cur{background:var(--bone)}
+
+/* table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14px}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2);background:var(--panel)}
+tr:last-child td{border-bottom:0}
+td.from{color:var(--text-3);text-decoration:line-through;text-decoration-color:rgba(255,59,48,.6)}
+td.to{color:var(--text)}
+
+/* build track */
+.track{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
+.st{display:grid;gap:4px;align-content:start;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--panel);min-width:0}
+.st b{font-size:14px;font-weight:900}
+.st small{font-size:12px;color:var(--text-2);line-height:1.35}
+.st.bd{border-color:var(--lime)}
+.st.bd b{color:var(--lime)}
+.st.sub{border-style:dashed;border-color:var(--line-2)}
+.arrow{align-self:center;color:var(--text-3);font-weight:900}
+.note{margin-top:14px;font-size:14px;color:var(--text-2);max-width:72ch}
+
+/* answers */
+.sheet{display:grid;gap:12px}
+.sheet textarea{width:100%;min-height:240px;resize:vertical;background:var(--panel);color:var(--text);border:1px solid var(--line-2);border-radius:var(--r);padding:16px;font-family:var(--mono);font-size:12px;line-height:1.6}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{all:unset;cursor:pointer;font-weight:900;font-size:16px;padding:16px 24px;border-radius:20px;background:var(--bone);color:#000;text-align:center}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line-2)}
+.btn:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.toast{font-size:13px;font-weight:700;color:var(--lime);min-height:20px}
+.changed{font-size:13px;color:var(--text-2)}
+
+.disclose{border:1px solid rgba(255,59,48,.35);background:rgba(255,59,48,.06);border-radius:var(--r);padding:18px 20px;font-size:14px;display:grid;gap:6px}
+.disclose b{color:var(--red);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:900}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.92);display:grid;place-items:center;padding:20px;cursor:zoom-out}
+.lb img{max-height:calc(100vh - 80px);max-width:100%;width:auto;border-radius:16px;border:1px solid var(--line-2)}
+.lb p{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:13px;font-weight:700;color:var(--text-2)}
+
+@media (max-width:860px){
+  .glance{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .found,.cols{grid-template-columns:1fr}
+}
+@media (max-width:420px){
+  .shot{width:calc(50% - 7px)}
+  .pair{width:100%}
+  .pair .shot{width:calc(50% - 4px)}
+  .ph-head .hx{width:48px;font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">Ossa 2.0 · The Body as a Character</div>
+  <h1 class="impact">Build <span>plan</span></h1>
+  <p class="lede">Eight phases. Each one ends with the app working and something for you to look at on your phone. <b>No code has changed.</b> I start when you say go.</p>
+  <div class="facts">
+    <span class="fact"><b>24</b> screens to build</span>
+    <span class="fact"><b>6</b> already close today</span>
+    <span class="fact"><b>2</b> app builds (9 and 10)</span>
+    <span class="fact"><b>42</b> decisions, my pick ticked</span>
+  </div>
+</header>
+
+<nav class="rail" aria-label="Phases">
+  <div class="rail-in">
+    <a href="#glance"><span class="hx" style="--c:var(--text-3)">·</span>Overview</a>
+    <a href="#p0"><span class="hx" style="--c:var(--bone)">0</span>Look</a>
+    <a href="#p1"><span class="hx" style="--c:var(--lime)">1</span>Vessel Engine</a>
+    <a href="#p2"><span class="hx" style="--c:var(--lime)">2</span>Train</a>
+    <a href="#p3"><span class="hx" style="--c:var(--cyan)">3</span>Focus</a>
+    <a href="#p4"><span class="hx" style="--c:var(--stable)">4</span>Recover</a>
+    <a href="#p5"><span class="hx" style="--c:var(--gold)">5</span>Evolve</a>
+    <a href="#p6"><span class="hx" style="--c:var(--cyan)">6</span>Challenge</a>
+    <a href="#p7"><span class="hx" style="--c:var(--text)">7</span>Ship</a>
+    <a href="#answers"><span class="hx" style="--c:var(--lime)">✓</span>Your answers</a>
+  </div>
+</nav>
+
+<!-- AT A GLANCE -->
+<section id="glance">
+  <div class="sec-h"><h2>At a glance</h2><span class="eyebrow">Bars show relative size</span></div>
+  <div class="glance">
+    <a class="g" href="#p0" style="--c:var(--bone)"><div class="top"><span class="hx">0</span><span class="size"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div><h3>Look</h3><p>New palette, Inter, glass, hexagons. Six screens restyled. Safety net first.</p></a>
+    <a class="g" href="#p1" style="--c:var(--lime)"><div class="top"><span class="hx">1</span><span class="size"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div><h3>Vessel Engine</h3><p>Kinetic-chain RP, visible fading, Sore spots in red, safe save data.</p></a>
+    <a class="g" href="#p2" style="--c:var(--lime)"><div class="top"><span class="hx">2</span><span class="size"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div><h3>Train</h3><p>Exercises, Kinetic chain, where your sets went. <span class="tag build">Build 9</span></p></a>
+    <a class="g" href="#p3" style="--c:var(--cyan)"><div class="top"><span class="hx">3</span><span class="size"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div><h3>Focus</h3><p>Aura XP, Monk Mode, the heartbeat. Breathe becomes Focus.</p></a>
+    <a class="g" href="#p4" style="--c:var(--stable)"><div class="top"><span class="hx">4</span><span class="size"><i class="on"></i><i class="on"></i><i></i><i></i></span></div><h3>Recover</h3><p>Protein and carb logging, the 45-minute reset nudge.</p></a>
+    <a class="g" href="#p5" style="--c:var(--gold)"><div class="top"><span class="hx">5</span><span class="size"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div><h3>Evolve</h3><p>Trophies, Ideal Self, prestige, Tank or Scout, your card, Ossa Pro.</p></a>
+    <a class="g" href="#p6" style="--c:var(--cyan)"><div class="top"><span class="hx">6</span><span class="size"><i class="on"></i><i class="on"></i><i></i><i></i></span></div><h3>Challenge</h3><p>Weather dares, safe by design.</p></a>
+    <a class="g" href="#p7" style="--c:var(--text)"><div class="top"><span class="hx">7</span><span class="size"><i class="on"></i><i class="on"></i><i></i><i></i></span></div><h3>Ship</h3><p>Release build, screenshots, listing, review notes. <span class="tag build">Build 10</span></p></a>
+  </div>
+</section>
+
+<!-- WHAT I FOUND -->
+<section id="found">
+  <div class="sec-h"><h2>What the code told me</h2><span class="eyebrow">8 readers + 1 critic, read-only</span></div>
+  <div class="found">
+    <div class="box good">
+      <h3>Good news</h3>
+      <ul class="clean">
+        <li>Six screens already match the designs' layout and wording. For those, Phase 0 is colour, type and shape only.</li>
+        <li>The body already has a 13-bone rig with exercise poses (one sits on a chair). A seated Monk Mode pose is realistic. The brief thought there was no pose system.</li>
+        <li>Notifications, the share sheet and resting heart rate already go through the app's bridge. The nudge, Monk timer, heartbeat and card need no new native code.</li>
+        <li>Overall rank, best set and est. 1-rep max already exist, as on the rank-up design.</li>
+      </ul>
+    </div>
+    <div class="box warn">
+      <h3>Watch out</h3>
+      <ul class="clean">
+        <li>Fading is switched off in rank colours, so the Body page never shows it today.</li>
+        <li>Helper muscles get a flat 33% of RP. 17 exercises give them nothing at all.</li>
+        <li>Live bug: after 90 sessions the 100-session milestone and the streak screen stop.</li>
+        <li>A save that doesn't match is silently reset to zero, and there's no backup. 2.0 adds about a dozen saved fields.</li>
+        <li>One shader error on an iPhone drops everyone to the flat 2D body.</li>
+        <li>Open-Meteo's free tier is non-commercial, and Ossa sells Pro. MET Norway is free with a credit.</li>
+        <li>No over-the-air updates: every change, web or native, reaches TestFlight only in a new build. Expo Go is for testing.</li>
+        <li>The camera permission promises a fingertip pulse reading that nothing uses (App Review risk). <span class="mono">web/</span> isn't in git.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="box chosen" style="margin-top:12px">
+    <h3 style="color:var(--bone)">Where the readers disagreed, I picked</h3>
+    <ul class="clean">
+      <li>Restyle each existing screen once, in Phase 0. Later phases only add their data to it.</li>
+      <li>One owner file for the engine (RP, fading, recovery). Other phases plug in through hooks, so no two files override the same function.</li>
+      <li>The aura is drawn by the body's own renderer, not a second 3D canvas. That saves battery and memory.</li>
+      <li>One shape for Sore spots data, and left/right checked on screen before any UI is built on it.</li>
+      <li>All native work goes into one build (9), so later phases need none.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- PHASE 0 -->
+<section id="p0" class="phase" style="--c:var(--bone)">
+  <div class="ph-head"><span class="hx">0</span><div><div class="eyebrow">Phase 0</div><h2 class="impact">Look</h2><p class="goal">The new palette, Inter, glass and hexagons go through the whole app. The six screens that exist get the design's look. Nothing about how they work changes.</p><div class="ph-tags"><span class="tag">No native build</span><span class="tag">Test in Expo Go</span></div></div></div>
+  <div class="shots">
+    <div class="pair"><figure class="shot today"><span class="lbl t">Today</span><button data-src="img/t_body.jpg" data-cap="Today · Body"><img src="img/t_body.jpg" alt="Today's Body page"></button></figure><figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_body_dashboard.jpg" data-cap="Design · body_dashboard"><img src="img/d_body_dashboard.jpg" alt="Design: body dashboard"></button></figure></div>
+    <div class="pair"><figure class="shot today"><span class="lbl t">Today</span><button data-src="img/t_ranks.jpg" data-cap="Today · Muscle ranks"><img src="img/t_ranks.jpg" alt="Today's Muscle ranks"></button></figure><figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_muscle_ranks_detail.jpg" data-cap="Design · muscle_ranks_detail"><img src="img/d_muscle_ranks_detail.jpg" alt="Design: muscle ranks"></button></figure></div>
+    <div class="pair"><figure class="shot today"><span class="lbl t">Today</span><button data-src="img/t_recover.jpg" data-cap="Today · Recover"><img src="img/t_recover.jpg" alt="Today's Recover tab"></button></figure><figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_recovery_dashboard.jpg" data-cap="Design · recovery_dashboard"><img src="img/d_recovery_dashboard.jpg" alt="Design: recovery dashboard"></button></figure></div>
+    <div class="pair"><figure class="shot today"><span class="lbl t">Today</span><button data-src="img/t_streak.jpg" data-cap="Today · Streak"><img src="img/t_streak.jpg" alt="Today's streak screen"></button></figure><figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_streak_summary.jpg" data-cap="Design · streak_summary"><img src="img/d_streak_summary.jpg" alt="Design: streak summary"></button></figure></div>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_rank_up_notification.jpg" data-cap="Design · rank_up_notification"><img src="img/d_rank_up_notification.jpg" alt="Design: rank up"></button><figcaption><b>Rank-up</b>Content already matches</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_workout_tracker.jpg" data-cap="Design · workout_tracker"><img src="img/d_workout_tracker.jpg" alt="Design: workout tracker"></button><figcaption><b>Workout</b>Steppers will show the value</figcaption></figure>
+  </div>
+  <div class="cols">
+    <div class="col"><h3>What changes</h3><ul class="chg">
+      <li><div class="files"><span class="file">C:\Ossa\backup-before-v2</span><span class="file">git baseline</span></div>Safety net first: a folder backup like the last two redesigns, plus a git baseline (with your OK) so every phase is a reviewable diff.</li>
+      <li><div class="files"><span class="file">web/ui/tokens.css</span></div>Black #000 and charcoal #121212, lime #D4FF00, cyan, gold, red #FF3B30, and the new rank colours. New tokens for alert, cyan, gold and text on each rank.</li>
+      <li><div class="files"><span class="file">scripts/fetch-fonts.js</span><span class="file">web/ui/fonts.css</span></div>Inter replaces Archivo, Geist and Geist Mono (roman 300–900, true italic 800–900). The licences screen credits Inter.</li>
+      <li><div class="files"><span class="file">web/ui/base.css</span></div>New pieces: glass panel, hexagon badge, italic impact headline.</li>
+      <li><div class="files"><span class="file">web/ossa.html</span></div>One scripted, reviewed remap of the 105 old colours in the legacy CSS. The 3D rank colours are read from the tokens, so they can't drift apart again.</li>
+      <li><div class="files"><span class="file">web/ossa.html</span><span class="file new">web/ui/body-fx.js</span></div>Body effects foundation, invisible: hooks for later effects, a fallback so a shader error can never drop to the flat body, recovery when iOS drops the 3D context.</li>
+      <li><div class="files"><span class="file">shell.css/js</span><span class="file">ranks.css/js</span><span class="file">workout.css/js</span></div>Restyle Body, tab bar, Recover, Muscle ranks, Rank-up, Streak and the workout.</li>
+      <li><div class="files"><span class="file">onboarding.css/js</span></div>Onboarding and the paywall get the same pass, checked at both phone sizes.</li>
+    </ul></div>
+    <div class="col"><h3>What you'll see</h3><ul class="see">
+      <li>Today, after and design side by side for all six screens, at 390×844 and 375×667.</li>
+      <li>A palette board: every old colour next to its new one, with contrast on black.</li>
+      <li>A video from your iPhone in Expo Go: a workout over the moving body (glass smoothness, Inter, no grey edges).</li>
+      <li>The licences screen with Inter, and the lint count (105 raw colours down to under 40).</li>
+      <li>A table to mark up: all 83 exercises with helper-muscle % and type tags. It feeds Phases 1 and 2.</li>
+    </ul>
+    <p class="risk"><b>Risk</b><span>Inter is narrower than Archivo, so headlines reflow. Strong becomes pure white, the same as text.</span></p></div>
+  </div>
+  <div class="decide" data-phase="0"></div>
+</section>
+
+<!-- PHASE 1 -->
+<section id="p1" class="phase" style="--c:var(--lime)">
+  <div class="ph-head"><span class="hx">1</span><div><div class="eyebrow">Phase 1</div><h2 class="impact">Vessel Engine</h2><p class="goal">Rank points that follow the kinetic chain, fading you can see on your body, and Sore spots that glow red and pause the fade. Your saved data survives the upgrade.</p><div class="ph-tags"><span class="tag">No native build</span><span class="tag">Fixes 6 known bugs</span></div></div></div>
+  <div class="shots">
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_injury_mapping.jpg" data-cap="Design · injury_mapping"><img src="img/d_injury_mapping.jpg" alt="Design: injury mapping"></button><figcaption><b>Sore spots</b>New screen</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_muscle_ranks_detail.jpg" data-cap="Design · muscle_ranks_detail"><img src="img/d_muscle_ranks_detail.jpg" alt="Design: muscle ranks"></button><figcaption><b>Muscle ranks</b>+ Fading and Flagged tags</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_rank_up_notification.jpg" data-cap="Design · rank_up_notification"><img src="img/d_rank_up_notification.jpg" alt="Design: rank up"></button><figcaption><b>Rank-up</b>Trained muscle first</figcaption></figure>
+  </div>
+  <div class="cols">
+    <div class="col"><h3>What changes</h3><ul class="chg">
+      <li><div class="files"><span class="file new">web/ui/vessel.js</span></div>Save safety: a version stamp, a one-time copy of your pre-2.0 data on the phone, and one migration step at start-up.</li>
+      <li><div class="files"><span class="file new">web/ui/vessel.js</span></div>The engine owner: one RP function used by Workout complete, quick log and the session chips. Hooks for later phases (after a workout, reminders, notification taps).</li>
+      <li><div class="files"><span class="file">web/ossa.html · SEC</span></div>Helper weights for all 83 exercises, from your marked-up table. Bench: chest 100%, front delts 50%, triceps 35%.</li>
+      <li><div class="files"><span class="file">web/ossa.html · finishWorkout</span></div>Every workout records its exercises, end time and RP, and a lifetime tally starts. That fixes the 90-session bug and gives Phases 2, 4 and 5 their history.</li>
+      <li><div class="files"><span class="file">web/ossa.html · fadeOf, shader</span></div>Fading shows on the Body page as a dimmed rank colour. One neglect rule (today 7, 10 and 21 days disagree).</li>
+      <li><div class="files"><span class="file new">web/ui/injury.js</span><span class="file new">injury.css</span></div>Sore spots: flag a muscle or joint, left, right or both. It glows red, its fade pauses, plan rows say "You flagged your left knee", and Relief routine opens the joint routine. The physio/GP line stays.</li>
+      <li><div class="files"><span class="file">ranks.js</span></div>Muscle ranks shows our 3D body in rank colours instead of the 2D drawing. Rank-ups show the muscle you trained first.</li>
+      <li><div class="files"><span class="file">docs/BUGS.md</span></div>Bugs in the same code: 01, 02, 03, 05, 08, 10. A better demo seed for every later screenshot.</li>
+      <li><div class="files"><span class="file new">preview switch</span></div>Two spikes, not shipped: the seated Monk pose and the Tank/Scout shape change. Their screenshots decide Phases 3 and 5.</li>
+    </ul></div>
+    <div class="col"><h3>What you'll see</h3><ul class="see">
+      <li>Workout complete after 4×8 bench: Chest +3, Front delts +2, Triceps +1 RP. Today it gives +3, +1, +1.</li>
+      <li>The Body page with quads untrained for 15 days, then the same with your left knee flagged (fade paused).</li>
+      <li>Sore spots next to the design, plus a 10-second video of the red glow.</li>
+      <li>A left-knee test from front and back, proving the side is right.</li>
+      <li>Spike screenshots: lotus or block sit, and Tank, neutral and Scout.</li>
+    </ul>
+    <p class="risk"><b>Risk</b><span>Left and right: the code labels +x "right", but the maths says it's the figure's left. Tested on screen before any UI.</span></p></div>
+  </div>
+  <div class="decide" data-phase="1"></div>
+</section>
+
+<!-- PHASE 2 -->
+<section id="p2" class="phase" style="--c:var(--lime)">
+  <div class="ph-head"><span class="hx">2</span><div><div class="eyebrow">Phase 2</div><h2 class="impact">Train</h2><p class="goal">Find a lift, see what it works, and look back at where your sets went. All native work for 2.0 gets written here and goes into Build 9.</p><div class="ph-tags"><span class="tag build">Build 9 at the end</span><span class="tag">You run it</span></div></div></div>
+  <div class="shots">
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_exercise_discovery.jpg" data-cap="Design · exercise_discovery"><img src="img/d_exercise_discovery.jpg" alt="Design: exercise discovery"></button><figcaption><b>Exercises</b>New</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_connectivity_map.jpg" data-cap="Design · connectivity_map"><img src="img/d_connectivity_map.jpg" alt="Design: kinetic chain"></button><figcaption><b>Kinetic chain</b>New</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_rep_density_history.jpg" data-cap="Design · rep_density_history"><img src="img/d_rep_density_history.jpg" alt="Design: rep density"></button><figcaption><b>Where your sets went</b>New</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_workout_tracker.jpg" data-cap="Design · workout_tracker"><img src="img/d_workout_tracker.jpg" alt="Design: workout tracker"></button><figcaption><b>Workout</b>Chips open Kinetic chain</figcaption></figure>
+  </div>
+  <div class="cols">
+    <div class="col"><h3>What changes</h3><ul class="chg">
+      <li><div class="files"><span class="file new">web/ui/exdata.js</span></div>Tags for 124 movements (compound, isolation, mobility; kit; pattern), plain job lines ("Straightens the elbow") and a small zone table (upper, middle, lower chest…).</li>
+      <li><div class="files"><span class="file new">web/ui/discover.js</span></div>Kinetic chain: our body with the main muscle lit, helpers with % and "+N RP for 3 sets". It opens from the workout's muscle chips and from Insights.</li>
+      <li><div class="files"><span class="file new">web/ui/discover.js</span><span class="file">shell.js</span></div>Exercises: search, type chips, 7 muscle groups with real counts, Home/Gym, and "not trained in a week" picks with real RP (+4, not +45).</li>
+      <li><div class="files"><span class="file new">web/ui/density.js</span></div>Where your sets went: sets per muscle and zone from the lifts you chose, against your last 4 weeks. A Past sessions list on the Train hub.</li>
+      <li><div class="files"><span class="file">App.js</span><span class="file">app.json</span><span class="file new">native/location.js</span><span class="file">native/OssaWidget.ios.js</span></div>Native batch, tried in Expo Go first: bridge v2 (softer haptics, a background event, location, weather), approximate location only, a black launch screen, widgets in rank colours, the camera-text fix.</li>
+    </ul></div>
+    <div class="col"><h3>What you'll see</h3><ul class="see">
+      <li>Exercises, Kinetic chain and Where your sets went, each next to its design.</li>
+      <li>Proof that Kinetic chain's "+N RP" equals what Workout complete gives.</li>
+      <li>A 20-second recording: search "row", filter, open bench, add a pick to today.</li>
+      <li>Every zone sentence, listed for your yes or no.</li>
+      <li>After you run Build 9: location prompt, home-screen widget, black launch, haptics on your phone.</li>
+    </ul>
+    <p class="risk"><b>Risk</b><span>The weather source must be settled before Build 9, because it decides what goes into App.js.</span></p></div>
+  </div>
+  <div class="decide" data-phase="2"></div>
+</section>
+
+<!-- PHASE 3 -->
+<section id="p3" class="phase" style="--c:var(--cyan)">
+  <div class="ph-head"><span class="hx">3</span><div><div class="eyebrow">Phase 3</div><h2 class="impact">Focus</h2><p class="goal">The third tab grows your character's mind: a cyan aura around our own head that grows with real focus and breathing time.</p><div class="ph-tags"><span class="tag">No native build</span><span class="tag">Heartbeat felt on your phone</span></div></div></div>
+  <div class="shots">
+    <div class="pair"><figure class="shot today"><span class="lbl t">Today</span><button data-src="img/t_breathe.jpg" data-cap="Today · Breathe tab"><img src="img/t_breathe.jpg" alt="Today's Breathe tab"></button></figure><figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_focus_aura.jpg" data-cap="Design · focus_aura"><img src="img/d_focus_aura.jpg" alt="Design: focus aura"></button></figure></div>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_monk_mode_setup.jpg" data-cap="Design · monk_mode_setup"><img src="img/d_monk_mode_setup.jpg" alt="Design: monk mode setup"></button><figcaption><b>Monk Mode</b>Setup</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_focus_timer_stance.jpg" data-cap="Design · focus_timer_stance"><img src="img/d_focus_timer_stance.jpg" alt="Design: focus timer"></button><figcaption><b>Timer</b>Our body, seated</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_monk_mode_completion.jpg" data-cap="Design · monk_mode_completion"><img src="img/d_monk_mode_completion.jpg" alt="Design: monk mode completion"></button><figcaption><b>Done</b>Real XP</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_bio_rhythm_sync.jpg" data-cap="Design · bio_rhythm_sync"><img src="img/d_bio_rhythm_sync.jpg" alt="Design: bio rhythm"></button><figcaption><b>Heartbeat</b>Haptic lub-dub</figcaption></figure>
+  </div>
+  <div class="cols">
+    <div class="col"><h3>What changes</h3><ul class="chg">
+      <li><div class="files"><span class="file">shell.js</span></div>Tab label Breathe becomes Focus. The internal key stays, so nothing else moves.</li>
+      <li><div class="files"><span class="file new">web/ui/focus.js</span></div>Aura XP: breathing 2 XP a minute (+2 for finishing, 30 a day max). Monk Mode 1 a minute, plus 2× the planned minutes for finishing (400 a day max). Levels never drop. Learn's XP becomes "Learn level".</li>
+      <li><div class="files"><span class="file">web/ui/body-fx.js</span></div>The aura on our own head: a cyan rim and crystal halo that grow by stage. No second 3D canvas.</li>
+      <li><div class="files"><span class="file new">web/ui/focus.js</span><span class="file new">focus.css</span></div>Focus home: level bar, aura, "Grow your aura". The old Mind content and the support footer stay below.</li>
+      <li><div class="files"><span class="file new">web/ui/focus.js</span></div>Monk Mode: 25, 50 or 90 minutes; a rules card ("Turn on a Focus", because Ossa can't silence other apps); a timer that keeps going when you leave; a "time's up" notification; a finish screen with today's real log and the XP.</li>
+      <li><div class="files"><span class="file">web/ui/body-fx.js</span></div>Seated pose if the Phase 1 spike passed. Otherwise standing, head bowed, breathing slowly.</li>
+      <li><div class="files"><span class="file new">web/ui/focus.js</span></div>Heartbeat: a lub-dub haptic at your resting heart rate from Apple Health, labelled an estimate, with a chest glow and "Breathe with it".</li>
+    </ul></div>
+    <div class="col"><h3>What you'll see</h3><ul class="see">
+      <li>The aura at levels 1, 8 and 15 next to the design.</li>
+      <li>Monk Mode setup, timer and finish next to their designs.</li>
+      <li>On your phone: start a 1-minute test, lock it, the notification arrives, tap opens the finish.</li>
+      <li>You hold the phone and feel the heartbeat.</li>
+    </ul>
+    <p class="risk"><b>Risk</b><span>Lotus sitting may crease the knees on our rig. The block sit is the safe fallback.</span></p></div>
+  </div>
+  <div class="decide" data-phase="3"></div>
+</section>
+
+<!-- PHASE 4 -->
+<section id="p4" class="phase" style="--c:var(--stable)">
+  <div class="ph-head"><span class="hx">4</span><div><div class="eyebrow">Phase 4</div><h2 class="impact">Recover</h2><p class="goal">Fuel you log in grams and meals, and a reminder after training to do a 3-minute reset for the muscles you just worked.</p><div class="ph-tags"><span class="tag">No native build</span><span class="tag">Real notification in Expo Go</span></div></div></div>
+  <div class="shots">
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_fueling_meter.jpg" data-cap="Design · fueling_meter"><img src="img/d_fueling_meter.jpg" alt="Design: fueling meter"></button><figcaption><b>Fuel</b>On our 3D body</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_recovery_nudge.jpg" data-cap="Design · recovery_nudge"><img src="img/d_recovery_nudge.jpg" alt="Design: recovery nudge"></button><figcaption><b>3-minute reset</b>45 min after training</figcaption></figure>
+  </div>
+  <div class="cols">
+    <div class="col"><h3>What changes</h3><ul class="chg">
+      <li><div class="files"><span class="file new">web/ui/recover.js</span><span class="file new">recover.css</span></div>Fuel on the Recover tab: protein in grams (+15, +25, +40), carbs as meals (2 of 3). The target is 1.6 g per kg if you add your weight. It's optional, never asked under 18, and counted in portions otherwise.</li>
+      <li><div class="files"><span class="file new">web/ui/recover.js</span></div>Game rule: hitting protein and carbs makes "ready in" up to 8 hours sooner a day, never more than a quarter of the wait. Labelled "Game rule".</li>
+      <li><div class="files"><span class="file new">web/ui/recover.js</span></div>A Fuel screen on our 3D body with the recovering muscle lit.</li>
+      <li><div class="files"><span class="file new">web/ui/recover.js</span><span class="file">workout.js</span></div>Recovery nudge: a local notification 45 minutes after a workout ("3 minutes for your chest"). Tapping it opens a 3-move reset. "Remind me in 15 min" is there too.</li>
+    </ul></div>
+    <div class="col"><h3>What you'll see</h3><ul class="see">
+      <li>The Fuel card before and after logging, and the Fuel screen next to the design.</li>
+      <li>A table of ready times with and without fuel.</li>
+      <li>On your phone with a 1-minute test delay: the notification arrives, tap, the reset opens.</li>
+    </ul>
+    <p class="risk"><b>Risk</b><span>Nutrition is health-adjacent. Every line stays "logged" or "game rule", with a GP or dietitian line.</span></p></div>
+  </div>
+  <div class="decide" data-phase="4"></div>
+</section>
+
+<!-- PHASE 5 -->
+<section id="p5" class="phase" style="--c:var(--gold)">
+  <div class="ph-head"><span class="hx">5</span><div><div class="eyebrow">Phase 5</div><h2 class="impact">Evolve</h2><p class="goal">Long goals that change how your body looks: trophies, your next rank as a wireframe, prestige materials, a Tank or Scout path, and a card to share.</p><div class="ph-tags"><span class="tag">No native build</span><span class="tag">Biggest phase</span></div></div></div>
+  <div class="shots">
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_achievement_gallery.jpg" data-cap="Design · achievement_gallery"><img src="img/d_achievement_gallery.jpg" alt="Design: trophy room"></button><figcaption><b>Trophy room</b></figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_ar_goal_projection.jpg" data-cap="Design · ar_goal_projection"><img src="img/d_ar_goal_projection.jpg" alt="Design: ideal self"></button><figcaption><b>Ideal Self</b>Wireframe, no camera</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_prestige_system.jpg" data-cap="Design · prestige_system"><img src="img/d_prestige_system.jpg" alt="Design: prestige"></button><figcaption><b>Prestige</b>Material on the muscle</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_specialization_engine.jpg" data-cap="Design · specialization_engine"><img src="img/d_specialization_engine.jpg" alt="Design: specialization"></button><figcaption><b>Your path</b>Tank or Scout</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_vessel_trading_cards.jpg" data-cap="Design · vessel_trading_cards"><img src="img/d_vessel_trading_cards.jpg" alt="Design: trading card"></button><figcaption><b>Your card</b>Real numbers</figcaption></figure>
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_vessel_vault.jpg" data-cap="Design · vessel_vault"><img src="img/d_vessel_vault.jpg" alt="Design: vessel vault"></button><figcaption><b>Ossa Pro</b>Vault look</figcaption></figure>
+  </div>
+  <div class="cols">
+    <div class="col"><h3>What changes</h3><ul class="chg">
+      <li><div class="files"><span class="file new">web/ui/evolve.js</span><span class="file new">evolve.css</span></div>Evolve in Profile (Profile's Progress tab is renamed), with links from Muscle ranks and Workout complete.</li>
+      <li><div class="files"><span class="file new">web/ui/evolve.js</span></div>Trophy room: about 45 trophies from real logs. Iron Core = abs and obliques reach Strong. Leg Day Legend = 50 leg days. Locked ones show their progress.</li>
+      <li><div class="files"><span class="file new">web/ui/evolve.js</span><span class="file">body-fx.js</span></div>Ideal Self: a wireframe of your next overall rank over your body, "71% of the way to Forged", and the three muscles furthest behind.</li>
+      <li><div class="files"><span class="file new">web/ui/evolve.js</span><span class="file">body-fx.js</span></div>Prestige: at Unbreakable III a muscle starts a lap with 1.5× RP and keeps its rank. Each lap earns a material (black marble, chrome…) drawn on that muscle.</li>
+      <li><div class="files"><span class="file new">web/ui/evolve.js</span><span class="file">body-fx.js</span></div>Your path: a Tank/Scout radar from 30 days of real sets. +10% RP on matching sets, a matching dare mix, and a subtle shape change.</li>
+      <li><div class="files"><span class="file new">web/ui/evolve.js</span></div>Your card: a 1080×1350 image of your body with rank, streak and top trophy, through the share sheet the app already has.</li>
+      <li><div class="files"><span class="file">onboarding.js</span></div>Ossa Pro in the Vault look: only real perks, store prices, optional Pro materials.</li>
+    </ul></div>
+    <div class="col"><h3>What you'll see</h3><ul class="see">
+      <li>Each screen next to its design.</li>
+      <li>The full trophy list (name, rule, data) to approve.</li>
+      <li>The card as a PNG, and your phone's share sheet.</li>
+      <li>A prestige recording: start the lap, log a workout, the material appears.</li>
+    </ul>
+    <p class="risk"><b>Risk</b><span>Overall Forged II is 7 to 12 months away for most people, so a path locked there would hardly ever unlock.</span></p></div>
+  </div>
+  <div class="decide" data-phase="5"></div>
+</section>
+
+<!-- PHASE 6 -->
+<section id="p6" class="phase" style="--c:var(--cyan)">
+  <div class="ph-head"><span class="hx">6</span><div><div class="eyebrow">Phase 6</div><h2 class="impact">Challenge</h2><p class="goal">On days with notable, safe weather, the daily life dare becomes a weather dare. It's still one dare a day, and saying no still costs nothing.</p><div class="ph-tags"><span class="tag">Uses Build 9's location</span></div></div></div>
+  <div class="shots">
+    <figure class="shot"><span class="lbl d">Design</span><button data-src="img/d_dare_generator.jpg" data-cap="Design · dare_generator"><img src="img/d_dare_generator.jpg" alt="Design: weather dare"></button><figcaption><b>Weather dare</b></figcaption></figure>
+  </div>
+  <div class="cols">
+    <div class="col"><h3>What changes</h3><ul class="chg">
+      <li><div class="files"><span class="file new">web/ui/dares.js</span><span class="file new">dares.css</span></div>Dares move out of ranks.js into their own file. Weather dares are opt-in, using approximate location or a town you type. Readings are cached for an hour and credited.</li>
+      <li><div class="files"><span class="file new">web/ui/dares.js</span></div>Safety gate: never in thunder, ice, gusts of 50 km/h or more, below 0 °C, above 30 °C or after dark. Those days get an indoor dare.</li>
+      <li><div class="files"><span class="file new">scripts/check-dares.js</span></div>A check that runs every severe weather case and fails if any gives an outdoor dare.</li>
+      <li><div class="files"><span class="file new">web/ui/dares.js</span></div>Objectives tick themselves where the app knows: steps from Apple Health, water from the water log.</li>
+    </ul></div>
+    <div class="col"><h3>What you'll see</h3><ul class="see">
+      <li>A rain dare, the indoor fallback, the "type your town" state and the Home card, next to the design.</li>
+      <li>The safety check's output: every severe case gives an indoor dare.</li>
+      <li>A recording from your phone: allow approximate location, the town appears, Accept, tick, Done.</li>
+    </ul></div>
+  </div>
+  <div class="decide" data-phase="6"></div>
+</section>
+
+<!-- PHASE 7 -->
+<section id="p7" class="phase" style="--c:var(--text)">
+  <div class="ph-head"><span class="hx">7</span><div><div class="eyebrow">Phase 7</div><h2 class="impact">Ship</h2><p class="goal">A release build, new store material and review notes. Nothing goes to Apple until you say.</p><div class="ph-tags"><span class="tag build">Build 10</span><span class="tag">You submit</span></div></div></div>
+  <div class="cols">
+    <div class="col"><h3>What changes</h3><ul class="chg">
+      <li><div class="files"><span class="file">App Store Connect</span></div>First, read the 8 Oct rejection reason. It isn't written down anywhere.</li>
+      <li><div class="files"><span class="file">store/APP-STORE-LISTING.md</span></div>Name, subtitle, description, keywords. Review notes: §3 tabs and new flows, §6 Inter and the weather credit. Privacy label: coarse location if used.</li>
+      <li><div class="files"><span class="file new">store/screenshots-6.3in-v3/</span><span class="file new">6.9in-v3/</span></div>New screenshots from Build 10 with demo data. The 6.3" set is required.</li>
+      <li><div class="files"><span class="file">your iPhone</span></div>A new review screen recording (you record it) and a new header image.</li>
+      <li><div class="files"><span class="file">HOW-TO-RUN.txt</span><span class="file">build-for-app-store.bat</span><span class="file">docs/</span></div>The app name everywhere (three different names today), plus brief status and decisions.</li>
+    </ul></div>
+    <div class="col"><h3>What you'll see</h3><ul class="see">
+      <li>A contact sheet: new screenshots next to the old six.</li>
+      <li>The old and new listing and review notes side by side.</li>
+      <li>The pre-submit checklist, ticked. Not submitted.</li>
+    </ul></div>
+  </div>
+  <div class="decide" data-phase="7"></div>
+</section>
+
+<!-- TRANSLATIONS -->
+<section id="rules">
+  <div class="sec-h"><h2>Design says, we build</h2><span class="eyebrow">Ground rule 3: real data, game names</span></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Screen</th><th>Design says</th><th>We build</th></tr></thead>
+    <tbody>
+      <tr><td>Sore spots</td><td class="from">System alert · High risk zone · Lower back compromised</td><td class="to">Flagged · Lower back. You flagged this today.</td></tr>
+      <tr><td>Sore spots</td><td class="from">Meniscus stress detected</td><td class="to">Left knee · flagged 2 days ago</td></tr>
+      <tr><td>Exercises</td><td class="from">+45 RP potential · Low vitality</td><td class="to">+4 RP · Stable I in 2 sessions · Not trained in a week</td></tr>
+      <tr><td>Where your sets went</td><td class="from">Inner chest bias 8.2 · Fiber recruitment</td><td class="to">Upper chest · 4 of 7 sets · incline work</td></tr>
+      <tr><td>Fuel</td><td class="from">Protein synth 92% · Glycogen 34% low</td><td class="to">Protein 92 g of 140 g · Carbs 2 of 3 meals</td></tr>
+      <tr><td>Heartbeat</td><td class="from">0.8 Hz pulse frequency · Live sync</td><td class="to">58 bpm resting · Apple Health, an estimate</td></tr>
+      <tr><td>Monk Mode</td><td class="from">Silent notifications</td><td class="to">Turn on a Focus. Ossa's own nudges stay quiet.</td></tr>
+      <tr><td>Reset nudge</td><td class="from">Welcome home · Smart trigger</td><td class="to">3 minutes for your chest (45 min after training)</td></tr>
+      <tr><td>Ideal Self</td><td class="from">Live AR · 82% match</td><td class="to">Your next rank · 82% of the way to Forged</td></tr>
+      <tr><td>Your path</td><td class="from">Reduces injury risk by 15%</td><td class="to">Dropped. Perks are game rules: +10% RP on heavy sets.</td></tr>
+      <tr><td>Your card</td><td class="from">Power 9800 · Neon Surge · Mythic Rare</td><td class="to">Overall rank, streak, sessions, top trophy</td></tr>
+      <tr><td>Prestige</td><td class="from">Sacrifice current rank for the divine</td><td class="to">Start a prestige lap. Your rank stays.</td></tr>
+      <tr><td>Ossa Pro</td><td class="from">Ad-free · Rank V masterclasses · $14.99</td><td class="to">Dropped (no ads, no such content). Store prices only.</td></tr>
+      <tr><td>Weather dare</td><td class="from">+50 Grit · Locate storm centre · No heavy layers</td><td class="to">Counts towards a trophy. Never in severe weather. Dress for it.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- BUILDS -->
+<section id="builds">
+  <div class="sec-h"><h2>Builds and releases</h2><span class="eyebrow">You run every build</span></div>
+  <div class="track">
+    <div class="st sub"><b>Build 8</b><small>In App Store Connect, held</small></div><span class="arrow">›</span>
+    <div class="st"><b>Phases 0–2</b><small>Preview + Expo Go</small></div><span class="arrow">›</span>
+    <div class="st bd"><b>Build 9</b><small>Native batch, TestFlight</small></div><span class="arrow">›</span>
+    <div class="st"><b>Phases 3–6</b><small>Web only</small></div><span class="arrow">›</span>
+    <div class="st bd"><b>Build 10</b><small>Release candidate</small></div><span class="arrow">›</span>
+    <div class="st sub"><b>Submit</b><small>When you say</small></div>
+  </div>
+  <p class="note">Between builds you test on your iPhone with Expo Go (<span class="mono">npm start</span>). Expo Go can't show widgets, Apple Health or real prices. Those get checked on Builds 9 and 10. Because there are no over-the-air updates, 1.0 stays held until Build 10 under your current rule. The first question below lets you change that.</p>
+</section>
+
+<!-- ANSWERS -->
+<section id="answers">
+  <div class="sec-h"><h2>Your answers</h2><span class="eyebrow">My picks are ticked. Change what you disagree with.</span></div>
+  <div class="sheet">
+    <p class="changed" id="changedCount"></p>
+    <textarea id="out" readonly aria-label="Your answers as text"></textarea>
+    <div class="btns">
+      <button class="btn" id="copy" type="button">Copy answers</button>
+      <button class="btn ghost" id="reset" type="button">Back to my picks</button>
+    </div>
+    <p class="toast" id="toast" role="status"></p>
+    <p class="muted" style="font-size:14px">Paste them into our chat. Only Phase 0's answers are needed before "go". The rest can wait until each phase starts.</p>
+  </div>
+</section>
+
+<section>
+  <div class="disclose">
+    <b>Something you should know</b>
+    <p>One of my code readers checked whether a weather service accepts requests from the app. It sent one test request to api.met.no (Norway's weather service) with "andrejgazi25-test" in it, which is part of your email address. Nothing else with your details left this computer, and no project files changed. From now on only I run network checks, and never with anything that identifies you.</p>
+  </div>
+</section>
+
+</div>
+
+<div class="lb" id="lb" hidden><img id="lbImg" alt=""><p id="lbCap"></p></div>
+
+<script>
+(function(){
+  /* each question: id, phase, short label, question, why, options, rec (index of my pick). cur marks your current decision instead of a recommendation. */
+  var Q = [
+    {id:'release',p:0,s:'Release plan',q:'When does 1.0 go out?',why:'Your rule 5 holds 1.0 until the redesign is done. With no over-the-air updates, that means waiting through all eight phases.',o:['Hold until Build 10 (your current rule)','Ship 1.0 after Phase 1, the rest as updates','Ship 1.0 with Build 9, after Phase 2'],rec:0,cur:true},
+    {id:'safety',p:0,s:'Safety net',q:'Folder backup and a git baseline before I touch anything?',why:'web/ isn\'t in git. A commit per phase makes every change a diff you can undo. I only commit when you say.',o:['Both','Folder backup only','Git only'],rec:0},
+    {id:'button',p:0,s:'Main button colour',q:'Which colour is the main button?',why:'The designs mix bone, lime, white, cyan and gold.',o:['Bone for the one main action. Lime for finish, accept and rewards. Cyan for Focus. Gold for Prestige.','Lime for every main button','White for every main button'],rec:0},
+    {id:'strong',p:0,s:'Strong = white',q:'Strong is pure white, the same as text and the 3D selection glow. Keep it?',why:'A Strong muscle and a picked muscle would look the same.',o:['Keep white. The 3D selection becomes a lime edge.','Silver on the 3D body only','Silver everywhere'],rec:0},
+    {id:'fragile',p:0,s:'Fragile contrast',q:'Fragile #4A4A4A is faint on black (2.4:1). Add a thin outline?',why:'Below 3:1 it breaks your "never colour alone" rule.',o:['Keep the colour, add a thin light outline in 2D','Lighten it to #6B6B6B','Leave as designed'],rec:0},
+    {id:'recov',p:0,s:'Recovering colour',q:'What colour are "recovering" bars?',why:'The design uses tan #C5A059, which is also the Stable rank colour.',o:['Their own colour, unlike any rank','Tan as designed'],rec:0},
+    {id:'label',p:0,s:'Smallest text',q:'Smallest text size?',why:'The designs use 10px and 8px labels, which fail contrast rules and are hard to read.',o:['12px','10px as designed'],rec:0},
+    {id:'scope',p:0,s:'Restyle scope',q:'How far does Phase 0 go?',why:'Tokens reach every screen, but screens without a design would look half-done.',o:['Token pass everywhere. Hand-tune the 6 designed screens, onboarding and the paywall.','Only the 6 designed screens'],rec:0},
+    {id:'neon',p:0,s:'Body outline look',q:'The renders glow along the muscle edges. Try that on our body?',why:'It changes how the body reads, so you choose.',o:['Colour swap first, then a neon-edge version side by side','Colour swap only'],rec:0},
+
+    {id:'weights',p:1,s:'Helper weights',q:'How are helper muscles weighted?',why:'Today every helper gets 33%. This sets how fast every helper ranks up.',o:['Per exercise, from the table you mark up','One flat 35% for every helper'],rec:0},
+    {id:'carry',p:1,s:'RP fractions',q:'Carry fractions of RP between sessions?',why:'Rounding hides the %: 2 or 5 sets of bench both give triceps +1.',o:['Carry them (scores still show whole numbers)','Round per session as today'],rec:0},
+    {id:'overall',p:1,s:'Overall RP label',q:'Overall "43 RP" is an average, not a total. How should it read?',why:'"4 to Strong II" means raising the average by 4.',o:['"43 RP average", plus an overall rank-up moment','Keep "43 RP"','Rank and bar only'],rec:0},
+    {id:'fadeShow',p:1,s:'Fading on Body page',q:'Show fading on the Body page?',why:'Today it\'s switched off there, though the Ranks screen promises it.',o:['Yes, as a dimmed rank colour','No, only in the 3D Recovery view'],rec:0},
+    {id:'sorename',p:1,s:'Injury naming',q:'What do we call the injury screen?',why:'The app only knows what you told it, so clinical words don\'t fit.',o:['"Sore spots" and "Flagged"','"Injury map" and "Vulnerable"','"Aches" and "Resting"'],rec:0},
+    {id:'sides',p:1,s:'Left and right',q:'Can flags have a side?',why:'"Left knee" needs extra shader work, checked on screen first.',o:['Left, right or both','Both sides only'],rec:0},
+    {id:'motion',p:1,s:'Motion on Body page',q:'The Body page stays still (your 15 Oct rule). Red pulse and aura there?',why:'Moving effects keep the phone drawing and use battery.',o:['Still on the Body page (steady red, still halo). Pulsing on their own screens.','Pulse on the Body page too'],rec:0},
+    {id:'flagplan',p:1,s:'Flag changes plan',q:'Does flagging something change your plan?',why:'A flagged knee could still get squats.',o:['A tag only, and no dares or neglect nudges for it','A tag plus one set fewer','Drop those exercises'],rec:0},
+
+    {id:'weather',p:2,s:'Weather source',q:'Which weather service?',why:'Open-Meteo\'s free tier is non-commercial, and Ossa sells Pro. This decides what goes into Build 9.',o:['MET Norway: free for commercial use with a credit','Open-Meteo paid key','Apple WeatherKit (most work)'],rec:0},
+    {id:'locate',p:2,s:'Finding your town',q:'How does Ossa find your town?',why:'Location needs a permission prompt and a privacy answer.',o:['Approximate location, with typing a town as the fallback','Typing a town only'],rec:0},
+    {id:'plus',p:2,s:'"+" on a pick',q:'What does "+" on a recommended lift do?',why:'Your 4 Oct rule cut "add to workout" from detail screens. This reuses the existing "Add to today".',o:['Adds it to today (picks only, not on detail screens)','Opens that muscle\'s session','No button'],rec:0},
+    {id:'names2',p:2,s:'Train screen names',q:'Names for the new Train screens?',why:'"Density" reads like a measurement.',o:['Exercises · Kinetic chain · Where your sets went','Discovery · Kinetic Chain · Density Report'],rec:0},
+    {id:'share2',p:2,s:'Share buttons',q:'Share buttons on Kinetic chain and Where your sets went?',why:'Sharing was out by decision. The card in Phase 5 brings it back.',o:['Drop them now, decide once with the card','Add them now'],rec:0},
+    {id:'build9',p:2,s:'Build 9 extras',q:'Put the widgets and a black launch screen in Build 9?',why:'The streak screen already advertises a widget that doesn\'t exist. Later means another build.',o:['Yes','Later'],rec:0},
+
+    {id:'tab',p:3,s:'Third tab',q:'Rename Breathe to Focus?',why:'The core loop is Train, Focus, Recover. Breathing moves one tap in.',o:['Focus','Keep Breathe'],rec:0},
+    {id:'currency',p:3,s:'Currencies',q:'Which points exist?',why:'Learn already has XP. The designs add aura XP, Grit and RP.',o:['RP for muscles. XP for the aura only, Learn\'s becomes "Learn level". No Grit.','One shared XP for everything'],rec:0},
+    {id:'pose',p:3,s:'Monk pose',q:'How does your body sit in Monk Mode?',why:'Lotus pushes our rig hard. A block sit is safe.',o:['Try lotus first, fall back to a block sit','Block sit','Standing, head bowed'],rec:0},
+    {id:'lite',p:3,s:'"Monk Mode Lite"',q:'A "Monk Mode Lite" programme sits in Coming soon. Keep it?',why:'Two things with nearly the same name.',o:['Remove it from Coming soon','Rename it'],rec:0},
+
+    {id:'protein',p:4,s:'Protein target',q:'How is the protein target set?',why:'Ossa doesn\'t store weight, and the app allows 13-year-olds.',o:['Grams from your weight if you add it; portions otherwise and always under 18','Portions only, no weight'],rec:0},
+    {id:'fuelrule',p:4,s:'Fuel game rule',q:'Should fuel make muscles ready sooner?',why:'It changes every "ready in" time in the app.',o:['Yes, up to 8 h a day, never more than a quarter, labelled "Game rule"','Display only, no effect'],rec:0},
+    {id:'nudge',p:4,s:'Reset reminder',q:'Is the 45-minute reset reminder on by default?',why:'It\'s a new kind of notification.',o:['Ask once on Workout complete','On for everyone','Off unless switched on'],rec:0},
+    {id:'fuelfree',p:4,s:'Fuel free or Pro',q:'Is Fuel free?',why:'Ranks, streak and dares are free.',o:['Free','Pro'],rec:0},
+
+    {id:'unlock',p:5,s:'Path unlock',q:'When can you choose Tank or Scout?',why:'Overall Forged II takes most people 7 to 12 months.',o:['Radar from day one, choose at Overall Strong I','Forged II as designed'],rec:0},
+    {id:'prestige',p:5,s:'Prestige model',q:'Prestige: reset the rank or keep it?',why:'You decided ranks never drop. A reset also drops your overall rank and weak link.',o:['A lap: rank kept, 1.5× RP, earns a material','A true reset to Fragile'],rec:0},
+    {id:'where',p:5,s:'Where Evolve lives',q:'Where do trophies, Ideal Self and your card live?',why:'The designs light Learn and Breathe, which don\'t fit.',o:['Profile › Evolve (from your avatar)','A sixth tab','Learn tab as designed'],rec:0},
+    {id:'paidmats',p:5,s:'Paid materials',q:'Sell materials in Pro?',why:'Today\'s rule is "earned by showing up, never bought".',o:['Yes, 3 extra whole-body materials. Earned ones stay free.','No paid cosmetics'],rec:0},
+    {id:'vault',p:5,s:'Paywall name and prices',q:'What is the paywall called, and do prices change?',why:'The App Store product is "Ossa Pro". The design shows $14.99 and $99.99.',o:['Keep products and prices. Title "Ossa Pro", "Vault" over the materials.','Title "Vessel Vault"','New prices (App Store Connect work)'],rec:0},
+    {id:'vessel',p:5,s:'"Vessel" in copy',q:'Use the word "Vessel" in the app?',why:'Today the copy says "your body".',o:['Internal name only','Use it in the app'],rec:0},
+
+    {id:'reward',p:6,s:'Dare reward',q:'What does a weather dare earn?',why:'Grit would be a fourth kind of points.',o:['Counts towards a Weatherproof trophy','Aura XP'],rec:0},
+    {id:'cold',p:6,s:'Cold exposure',q:'How far does cold go?',why:'The design says "no heavy outer layers" in severe weather.',o:['Walks dressed for the weather, never severe or dark','Also "fewer layers" dares'],rec:0},
+
+    {id:'version',p:7,s:'Version number',q:'Ship as 1.0.0 or 2.0.0?',why:'1.0 was never released, and 1.0.0 is waiting in App Store Connect.',o:['1.0.0 (2.0 is the internal name)','2.0.0'],rec:0},
+    {id:'name',p:7,s:'App Store name',q:'App Store name for this release?',why:'Three names exist today: Posture and Training, Body Map, Body Level Up.',o:['"Ossa: Body Level Up", if it\'s free','Keep "Ossa: Posture and Training"'],rec:0},
+    {id:'android',p:7,s:'Platforms',q:'Is Android in this release?',why:'There\'s no RevenueCat Android key, and widgets, location and splash would each need work.',o:['iPhone only','iPhone and Android'],rec:0}
+  ];
+  var KEY='ossa2-plan-answers', state={};
+  try{ state=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ state={}; }
+  function pick(q){ return (q.id in state)?state[q.id]:q.rec; }
+
+  document.querySelectorAll('.decide').forEach(function(box){
+    var p=+box.dataset.phase, qs=Q.filter(function(q){return q.p===p;});
+    var html='<div class="decide-h"><h3>Decide before Phase '+p+'</h3><span class="eyebrow">'+qs.length+' question'+(qs.length===1?'':'s')+'</span></div>';
+    qs.forEach(function(q){
+      html+='<fieldset class="q" style="border:0;margin:0;min-width:0"><legend class="qt" style="padding:0">'+q.q+'</legend><p class="why">'+q.why+'</p><div class="opts">';
+      q.o.forEach(function(o,i){
+        var id='q_'+q.id+'_'+i;
+        html+='<label class="opt" for="'+id+'"><input type="radio" id="'+id+'" name="q_'+q.id+'" value="'+i+'"'+(pick(q)===i?' checked':'')+'><span>'+o+(i===q.rec?(q.cur?' <em class="cur">Current</em>':' <em>My pick</em>'):'')+'</span></label>';
+      });
+      html+='</div></fieldset>';
+    });
+    box.innerHTML=html;
+  });
+
+  function render(){
+    var lines=['Ossa 2.0 answers'], n=0, last=-1;
+    Q.forEach(function(q,ix){
+      if(q.p!==last){ lines.push(''); lines.push('Phase '+q.p); last=q.p; }
+      var i=pick(q), ch=i!==q.rec; if(ch) n++;
+      lines.push('- '+q.s+': '+q.o[i]+(ch?'  [changed]':''));
+    });
+    document.getElementById('out').value=lines.join('\n');
+    document.getElementById('changedCount').textContent= n? (n+' changed from my picks.') : 'All '+Q.length+' are on my picks.';
+  }
+  document.addEventListener('change',function(e){
+    var t=e.target; if(!t.name||t.name.indexOf('q_')!==0) return;
+    var id=t.name.slice(2), q=Q.find(function(x){return x.id===id;}); var v=+t.value;
+    if(v===q.rec) delete state[id]; else state[id]=v;
+    try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(err){}
+    render();
+  });
+  document.getElementById('reset').addEventListener('click',function(){
+    state={}; try{ localStorage.removeItem(KEY); }catch(e){}
+    Q.forEach(function(q){ var el=document.getElementById('q_'+q.id+'_'+q.rec); if(el) el.checked=true; });
+    render(); say('Back to my picks.');
+  });
+  function say(m){ var t=document.getElementById('toast'); t.textContent=m; clearTimeout(say.t); say.t=setTimeout(function(){t.textContent='';},3000); }
+  document.getElementById('copy').addEventListener('click',function(){
+    var ta=document.getElementById('out'), txt=ta.value;
+    function fallback(){ ta.focus(); ta.select(); say('Selected. Press Ctrl+C (or Cmd+C) to copy.'); }
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(function(){ say('Copied. Paste it into our chat.'); },fallback); }
+      else fallback();
+    }catch(e){ fallback(); }
+  });
+  render();
+
+  var lb=document.getElementById('lb'), lbImg=document.getElementById('lbImg'), lbCap=document.getElementById('lbCap'), lastBtn=null;
+  document.querySelectorAll('.shot button').forEach(function(b){
+    b.addEventListener('click',function(){ lastBtn=b; lbImg.src=b.dataset.src; lbImg.alt=b.dataset.cap; lbCap.textContent=b.dataset.cap; lb.hidden=false; });
+  });
+  function close(){ lb.hidden=true; if(lastBtn) lastBtn.focus(); }
+  lb.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!lb.hidden) close(); });
+})();
+</script>

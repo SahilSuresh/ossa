@@ -1,0 +1,52 @@
+/* LIFE STATS: the character sheet (stats.js). The intro's "sheet" step and the panel the level emblem opens. */
+.st-sheet{display:flex;flex-direction:column;gap:var(--sp-3);width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card-lg);padding:var(--sp-4)}
+.st-sheet.intro{background:var(--glass-strong);border-color:var(--glass-line);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur))}
+.st-head{display:flex;align-items:center;gap:var(--sp-3)}
+.st-hex{position:relative;flex:none;width:52px;height:58px;clip-path:var(--hex);background:var(--c);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--on-accent);line-height:1}
+.st-hex::before{content:"";position:absolute;inset:2px;clip-path:var(--hex);background:var(--surface-2)}
+.st-hex b,.st-hex small{position:relative;color:var(--text-1)}
+.st-hex b{font-size:var(--fs-4);font-weight:900;font-variant-numeric:tabular-nums}
+.st-hex small{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);color:var(--text-2)}
+.st-who{display:flex;flex-direction:column;gap:2px;min-width:0}
+.st-who b{font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-4);text-transform:uppercase;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st-who em{font-style:normal;font-size:var(--fs-2);font-weight:700}
+.st-mid{display:grid;grid-template-columns:112px 1fr;gap:var(--sp-3);align-items:center}
+.st-rad{width:112px;height:112px;overflow:visible}
+.st-grid{fill:none;stroke:var(--line-2);stroke-width:.6}
+.st-ghost{fill:none;stroke:var(--glow-soft);stroke-width:1;stroke-dasharray:3 2;opacity:.7}
+.st-shape{fill:var(--glow-a);stroke:var(--glow);stroke-width:1.4;stroke-linejoin:round}
+.st-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--sp-2);min-width:0}
+.st-list li{display:grid;grid-template-columns:34px 1fr 26px auto;align-items:center;gap:var(--sp-2)}
+.st-ab{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);color:var(--c)}
+.st-bar{position:relative;height:6px;border-radius:var(--r-pill);background:var(--surface-3);overflow:hidden}
+.st-bar i,.st-bar s{position:absolute;left:0;top:0;bottom:0;border-radius:var(--r-pill)}
+.st-bar s{background:var(--c);opacity:.22;text-decoration:none}
+.st-bar i{background:var(--c);z-index:1}
+.st-n{font-size:var(--fs-3);font-weight:900;font-variant-numeric:tabular-nums;text-align:right}
+.st-up{font-size:var(--fs-1);font-weight:700;color:var(--glow-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+.st-rows{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.st-row{display:flex;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-2) 0;border-bottom:1px solid var(--line);font-size:var(--fs-2)}
+.st-row:last-child{border-bottom:0}
+.st-row span{color:var(--text-2)}
+.st-row b{font-weight:800;text-align:right}
+.st-good{color:var(--glow)}
+.st-foot{margin:0;font-size:var(--fs-1);color:var(--text-3);line-height:1.4}
+/* the panel in the app */
+.st-wrap{position:absolute;inset:0;z-index:30;pointer-events:none}
+.st-wrap.on{pointer-events:auto}
+.st-bg{position:absolute;inset:0;background:var(--glass-2);opacity:0;transition:opacity var(--dur-2)}
+.st-wrap.on .st-bg{opacity:1}
+.st-p{position:absolute;left:0;right:0;bottom:0;max-height:90%;overflow-y:auto;display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-2) var(--sp-4) calc(var(--sab) + var(--sp-4));border-radius:var(--r-sheet) var(--r-sheet) 0 0;background:var(--surface-1);border-top:1px solid var(--line-2);transform:translateY(100%);transition:transform var(--dur-3) var(--ease)}
+.st-wrap.on .st-p{transform:none}
+.st-grab{align-self:center;width:40px;height:4px;border-radius:2px;background:var(--line-3);margin-bottom:var(--sp-1)}
+.st-close{background:var(--surface-3);color:var(--text-1);border:1px solid var(--line-2)}
+@media (prefers-reduced-motion:reduce){ .st-p,.st-bg{transition:none} }
+.st-top{display:flex;justify-content:flex-end}
+.st-how{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
+.st-how div{display:flex;flex-direction:column;gap:2px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card);padding:var(--sp-3);font-size:var(--fs-2)}
+.st-how b{color:var(--c);font-weight:800}
+.st-how span{color:var(--text-2)}
+#rdHero .u-lvl{pointer-events:auto;cursor:pointer}   /* the emblem opens the character sheet */
+@media (max-height:700px){ .st-sheet{padding:var(--sp-3);gap:var(--sp-2)} .st-mid{grid-template-columns:92px 1fr} .st-rad{width:92px;height:92px} .st-foot{display:none} }
+.st-aura{color:var(--stone-3)}
+.st-earn{margin:var(--sp-1) 0 0;font-size:var(--fs-1);color:var(--text-2)}

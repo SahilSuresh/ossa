@@ -1,0 +1,212 @@
+/* THE FORGE (forge.js) and the quest card's new parts (deck.js). Colours from tokens: hot = --fuel, warm/ready = --glow,
+   cooling/fading = --stone-3 (olive-grey), grey = --rk-1, recovering = --amber. */
+/* the quest card */
+.dk-qwhy{display:block;margin-top:2px;font-size:var(--fs-2);line-height:1.35;color:var(--text-1);max-width:62%}
+.dk-rew svg{width:12px;height:12px;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2.6}
+.dk-rew.min{background:var(--amber-a);color:var(--amber)}
+.dk-swaprow{display:flex;justify-content:flex-end;margin:calc(var(--sp-2) * -1) 0 var(--sp-2)}
+.dk-swap{padding:var(--sp-2) var(--sp-1);font-size:var(--fs-2);font-weight:800;color:var(--text-2);background:none;border:0;text-decoration:underline;text-decoration-color:var(--line-3);text-underline-offset:3px}
+.dk-quest.is-done .dk-qeye{color:var(--glow)}
+/* the side quest */
+.fg-tick{display:flex;align-items:center;gap:var(--sp-3);width:100%;margin-top:var(--sp-3);padding:var(--sp-3);border-radius:var(--r-sm);background:var(--surface-3);border:1px solid var(--line-2);color:var(--text-1);font-size:var(--fs-3);font-weight:800;text-align:left}
+.fg-tick i{flex:none;width:22px;height:22px;border-radius:6px;border:2px solid var(--glow)}
+.fg-tick span{flex:1}
+.fg-tick em{font-style:normal;font-size:var(--fs-1);color:var(--glow)}
+.fg-not{margin-top:var(--sp-2)}
+.fg-struck .dare-t{text-decoration:line-through;text-decoration-color:var(--glow);color:var(--text-2)}
+/* the pop */
+.fg-pop{position:absolute;z-index:60;transform:translateX(-50%);padding:2px var(--sp-2);border-radius:var(--r-pill);background:var(--bg);font-size:var(--fs-2);font-weight:900;color:var(--glow);pointer-events:none;white-space:nowrap;font-variant-numeric:tabular-nums;animation:fgUp .9s ease-out forwards}
+.fg-pop.won{color:var(--glow-soft)}
+@keyframes fgUp{to{transform:translate(-50%,-46px);opacity:0}}
+@keyframes fgFade{to{opacity:0}}
+@media (prefers-reduced-motion:reduce){.fg-pop{animation:fgFade .9s forwards}}
+/* the ghost line */
+.fg-ghost{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);margin-bottom:var(--sp-2);padding:var(--sp-2) var(--sp-3);border:1px dashed var(--stone-3);border-radius:var(--r-sm);font-size:var(--fs-2);color:var(--text-2)}
+.fg-ghost b{color:var(--text-1)}
+.fg-ghost em{flex:none;font-style:normal;font-size:var(--fs-1);font-weight:800;color:var(--stone-3)}
+.fg-ghost.won{border-style:solid;border-color:var(--glow);background:var(--glow-a);color:var(--glow);animation:fgFlash .6s ease-out}
+.fg-ghost.won em{color:var(--glow)}
+@keyframes fgFlash{from{background:var(--glow);color:var(--on-accent)}}
+/* the muscle meter's heat */
+.wk-mm[data-heat="cool"] .wk-mm-b .now{background:var(--stone-3)}
+.wk-mm[data-heat="warm"] .wk-mm-b .now{background:var(--glow)}
+.wk-mm[data-heat="hot"] .wk-mm-b .now{background:var(--fuel)}
+/* the rest ring */
+.wk-rest .wk-rest-t.fg-rt{display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);margin:var(--sp-2) auto 0}
+.fg-rw{position:relative;display:grid;place-items:center;width:132px;height:132px}
+.fg-rw b{position:relative;z-index:1;margin:0!important;line-height:1}
+.fg-ring{position:absolute;inset:0;width:132px;height:132px;transform:rotate(-90deg)}
+.fg-ring .rbg{fill:none;stroke:var(--cta-2);stroke-width:7}
+.fg-ring .rfg{fill:none;stroke:var(--amber);stroke-width:7;stroke-linecap:round;stroke-dasharray:289}
+/* the cold-muscle sheet */
+.fg-p{z-index:30;padding:calc(var(--sat) + var(--sp-3)) var(--sp-4) calc(var(--sab) + var(--sp-4));gap:var(--sp-3);overflow-y:auto}
+.fg-top{display:flex;justify-content:flex-end}
+.fg-h h2{margin:2px 0;font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-45);text-transform:uppercase;line-height:1.05}
+.fg-h p{margin:0;font-size:var(--fs-2);color:var(--text-2)}
+.fg-leg{display:flex;flex-wrap:wrap;gap:var(--sp-3);font-size:var(--fs-1);color:var(--text-2)}
+.fg-leg span::before{content:"";display:inline-block;width:8px;height:8px;margin-right:5px;border-radius:50%;vertical-align:middle;background:var(--k)}
+.fg-leg .hot,.fg-m.hot{--k:var(--fuel)} .fg-leg .ready,.fg-m.ready{--k:var(--glow)} .fg-leg .fade,.fg-m.fade{--k:var(--stone-3)} .fg-leg .grey,.fg-m.grey{--k:var(--rk-1)} .fg-leg .rec,.fg-m.rec{--k:var(--amber)}
+.fg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2)}
+.fg-m{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;padding:var(--sp-2);border-radius:var(--r-sm);background:var(--surface-2);border:1.5px solid var(--line);box-shadow:inset 3px 0 0 var(--k);text-align:left;color:var(--text-1)}
+.fg-m b{font-size:var(--fs-2);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.fg-m small{font-size:var(--fs-1);color:var(--text-2)}
+.fg-m.on{border-color:var(--cta);background:var(--surface-3)}
+.fg-m:disabled{opacity:.45}
+.fg-card{display:flex;flex-direction:column;gap:var(--sp-3);padding:var(--sp-4);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line)}
+.fg-card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--sp-2)}
+.fg-card li{display:flex;flex-direction:column}
+.fg-card li b{font-size:var(--fs-3)}
+.fg-card li span,.fg-none{font-size:var(--fs-2);color:var(--text-2);margin:0}
+.fg-sum{display:flex;align-items:center;gap:var(--sp-2)}
+.fg-n{font-size:var(--fs-1);color:var(--text-2)}
+/* Train by area */
+.fg-cols{display:flex;gap:var(--sp-2);overflow-x:auto;margin:0 calc(var(--sp-4) * -1);padding:0 var(--sp-4) var(--sp-2);scroll-snap-type:x mandatory;scrollbar-width:none}
+.fg-cols::-webkit-scrollbar{display:none}
+.fg-col{flex:none;width:112px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:var(--sp-2);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line);color:var(--text-1);text-align:left;scroll-snap-align:start}
+.fg-cth{width:100%;height:96px;border-radius:var(--r-sm);background:var(--surface-3) center/contain no-repeat;margin-bottom:var(--sp-1)}
+.fg-col b{font-size:var(--fs-2);font-weight:800}
+.fg-col small{font-size:var(--fs-1);color:var(--glow)}
+.fg-col:active{transform:scale(.97)}
+
+/* ---------- The workout on one screen (19 Oct, Andrej: "easy to navigate … doesn't have to scroll … very nice and clean") ----------
+   Dark all the way (the rest panel is no longer a cream sheet), a tighter card, icon-only Watch and Insights,
+   the plan's tip hidden when the ghost line says the same thing, compact set rows, the dock pinned to the bottom. */
+.app.tactive .trainv>.wk-bar{padding-top:calc(var(--sat) + var(--sp-1));padding-bottom:var(--sp-2)}
+.app.tactive .trainv>.tf-top.wk-top{margin-top:var(--sp-2);padding:var(--sp-3) var(--sp-4)}
+.app.tactive .wk-top .wk-chips{flex-wrap:nowrap;overflow:hidden;mask-image:linear-gradient(90deg,var(--bg) 85%,transparent);-webkit-mask-image:linear-gradient(90deg,var(--bg) 85%,transparent)}
+.app.tactive .wk-top .wk-chips .wk-chip{flex:none}
+.app.tactive .wk-top .tf-name{font-size:var(--fs-45);line-height:1.05;margin-top:var(--sp-2)}
+.app.tactive .wk-top .tf-meta{margin-top:var(--sp-2)}
+.app.tactive .wk-top .tf-meta em{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app.tactive .wk-top .tf-watch{width:36px;min-width:36px;height:36px;min-height:36px;padding:0;justify-content:center;font-size:0;gap:0}
+.app.tactive .wk-top .tf-watch svg{width:16px;height:16px;margin:0}
+.app.tactive .wk-mm{margin-top:var(--sp-2)}
+.app.tactive .trainv>.tf-bot.wk-bot{padding-top:var(--sp-3)}
+.app.tactive .wk-bot:has(.fg-ghost) .wk-nudge{display:none}
+.app.tactive .wk-tbl .wk-th{display:none}
+.app.tactive .wk-tbl .wk-tr{min-height:34px}
+.app.tactive .fg-ghost{margin-bottom:var(--sp-2);padding:6px var(--sp-3);font-size:var(--fs-1)}
+.app.tactive .fg-ghost span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+/* the rest panel, dark */
+.wk-rest{max-height:none;background:var(--surface-2);color:var(--text-1);border:1px solid var(--line-2);border-radius:var(--r-card-lg);padding:var(--sp-3) var(--sp-4);gap:var(--sp-2)}
+.wk-rest-h .u-eyebrow,.wk-rest-h em{color:var(--text-2)}
+.wk-rest-t b,.wk-rest-t.fg-rt b{color:var(--text-1)}
+.wk-rest-t small{color:var(--text-2)}
+.wk-rest-why{color:var(--text-2);text-align:center}
+.fg-ring .rbg{stroke:var(--line-2)}
+.wk-rest-b .wk-rb{background:var(--surface-3);color:var(--text-1);border:1px solid var(--line-2)}
+.wk-rest-b .wk-rb.wk-skip{background:var(--glow);color:var(--on-accent);border-color:var(--glow)}
+.wk-rest .wk-eff{border-bottom-color:var(--line)}
+.wk-rest .wk-eff-q .u-eyebrow{color:var(--text-2)}
+.wk-rest .wk-eff-q b{color:var(--text-1)}
+.wk-rest .wk-eff-b button{height:48px;background:var(--surface-3);color:var(--text-1);border:1px solid var(--line-2)}
+.wk-rest .wk-eff-b button small{color:var(--text-2)}
+.fg-rw,.fg-ring{width:112px!important;height:112px!important}
+.wk-rest-t.fg-rt b{font-size:var(--fs-5)}
+@media (max-height:760px){
+  .app.tactive .wk-top .wk-mm small{display:none}
+  .app.tactive .wk-nudge{display:none}
+  .wk-rest-why{display:none}
+  .fg-rw,.fg-ring{width:96px!important;height:96px!important}
+}
+/* ---------- The run after a workout, cleaned up (19 Oct, Andrej: "cleaner … consistent … the top part looks off") ----------
+   Solid black behind every step except the results (where the lit body shows, fading softly into black), so no
+   half-lit band with a hard edge; a readable top row; the level step centred with a full hex outline; the app's
+   lime primary button; "Next: …" under it. */
+.app.tdone .trainv>.dn.wk-run{background:var(--bg)}
+.app.tdone .trainv>.dn.wk-run:has(.wk-run-s.lit:not([hidden])){background:transparent}
+.wk-run-s.lit::before{background:linear-gradient(transparent 30%,color-mix(in srgb,var(--bg) 70%,transparent) 55%,var(--bg) 75%)}
+.wk-run-skip{color:var(--text-2)}
+.wk-run-top .wk-run-lbl{color:var(--text-2)}
+.wk-run-in:has(.wk-lvl){justify-items:center;text-align:center;align-content:center;min-height:100%}
+.wk-lvl .u-lvl-hex .g{stroke:var(--line-2);stroke-width:4}
+.wk-lvl .u-lvl-hex .p{stroke:var(--c,var(--glow));stroke-width:4}
+.wk-run-cta .u-btn.primary,.wk-run-cta .btn.primary{background:var(--glow);color:var(--on-accent)}
+.wk-run-hint{color:var(--text-2)}
+/* the workout and the run use the whole screen: their own top rows add the safe area once (no band above them, no double inset) */
+.app.train.tactive .trainv,.app.train.tdone .trainv{top:0}
+#rkUpGo,#evUpGo{background:var(--glow)!important;color:var(--on-accent)!important}
+/* nothing on the page rubber-bands: the Body page is one screen and never scrolls (19 Oct, Andrej) */
+html,body{overscroll-behavior:none}
+.app.rdx #tv-today{overflow:hidden;overscroll-behavior:none}
+
+/* ---------- The intro, every screen readable and Continue always on screen (19 Oct, Andrej) ----------
+   The answer area can scroll a little when a phone is short, but the main button stays pinned at its bottom.
+   Selected answers are dark with a lime edge (no cream cards on the dark screen); sublines a step brighter. */
+.o2.ob2 .o2-low{max-height:70%;padding-bottom:0}
+.o2.ob2.ob-fit .o2-low{max-height:74%}
+.o2.ob2 .o2-space{min-height:96px}
+.o2.ob2 .o2-low .o2-act>.btn.primary.big,.o2.ob2 .o2-low .o2-act>.ey-ob>.btn.primary.big,.o2.ob2 .o2-low .o2-act>.btn.primary{position:sticky;bottom:0;z-index:3;box-shadow:0 -14px 18px var(--bg),0 8px 0 var(--bg)}
+.u-ob-card.sel{background:var(--surface-2);border:1.5px solid var(--glow);color:var(--text-1)}
+.u-ob-card.sel small,.u-ob-card.sel .u-ob-tch small,.u-ob-card.sel .u-ob-tq{color:var(--text-2)}
+.u-ob-card.sel .u-ob-tch b{color:var(--text-1)}
+.u-ob-card.sel .u-ob-tq svg{stroke:var(--glow)}
+.u-ob-card.sel .u-ob-tk{background:var(--glow);border-color:var(--glow);color:var(--on-accent)}
+.u-ob-card small{color:var(--text-2)}
+.o2.ob2 .o2-act .o2-p,.o2-hint{color:var(--text-2)}
+/* the name field: one even lime edge on focus, nothing clipped */
+.o2.ob2 .o2-in{padding:2px}
+.o2.ob2 .o2-in input{outline:none;border:1.5px solid var(--line-2);box-shadow:none}
+.o2.ob2 .o2-in input:focus{border-color:var(--glow);box-shadow:none;outline:none}
+/* the keyboard is up (the page gets short): the stone body fades back instead of being cropped */
+@media (max-height:520px){
+  .app.onboarding #stage{opacity:.12;transition:opacity var(--dur-2)}
+  .o2.ob2 .o2-space{min-height:24px}
+  .o2.ob2 .o2-low{max-height:none}
+}
+/* the phone-hours step: the math card fits */
+.o2.ob2 .ey-ob{gap:var(--sp-1)}
+.o2.ob2 .ey-math{padding:var(--sp-2) var(--sp-3);gap:2px}
+.o2.ob2 .ey-yrs{font-size:var(--fs-6)}
+.o2.ob2 .ey-obh{font-size:var(--fs-5)}
+.o2.ob2 .ey-grid{gap:2px}
+@media (max-height:800px){ .o2.ob2 .ey-math small,.o2.ob2 .ey-scale span:nth-child(2){display:none} }
+/* the paywall: the previous line never shows behind it */
+.o2.ob2[data-step="pro"] .o2-say{opacity:0}
+.o2.ob2 .o2-low .btn.primary.big{position:sticky;bottom:0;z-index:3;box-shadow:0 -14px 18px var(--bg),0 8px 0 var(--bg)}
+@media (max-height:820px){ .st-sheet.intro{padding:var(--sp-3);gap:var(--sp-2)} .st-sheet.intro .st-foot,.st-sheet.intro .st-earn{display:none} .st-sheet.intro .st-mid{grid-template-columns:88px 1fr} .st-sheet.intro .st-rad{width:88px;height:88px} .st-sheet.intro .st-row{padding:4px 0} }
+/* the Train header without the greeting: compact */
+.dk-top{padding-bottom:var(--sp-2)}
+.dk-top .dk-hh{font-size:var(--fs-5)}
+.dk-sheet>.dk-week{margin:0 0 var(--sp-3)}
+.dk-qwhy{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* Workout complete: the body in its own box, centred; stats in a 2×2 grid; one row of pills; even spacing */
+.wk-run-s[data-id="results"]:not([hidden]){display:flex;flex-direction:column}
+.wk-run-s[data-id="results"] .dn-top.wk-res{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);text-align:center;margin:0;padding:0}
+.wk-res-fig{flex:1 1 auto;width:100%;min-height:170px;max-height:300px}
+.wk-run-s[data-id="results"] .u-h1{margin:0;font-size:var(--fs-5)}
+.wk-run-s[data-id="results"] .dn-stats{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);width:100%;margin:var(--sp-2) 0 0}
+.wk-run-s[data-id="results"] .dn-stats>div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:var(--sp-2);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line)}
+.wk-run-s[data-id="results"] .dn-stats b{font-size:var(--fs-5);line-height:1}
+.wk-run-s[data-id="results"] .dn-stats span{font-size:var(--fs-1);color:var(--text-2)}
+.wk-run-s[data-id="results"] .wk-tease{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--sp-2);margin:var(--sp-1) 0 0}
+.wk-run-s[data-id="results"] .wk-tease span{margin:0}
+.wk-run-s[data-id="results"] .dn-ms{align-self:stretch;text-align:left}
+/* the lit body shows only in its box: black above it (no glow behind the status bar) and below the stats */
+.wk-run-s.lit::before{background:linear-gradient(var(--bg) 0,var(--bg) 9%,transparent 16%,transparent 46%,var(--bg) 62%)}
+.wk-run-s[data-id="results"] .dn-top.wk-res{width:100%;max-width:none;text-shadow:none}
+.wk-res-fig{min-height:150px}
+.wk-run-s[data-id="results"] .dn-stats{grid-template-columns:repeat(4,1fr);gap:6px}
+.wk-run-s[data-id="results"] .dn-stats>div{padding:var(--sp-2) 4px}
+.wk-run-s[data-id="results"] .dn-stats b{font-size:var(--fs-4);white-space:nowrap}
+.wk-run-s[data-id="results"] .dn-ms{padding:var(--sp-2) var(--sp-3)}
+.wk-run-s[data-id="results"] .dn-ms b{font-size:var(--fs-3)}
+/* the lit steps' window round the body box (set by fgFigWindow) */
+.wk-run-s.lit::before{background:linear-gradient(var(--bg) 0,var(--bg) var(--fgA,9%),transparent var(--fgB,16%),transparent var(--fgC,46%),var(--bg) var(--fgD,62%))}
+/* the last step: "Done", the body in its own box, then the cards stacked above Done */
+.wk-run-s[data-id="next"]:not([hidden]){display:flex;flex-direction:column}
+.wk-run-s[data-id="next"] .dn-top.wk-res{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);width:100%;max-width:none;margin:0;padding:0;text-align:center;text-shadow:none}
+.wk-run-s[data-id="next"] .dn-top.wk-res .u-h1{margin:0;font-size:var(--fs-5);text-wrap:balance}
+.wk-run-s[data-id="next"] .wk-res-fig{min-height:140px;max-height:none}
+.wk-run-s[data-id="next"] .dn-low.wk-done-low{display:grid;gap:var(--sp-2);margin:var(--sp-2) 0 0;padding:0;background:none}
+.wk-done-low>#dnEff{order:0}
+.wk-done-low>.dz-done{order:1}
+.wk-done-low>#dnNext{order:2}
+.wk-done-low>.xlog{order:3}
+.wk-done-low .xlog{margin:0}
+/* a muscle's gain, rising off the body on Workout complete */
+.fg-mtag{position:absolute;z-index:4;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;pointer-events:none;animation:fgTag 1.6s ease-out forwards}
+.fg-mtag i{width:10px;height:10px;border-radius:50%;background:var(--glow);box-shadow:0 0 0 4px var(--glow-a),0 0 16px var(--glow)}
+.fg-mtag b{padding:2px var(--sp-2);border-radius:var(--r-pill);background:var(--glass-strong);border:1px solid var(--glow);font-size:var(--fs-1);font-weight:800;color:var(--glow);white-space:nowrap}
+@keyframes fgTag{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}15%{opacity:1;transform:translate(-50%,-50%) scale(1)}70%{opacity:1;transform:translate(-50%,-90%)}100%{opacity:0;transform:translate(-50%,-130%)}}
+.wk-done-low>*{margin:0!important}

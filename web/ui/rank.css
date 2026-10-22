@@ -1,0 +1,90 @@
+/* RANK (rank.js): the second tab's page. Your rank and aura, the next unlock, level-up tools, your muscles, the road. */
+.rn{display:flex;flex-direction:column;gap:var(--sp-3);padding-bottom:var(--sp-5)}
+.rn .u-top{margin-bottom:0}
+.rn .u-section-h{margin:var(--sp-2) 0 0}
+.rn-sec{display:flex;flex-direction:column;gap:var(--sp-2)}
+
+/* a running lock-in: back to it in one tap */
+.rn-run{display:flex;align-items:center;gap:var(--sp-2);width:100%;min-height:44px;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-pill);background:var(--cyan-a);border:1px solid var(--cyan);color:var(--text-1);font-size:var(--fs-2);font-weight:800;text-align:left}
+.rn-run i{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:rnBlink 1.6s ease-in-out infinite}
+.rn-run b{color:var(--cyan);font-variant-numeric:tabular-nums}
+.rn-run em{margin-left:auto;font-style:normal;color:var(--text-2);font-size:var(--fs-1)}
+@keyframes rnBlink{50%{opacity:.35}}
+
+/* your rank: hex level, rank name, the ladder, the aura bar */
+.rn-hero{display:flex;flex-direction:column;gap:6px;padding:var(--sp-3) var(--sp-4) 2px;border-radius:var(--r-card-lg);background:radial-gradient(120% 120% at 0% 0%,color-mix(in srgb,var(--rc) 10%,transparent),transparent 55%),var(--surface-2);border:1px solid var(--line-2)}
+.rn-me{display:flex;align-items:center;gap:var(--sp-4);width:100%;padding:0;background:none;border:0;color:var(--text-1);text-align:left}
+.rn-hex{position:relative;flex:none;display:grid;place-items:center;width:66px;height:66px}
+.rn-hex svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.rn-hex .g{fill:var(--surface-3);stroke:var(--line-2);stroke-width:3;stroke-linejoin:round}
+.rn-hex .p{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px var(--rc))}
+.rn-hex b{position:relative;font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-5);line-height:1;color:var(--rc);font-variant-numeric:tabular-nums}
+.rn-who{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rn-who>b{font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-5);line-height:1.05;text-transform:uppercase;color:var(--rc)}
+.rn-who>span{font-size:var(--fs-2);color:var(--text-2)}
+.rn-ladder{display:grid;grid-template-columns:repeat(5,auto);gap:3px;padding-top:22px}
+.rn-rung{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.rn-rung i{width:100%;height:6px;border-radius:3px;background:color-mix(in srgb,var(--c) 28%,var(--surface-3))}
+.rn-rung.past i,.rn-rung.on i{background:var(--c)}
+.rn-rung.on i{box-shadow:0 0 10px color-mix(in srgb,var(--c) 60%,transparent)}
+.rn-rung small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-1);font-weight:700;letter-spacing:-.01em;color:var(--text-3)}
+.rn-rung.on small{color:var(--text-1);font-weight:900}
+.rn-you{position:absolute;bottom:100%;margin-bottom:-2px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.rn-you b{padding:0 6px;border-radius:var(--r-pill);background:var(--text-1);color:var(--bg);font-size:var(--fs-1);font-weight:900;line-height:1.4}
+.rn-you::after{content:"";width:2px;height:6px;background:var(--text-1)}
+.rn-to{margin:0;font-size:var(--fs-1);color:var(--text-2)}
+.rn-aura{display:flex;align-items:center;gap:var(--sp-2);width:100%;min-height:44px;padding:2px 0 0;border:0;border-top:1px solid var(--line);background:none;color:var(--text-2);font-size:var(--fs-1);font-weight:700;text-align:left}
+.rn-aura .ab-hex{flex:none;width:24px;height:26px}
+.rn-at b{color:var(--ac);font-weight:900;white-space:nowrap}
+.rn-abar{position:relative;flex:1;height:6px;border-radius:var(--r-pill);background:var(--surface-3);overflow:hidden}
+.rn-abar i{position:absolute;left:0;top:0;bottom:0;border-radius:var(--r-pill);background:var(--ac);box-shadow:0 0 8px var(--ac)}
+.rn-an{white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* next unlock */
+.rn-next{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:var(--sp-3) var(--sp-4);border-radius:var(--r-card);background:linear-gradient(135deg,color-mix(in srgb,var(--c) 9%,transparent),transparent 60%),var(--surface-2);border:1.5px solid var(--c);color:var(--text-1);text-align:left}
+.rn-nh{display:flex;align-items:center;justify-content:space-between;width:100%}
+.rn-nh .u-eyebrow{color:var(--c)}
+.rn-nh em{font-style:normal;font-size:var(--fs-2);font-weight:900;color:var(--c)}
+.rn-next>b{font-size:var(--fs-4);font-weight:900}
+.rn-next>small{font-size:var(--fs-2);color:var(--text-2)}
+.rn-next p{margin:0;font-size:var(--fs-1);color:var(--text-2)}
+.rn-bar{position:relative;width:100%;height:6px;margin:var(--sp-1) 0 2px;border-radius:var(--r-pill);background:var(--surface-3);overflow:hidden}
+.rn-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:var(--r-pill);background:var(--c)}
+
+/* level up: the tools, four to a row */
+.rn-tools{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-2)}
+.rn-tool{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0;min-height:64px;padding:var(--sp-2) 2px;border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line);color:var(--text-1)}
+.rn-tool svg{width:24px;height:24px;fill:none;stroke:var(--c);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rn-tool b{max-width:100%;font-size:var(--fs-1);font-weight:800;line-height:1.15;text-align:center}
+
+/* your muscles */
+.rn-ms{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
+.rn-ms.one{grid-template-columns:1fr}
+.rn-ms>div{display:flex;flex-direction:column;gap:2px;min-width:0;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line)}
+.rn-mh{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.rn-m{display:grid;grid-template-columns:10px minmax(0,1fr);column-gap:var(--sp-2);align-items:center;min-height:44px;padding:2px 0;background:none;border:0;color:var(--text-1);text-align:left}
+.rn-m i{grid-row:span 2;width:10px;height:10px;border-radius:3px}
+.rn-m b{font-size:var(--fs-2);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rn-m em{font-style:normal;font-size:var(--fs-1);color:var(--text-2)}
+
+/* the unlock road: what you have, then what's coming */
+.rn-cnt{font-size:var(--fs-1);font-weight:800;color:var(--text-2)}
+.rn-got{display:flex;flex-wrap:wrap;gap:6px}
+.rn-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px 5px 7px;border-radius:var(--r-pill);background:var(--surface-2);border:1px solid var(--line-2);font-size:var(--fs-1);font-weight:800;color:var(--text-2)}
+.rn-chip svg{width:14px;height:14px;padding:2px;border-radius:50%;background:var(--c);fill:none;stroke:var(--bg);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rn-road{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.rn-step{position:relative;display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:var(--sp-3);align-items:center;min-height:52px;padding:var(--sp-1) 0}
+.rn-step::before{content:"";position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--line-2)}
+.rn-step:first-child::before{top:50%}
+.rn-step:last-child::before{bottom:50%}
+.rn-step:only-child::before{display:none}
+.rn-dot{position:relative;z-index:1;width:18px;height:18px;border-radius:50%;background:var(--bg);border:2px solid var(--c)}
+.rn-step.next .rn-dot{box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent),0 0 12px var(--c)}
+.rn-st{display:flex;flex-direction:column;min-width:0}
+.rn-st b{font-size:var(--fs-3);font-weight:800}
+.rn-step.next .rn-st b{color:var(--c)}
+.rn-st small{font-size:var(--fs-1);color:var(--text-2)}
+.rn-pc{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.rn-pc small{font-size:var(--fs-1);font-weight:800;color:var(--text-2);font-variant-numeric:tabular-nums}
+.rn-mini{position:relative;width:48px;height:4px;border-radius:var(--r-pill);background:var(--surface-3);overflow:hidden}
+.rn-mini i{position:absolute;left:0;top:0;bottom:0;background:var(--c)}

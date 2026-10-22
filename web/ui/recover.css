@@ -1,0 +1,114 @@
+/* =========================================================
+   RECOVER (Phase 4): the Recover home, its views (Recovering, Fuel, More), the reset card and the
+   Workout complete row. See recover.js. Tokens only (web/ui/tokens.css).
+   ========================================================= */
+.rcv{display:flex;flex-direction:column}
+
+/* a view's header: ‹ Recover · title */
+.rcv-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;min-height:48px;margin-bottom:var(--sp-2)}
+.rcv-back{justify-self:start;min-height:var(--tap);font-size:var(--fs-3);font-weight:700;color:var(--text-1)}
+.rcv-t{font-size:var(--fs-3);font-weight:800;color:var(--text-1)}
+
+/* home: the readiness card */
+.rcv-hero{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);width:100%;margin-top:var(--sp-3);padding:var(--sp-4);text-align:left;color:var(--text-1)}
+.rcv-ring{width:76px;height:76px}
+.rcv-ring circle{fill:none;stroke-width:7;stroke-linecap:round}
+.rcv-ring .bg{stroke:var(--amber-a,var(--surface-3))}
+.rcv-ring .fg{stroke:var(--glow)}
+.rcv-hero-tx{display:grid;gap:var(--sp-1);min-width:0}
+.rcv-hero-tx b{font-size:var(--fs-4);font-weight:800}
+.rcv-hero-tx b em{font-style:normal;color:var(--glow)}
+.rcv-hero-tx small{display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-2);color:var(--text-2);line-height:1.35}
+.rcv-hero-tx small i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--amber)}
+.rcv-hero svg:last-child{color:var(--text-3)}
+
+/* home: four tiles */
+.rcv-tiles{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-top:var(--sp-3)}
+.rcv-tile{position:relative;display:grid;justify-items:start;align-content:start;gap:2px;min-height:clamp(118px,18dvh,160px);padding:var(--sp-3) var(--sp-4);text-align:left;
+  border-radius:var(--r-card);border:1px solid var(--line-2);background:var(--surface-2);color:var(--text-1)}
+.rcv-tile .u-ic{margin-bottom:var(--sp-2)}
+.rcv-tile b{font-size:var(--fs-3);font-weight:800}
+.rcv-tile small{font-size:var(--fs-1);color:var(--text-2);line-height:1.35}
+.rcv-tile .rcv-tb{width:100%;margin-top:var(--sp-2)}
+.rcv-tile:active{transform:scale(.98)}
+
+/* the reset card (6 h after a workout) */
+.rst-card{display:grid;gap:2px;margin-top:var(--sp-3);padding:var(--sp-4);border-color:color-mix(in srgb,var(--glow) 40%,var(--line))}
+.rst-eye{color:var(--glow)}
+.rst-t{margin-top:var(--sp-1);font-size:var(--fs-4);font-weight:800;color:var(--text-1)}
+.rst-card small{font-size:var(--fs-2);color:var(--text-2)}
+.rst-b{display:flex;align-items:center;gap:var(--sp-4);margin-top:var(--sp-3)}
+.rst-b .u-btn{min-width:110px}
+
+/* Workout complete: the reminder row */
+.rst-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);width:100%;margin:0 0 var(--sp-3);padding:var(--sp-3) var(--sp-4);text-align:left;
+  border-radius:var(--r-card);border:1px solid var(--line-2);background:var(--surface-2);color:var(--text-1)}
+.rst-row b{display:block;font-size:var(--fs-2);font-weight:800}
+.rst-row small{display:block;margin-top:2px;font-size:var(--fs-1);color:var(--text-2);line-height:1.35}
+/* a small on/off switch */
+.rcv-sw{position:relative;flex:none;width:44px;height:26px;border-radius:var(--r-pill);background:var(--surface-3);border:1px solid var(--line-2);transition:background var(--dur-2)}
+.rcv-sw i{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--text-2);transition:transform var(--dur-2)}
+.rcv-sw.on{background:var(--glow)}
+.rcv-sw.on i{transform:translateX(18px);background:var(--on-glow,var(--bg))}
+.rcv-more .u-row{width:100%}
+
+/* the Recovering list */
+.rcv-sum{margin:0 0 var(--sp-3);font-size:var(--fs-2);color:var(--text-2)}
+.rcv-list{padding:var(--sp-2) var(--sp-4)}
+.rcv-fb{color:var(--fuel);font-weight:800;white-space:nowrap}
+.rcv-list .u-foot,.rcv-list~.u-foot{margin-top:var(--sp-4)}
+
+/* the Fuel view */
+.fu-hero{position:relative;display:grid;place-items:center;height:clamp(110px,20dvh,200px);margin:0 calc(-1 * var(--gutter))}
+.fu-hero{overflow:hidden}
+.fu-hero img{position:absolute;inset:0 0 var(--sp-5);width:100%;height:calc(100% - var(--sp-5));object-fit:contain;mix-blend-mode:lighten;
+  -webkit-mask-image:linear-gradient(to bottom,var(--bg) 70%,transparent);mask-image:linear-gradient(to bottom,var(--bg) 70%,transparent)}
+.fu-hero.none{height:auto;min-height:44px}
+.fu-tag{position:absolute;left:50%;bottom:var(--sp-1);transform:translateX(-50%);display:inline-flex;align-items:center;min-height:32px;padding:0 var(--sp-3);white-space:nowrap;
+  max-width:calc(100% - 2 * var(--gutter));overflow:hidden;text-overflow:ellipsis;border-radius:var(--r-pill);border:1px solid var(--line-2);background:var(--surface-2);font-size:var(--fs-1);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+.fu-hero.none .fu-tag{position:static;transform:none;max-width:100%}
+.fu-card{margin-top:var(--sp-3);padding:var(--sp-4);border-radius:var(--r-card);border:1px solid var(--line);background:var(--surface-2)}
+.fu-h{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3)}
+.fu-h b{font-size:var(--fs-3);font-weight:800;color:var(--text-1)}
+.fu-h span{font-size:var(--fs-2);color:var(--text-2)}
+.fu-h em{font-style:normal;font-weight:800;color:var(--fuel)}
+.fu-bar{margin-top:var(--sp-3)}
+.fu-chips{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);margin-top:var(--sp-3)}
+.fu-chip{display:grid;justify-items:center;gap:2px;min-height:56px;padding:var(--sp-2) var(--sp-1);border-radius:var(--r-sm);border:1px solid var(--line-2);background:var(--surface-3);color:var(--text-1)}
+.fu-chip b{font-size:var(--fs-3);font-weight:800}
+.fu-chip small{font-size:var(--fs-1);color:var(--text-2);line-height:1.2;text-align:center}
+.fu-chip.wide{grid-column:1/-1}
+.fu-chip:active{transform:scale(.97)}
+.fu-meals{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);margin-top:var(--sp-3)}
+.fu-meal{min-height:var(--tap);border-radius:var(--r-pill);border:1px solid var(--line-2);background:var(--surface-3);font-size:var(--fs-2);font-weight:700;color:var(--text-2)}
+.fu-meal.on{background:var(--fuel);border-color:var(--fuel);color:var(--on-glow,var(--bg))}
+.fu-boost{margin:var(--sp-3) 0 0;font-size:var(--fs-2);line-height:1.45;color:var(--text-1)}
+.fu-rule{display:inline-block;margin-right:var(--sp-2);padding:2px var(--sp-2);border-radius:var(--r-xs);background:var(--surface-3);font-size:var(--fs-1);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+.fu-links{display:flex;justify-content:center;align-items:center;gap:var(--sp-4);margin-top:var(--sp-1)}
+.fu-undo{color:var(--fuel);font-weight:800}
+.fu-foot{margin-top:var(--sp-3)}
+.fu-ask{display:grid;gap:var(--sp-1)}
+.fu-ask>b{font-size:var(--fs-3);font-weight:800;color:var(--text-1)}
+.fu-ask>small{font-size:var(--fs-2);color:var(--text-2)}
+.fu-step{display:flex;align-items:center;justify-content:center;gap:var(--sp-5);margin:var(--sp-3) 0}
+.fu-step span{font-size:var(--fs-3);color:var(--text-2)}
+.fu-step span b{font-size:var(--fs-5);font-weight:800;color:var(--text-1);font-variant-numeric:tabular-nums}
+.fu-ask-b{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
+
+@media (max-height:700px){
+  .rcv-tile{min-height:96px}
+  .rcv-tile small{display:none}
+  .rcv-tile .rcv-tb{margin-top:var(--sp-1)}
+  .rcv-ring{width:60px;height:60px}
+  .fu-hero{height:auto;min-height:0;overflow:visible}
+  .fu-hero img{display:none}
+  .fu-hero .fu-tag{position:static;transform:none}
+  .fu-chip small{display:none}
+  .fu-chip{min-height:var(--tap)}
+  .fu-card{margin-top:var(--sp-2);padding:var(--sp-3) var(--sp-4)}
+  .rcv-hero{margin-top:var(--sp-2);padding:var(--sp-3) var(--sp-4)}
+  .rst-card{margin-top:var(--sp-2);padding:var(--sp-3) var(--sp-4)}
+  .rst-card small{display:none}
+  .rst-b{margin-top:var(--sp-2)}
+  .rcv-tiles{margin-top:var(--sp-2);gap:var(--sp-2)}
+}

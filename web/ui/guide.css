@@ -1,0 +1,58 @@
+/* THE GUIDE (guide.js): a spotlight over the real screens and one card at a time. */
+.gd{position:absolute;inset:0;z-index:11;pointer-events:none;opacity:0;transition:opacity .3s var(--ease)}
+.gd.on{opacity:1}
+.gd-probe{position:absolute;left:0;top:0;width:0;height:0;padding-top:var(--sat);padding-bottom:var(--sab);pointer-events:none}
+/* the spotlight: everything else dims; a lime ring breathes round what's lit */
+.gd-hole{position:absolute;left:50%;top:50%;width:0;height:0;border-radius:24px;box-shadow:0 0 0 200vmax rgba(0,0,0,.74);outline:2px solid var(--glow);outline-offset:0;pointer-events:none;
+  transition:left .45s var(--ease),top .45s var(--ease),width .45s var(--ease),height .45s var(--ease),border-radius .45s var(--ease)}
+.gd-hole::after{content:"";position:absolute;inset:-8px;border-radius:inherit;border:2px solid var(--glow);opacity:0;animation:gdPing 2.2s var(--ease) infinite}
+.gd.gd-full .gd-hole{outline-color:transparent}
+.gd.gd-full .gd-hole::after{display:none}
+@keyframes gdPing{0%{opacity:.7;transform:scale(.98)}70%,100%{opacity:0;transform:scale(1.06)}}
+/* taps outside the spotlight go nowhere; on a look-only step the spotlight is covered too */
+.gd-blk{position:absolute;pointer-events:auto;background:none}
+.gd-cover[hidden]{display:none}
+/* the card */
+.gd-card{position:absolute;left:max(var(--gutter),env(safe-area-inset-left,0px));right:max(var(--gutter),env(safe-area-inset-right,0px));max-width:420px;margin:0 auto;pointer-events:auto;
+  display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-4);border-radius:var(--r-card-lg);background:var(--surface-2);border:1px solid var(--line-2);box-shadow:0 18px 50px rgba(0,0,0,.6);
+  opacity:0;transform:translateY(8px);transition:opacity .25s var(--ease),transform .25s var(--ease)}
+.gd-card.in{opacity:1;transform:none}
+.gd-top{display:flex;align-items:center;gap:var(--sp-2)}
+.gd-eye{white-space:nowrap;font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--glow)}
+.gd-dots{display:flex;gap:4px;margin-left:auto}
+.gd-dots i{width:10px;height:4px;border-radius:2px;background:var(--surface-3)}
+.gd-dots i.done{background:color-mix(in srgb,var(--glow) 45%,var(--surface-3))}
+.gd-dots i.on{width:18px;background:var(--glow)}
+.gd-skip{position:relative;margin-left:var(--sp-1);padding:0 2px;min-height:32px;background:none;border:0;font-size:var(--fs-2);font-weight:700;color:var(--text-2)}
+.gd-skip::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:44px;transform:translate(-50%,-50%)}
+.gd-h{margin:0;font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-45);line-height:1.02;letter-spacing:-.01em;text-transform:uppercase;color:var(--text-1);text-wrap:balance}
+.gd-p{margin:0;font-size:var(--fs-3);line-height:1.45;color:var(--text-2)}
+/* a hands-on step: what to do, with the gesture drawn; it turns lime when you've done it */
+.gd-try{display:flex;align-items:center;gap:var(--sp-2);justify-self:start;min-width:0;min-height:44px;padding:0 var(--sp-3) 0 var(--sp-2);border-radius:var(--r-pill);background:var(--glow-a);border:1px dashed var(--glow);font-size:var(--fs-2);font-weight:800;color:var(--glow)}
+.gd-try.ok{background:var(--glow);border-style:solid;color:var(--on-accent)}
+.gd-ic{position:relative;width:28px;height:20px}
+.gd-ic::before{content:"";position:absolute;top:5px;left:9px;width:10px;height:10px;border-radius:50%;background:currentColor}
+.gd-ic.spin::after{content:"";position:absolute;left:2px;right:2px;top:9px;height:2px;border-radius:1px;background:currentColor;opacity:.4}
+.gd-ic.spin::before{animation:gdSwipe 1.4s var(--ease) infinite}
+.gd-ic.tap::after{content:"";position:absolute;top:1px;left:5px;width:18px;height:18px;border-radius:50%;border:2px solid currentColor;animation:gdTap 1.4s var(--ease) infinite}
+.gd-try.ok .gd-ic::before,.gd-try.ok .gd-ic::after{animation:none}
+@keyframes gdSwipe{0%{transform:translateX(-7px)}50%{transform:translateX(7px)}100%{transform:translateX(-7px)}}
+@keyframes gdTap{0%{transform:scale(.5);opacity:1}80%,100%{transform:scale(1.15);opacity:0}}
+.gd-acts{display:grid;grid-template-columns:auto 1fr;gap:var(--sp-2);align-items:center;margin-top:var(--sp-1)}
+.gd-acts.gd-col{grid-template-columns:1fr}
+.gd-acts.gd-do{grid-template-columns:minmax(0,1fr) auto}
+.gd-next.gd-sm{min-height:44px;padding:0 var(--sp-4)}
+.gd-next{min-height:48px;padding:0 var(--sp-4);border:0;border-radius:var(--r-pill);background:var(--glow);color:var(--on-accent);font-size:var(--fs-3);font-weight:900}
+.gd-back{min-height:48px;padding:0 var(--sp-4);border-radius:var(--r-pill);background:var(--surface-3);border:1px solid var(--line-2);color:var(--text-1);font-size:var(--fs-3);font-weight:800}
+.gd-acts>span:empty{display:none}
+.gd-acts:has(>span:empty){grid-template-columns:1fr}
+/* the last card: a lit hex */
+.gd-badge{align-self:center;width:64px;height:64px}
+.gd-badge svg{width:100%;height:100%;overflow:visible}
+.gd-badge polygon{fill:var(--glow);stroke:var(--glow);stroke-width:3;stroke-linejoin:round;filter:drop-shadow(0 0 14px var(--glow))}
+.gd-badge path{fill:none;stroke:var(--on-accent);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.gd-card:has(.gd-badge){text-align:center;align-items:stretch}
+.gd-card:has(.gd-badge) .gd-eye{align-self:center}
+.gd .fx-cf{position:absolute;inset:0;pointer-events:none}
+@media (max-height:700px){ .gd-h{font-size:var(--fs-4)} .gd-p{font-size:var(--fs-2)} .gd-card{padding:var(--sp-3) var(--sp-4)} .gd-badge{width:52px;height:52px} }
+@media (prefers-reduced-motion:reduce){ .gd-hole,.gd-card{transition:none} .gd-hole::after,.gd-ic::before,.gd-ic::after{animation:none} }

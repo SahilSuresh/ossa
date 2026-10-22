@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="512" cy="470" r="560" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#17181A"/><stop offset="1" stop-color="#000000"/></radialGradient>
+    <clipPath id="xpRing"><path d="M498.1,192.6Q512,184.6 525.9,192.6L781.6,340.2Q795.6,348.3 795.6,364.4L795.6,659.6Q795.6,675.7 781.6,683.8L525.9,831.4Q512,839.4 498.1,831.4L242.4,683.8Q228.4,675.7 228.4,659.6L228.4,364.4Q228.4,348.3 242.4,340.2ZM506,298.9Q512,295.4 518,298.9L693.6,400.3Q699.6,403.7 699.6,410.6L699.6,613.4Q699.6,620.3 693.6,623.7L518,725.1Q512,728.6 506,725.1L330.4,623.7Q324.4,620.3 324.4,613.4L324.4,410.6Q324.4,403.7 330.4,400.3Z" fill-rule="evenodd" clip-rule="evenodd"/></clipPath>
+    <linearGradient id="xpTrack" gradientUnits="userSpaceOnUse" x1="0" y1="184.6" x2="0" y2="839.4"><stop offset="0" stop-color="#3A3B41"/><stop offset=".6" stop-color="#28292D"/><stop offset="1" stop-color="#1D1E21"/></linearGradient>
+    <filter id="xpInset" x="-10%" y="-10%" width="120%" height="120%">
+      <feFlood flood-color="#000000" flood-opacity=".7"/><feComposite in2="SourceAlpha" operator="out"/>
+      <feOffset dx="4" dy="12"/><feGaussianBlur stdDeviation="9"/><feComposite in2="SourceAlpha" operator="in" result="sh"/>
+      <feFlood flood-color="#8A8B92" flood-opacity=".55"/><feComposite in2="SourceAlpha" operator="out"/>
+      <feOffset dx="-2" dy="-6"/><feGaussianBlur stdDeviation="4"/><feComposite in2="SourceAlpha" operator="in" result="hi"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sh"/><feMergeNode in="hi"/></feMerge>
+    </filter>
+    <linearGradient id="xpS0" gradientUnits="userSpaceOnUse" x1="512" y1="240" x2="747.6" y2="376"><stop offset="0" stop-color="#C0E800"/><stop offset="1" stop-color="#CDF700"/></linearGradient>
+    <linearGradient id="xpS1" gradientUnits="userSpaceOnUse" x1="747.6" y1="376" x2="747.6" y2="648"><stop offset="0" stop-color="#CDF700"/><stop offset="1" stop-color="#D5FF03"/></linearGradient>
+    <linearGradient id="xpS2" gradientUnits="userSpaceOnUse" x1="747.6" y1="648" x2="512" y2="784"><stop offset="0" stop-color="#D5FF03"/><stop offset="1" stop-color="#D6FF09"/></linearGradient>
+    <linearGradient id="xpS3" gradientUnits="userSpaceOnUse" x1="512" y1="784" x2="276.4" y2="648"><stop offset="0" stop-color="#D6FF09"/><stop offset="1" stop-color="#D8FF0F"/></linearGradient>
+    <linearGradient id="xpS4" gradientUnits="userSpaceOnUse" x1="276.4" y1="648" x2="276.4" y2="512"><stop offset="0" stop-color="#D8FF0F"/><stop offset="1" stop-color="#F8FFD6"/></linearGradient>
+    <radialGradient id="xpHeadGlow"><stop offset="0" stop-color="#E6FF66" stop-opacity=".55"/><stop offset=".35" stop-color="#D4FF00" stop-opacity=".25"/><stop offset="1" stop-color="#D4FF00" stop-opacity="0"/></radialGradient>
+    <radialGradient id="xpHeadCore"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset=".5" stop-color="#F8FFD8" stop-opacity=".55"/><stop offset="1" stop-color="#F2FFB0" stop-opacity="0"/></radialGradient>
+    <filter id="xpBloom" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="24"/></filter>
+    <filter id="xpBevel" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7" result="b"/>
+      <feSpecularLighting in="b" surfaceScale="4" specularConstant=".5" specularExponent="28" lighting-color="#FFFFFF" result="sp"><feDistantLight azimuth="235" elevation="48"/></feSpecularLighting>
+      <feComposite in="sp" in2="SourceAlpha" operator="in" result="sp2"/>
+      <feComposite in="SourceGraphic" in2="sp2" operator="arithmetic" k1="0" k2="1" k3=".28" k4="0"/>
+    </filter>
+    <radialGradient id="xpGemGlow"><stop offset="0" stop-color="#F5F2EB" stop-opacity=".22"/><stop offset="1" stop-color="#F5F2EB" stop-opacity="0"/></radialGradient>
+    <clipPath id="xpArcClip"><path d="M512,184.6L795.6,348.3L699.6,403.7L512,295.4Z"/><path d="M795.6,348.3L795.6,675.7L699.6,620.3L699.6,403.7Z"/><path d="M795.6,675.7L512,839.4L512,728.6L699.6,620.3Z"/><path d="M512,839.4L228.4,675.7L324.4,620.3L512,728.6Z"/><path d="M228.4,675.7L228.4,512L324.4,512L324.4,620.3Z"/><path d="M324.4,512A48 48 0 0 0 228.4,512Z"/></clipPath>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <!-- track: dark graphite, lit from the top left -->
+  <g filter="url(#xpInset)"><path d="M498.1,192.6Q512,184.6 525.9,192.6L781.6,340.2Q795.6,348.3 795.6,364.4L795.6,659.6Q795.6,675.7 781.6,683.8L525.9,831.4Q512,839.4 498.1,831.4L242.4,683.8Q228.4,675.7 228.4,659.6L228.4,364.4Q228.4,348.3 242.4,340.2ZM506,298.9Q512,295.4 518,298.9L693.6,400.3Q699.6,403.7 699.6,410.6L699.6,613.4Q699.6,620.3 693.6,623.7L518,725.1Q512,728.6 506,725.1L330.4,623.7Q324.4,620.3 324.4,613.4L324.4,410.6Q324.4,403.7 330.4,400.3Z" fill-rule="evenodd" fill="url(#xpTrack)"/></g>
+  <!-- lime bloom under the arc -->
+  <g filter="url(#xpBloom)" opacity=".5" fill="#D4FF00"><g clip-path="url(#xpRing)"><path d="M512,184.6L795.6,348.3L699.6,403.7L512,295.4ZM795.6,348.3L795.6,675.7L699.6,620.3L699.6,403.7ZM795.6,675.7L512,839.4L512,728.6L699.6,620.3ZM512,839.4L228.4,675.7L324.4,620.3L512,728.6ZM228.4,675.7L228.4,512L324.4,512L324.4,620.3ZM324.4,512A48 48 0 0 0 228.4,512Z"/></g></g>
+  <circle cx="276.4" cy="507.2" r="120" fill="url(#xpHeadGlow)"/>
+  <!-- the XP arc -->
+  <g filter="url(#xpBevel)"><g clip-path="url(#xpRing)"><g fill="#D4FF00"><path d="M512,184.6L795.6,348.3L699.6,403.7L512,295.4ZM795.6,348.3L795.6,675.7L699.6,620.3L699.6,403.7ZM795.6,675.7L512,839.4L512,728.6L699.6,620.3ZM512,839.4L228.4,675.7L324.4,620.3L512,728.6ZM228.4,675.7L228.4,512L324.4,512L324.4,620.3ZM324.4,512A48 48 0 0 0 228.4,512Z"/></g><path d="M512,184.6L795.6,348.3L699.6,403.7L512,295.4Z" fill="url(#xpS0)"/><path d="M795.6,348.3L795.6,675.7L699.6,620.3L699.6,403.7Z" fill="url(#xpS1)"/><path d="M795.6,675.7L512,839.4L512,728.6L699.6,620.3Z" fill="url(#xpS2)"/><path d="M512,839.4L228.4,675.7L324.4,620.3L512,728.6Z" fill="url(#xpS3)"/><path d="M228.4,675.7L228.4,512L324.4,512L324.4,620.3Z" fill="url(#xpS4)"/><path d="M324.4,512A48 48 0 0 0 228.4,512Z" fill="#F8FFD6"/></g></g>
+  <!-- the head: a hot core inside the band -->
+  <g clip-path="url(#xpRing)"><g clip-path="url(#xpArcClip)"><ellipse cx="276.4" cy="507.2" rx="57.6" ry="76.8" fill="url(#xpHeadCore)"/></g></g>
+  <!-- the soul -->
+  <circle cx="512" cy="512" r="171" fill="url(#xpGemGlow)"/>
+  <path d="M512,398L512,626L448,512Z" fill="#F5F2EB"/>
+  <path d="M512,398L576,512L512,626Z" fill="#CFCABF"/>
+</svg>

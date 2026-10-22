@@ -1,0 +1,855 @@
+{
+ "key": "look",
+ "title": "Phase 0 look: tokens, fonts, glass, hexagons, restyles",
+ "area": "New visual system (palette, Inter, glass, hexagons, tab bar) and restyling the six existing screens: body_dashboard, muscle_ranks_detail, rank_up_notification, workout_tracker, streak_summary, recovery_dashboard. No feature changes.",
+ "keyFacts": [
+  {
+   "fact": "Every colour, size and radius in the new UI layer comes from one file. --bg is #0B0D0C, the surfaces and lines are a green-grey ramp, --glass is rgba(21,25,23,.86) (86% opaque, not see-through), text and the main button are bone #F2EDE3, lime is #B6F36A/#CFF59A, amber is #FFB547, danger is #FF7B6B. The pillars are bone, blue, orange and violet. The ranks run --rk-0 #2A302C to --rk-5 #8EE4F1.",
+   "ref": "web/ui/tokens.css:10-51"
+  },
+  {
+   "fact": "The legacy :root (--bg #0B0D0C, IBM Plex fonts) is overridden because tokens.css is included later in the same <style>. A token change therefore reaches every legacy rule that uses var(--…), but not raw hex values.",
+   "ref": "web/ossa.html:4-18 vs include at web/ossa.html:3346"
+  },
+  {
+   "fact": "The legacy CSS still has 105 distinct raw hex colours and 59 distinct px font sizes (I ran check-tokens.js, which only reads). The most common are #0B0D0C ×158, #F7F3EA ×129, #F2EDE3 ×75, #7E8781 ×75, #9AA39D ×67, #C9D0CB ×65, #CFF59A ×59, #2A302C ×31, #A9D97A ×24, #FFB547 ×23 and #B6F36A ×20. For example, .hud-top fades from a raw #0B0D0C, which will show as a grey band over a #000 canvas.",
+   "ref": "scripts/check-tokens.js output; web/ossa.html:34, :90, :94"
+  },
+  {
+   "fact": "The legacy JS has another 34 distinct hard-coded hex values that the lint never sees: #CFF59A ×21, the pillar colours #A78BFF/#FFA040/#DCEBFF/#7FA6FF in PILLARS, #B6F36A ×9 and #FFB547 ×8.",
+   "ref": "web/ossa.html:9027-9031 (PILLARS), 9947 (PCOL)"
+  },
+  {
+   "fact": "The 3D shader hard-codes the rank colours in rkC as the old #2A302C/#5E6460/#B5804F/#C7CDD4/#E9B949/#8EE4F1. Its comment says they match --rk-0…5, but nothing ties the two together. Rank mode applies them with lvl 0.66.",
+   "ref": "web/ossa.html:4187-4188, 4279"
+  },
+  {
+   "fact": "Other shader colours that will clash with the new palette: the recovery heat colours (ACC = old lime 0.714,0.953,0.416; AMB = amber; DEEP = orange), the mint posture-scan line (0.208,0.902,0.643), the olive and lime onboarding tissue, the olive per-screen auras RD_SCREEN_AURA, RD_AURA, and the FINISHES rim colours.",
+   "ref": "web/ossa.html:4274-4277, 4320, 3997-4017, 11550, 11052, 7392"
+  },
+  {
+   "fact": "The WebGL canvas already clears to pure black and the background shader is black. On the Body page the tab view is transparent where the figure stands, so today the black canvas sits next to #0B0D0C page areas. Moving to #000 makes them seamless.",
+   "ref": "web/ossa.html:4632 (gl.clearColor(0,0,0,1)), 4078/4102, 2388 (.app.homefig #tv-today{background:transparent})"
+  },
+  {
+   "fact": "The native side is already #000. The App.js root and the WebView use backgroundColor #000, app.json backgroundColor is #000000, there is no splash key in app.json, and build-html.js sets html,body to #000. Switching the web --bg to #000 is web-only and needs no EAS build. (Splash behaviour without a splash key is unconfirmed.)",
+   "ref": "App.js:191-192; app.json \"backgroundColor\": \"#000000\"; scripts/build-html.js html,body{background:#000}"
+  },
+  {
+   "fact": "The fonts are Archivo (variable: width 62–125%, weight 100–900), Geist 400–700 and Geist Mono 400–600, Latin subset, embedded as base64. fonts.css is 191,333 bytes: Archivo 120.5 KB, Geist 39.5 KB, Geist Mono 31.2 KB. That is about 4% of the 4.88 MB ossaHtml.js.",
+   "ref": "scripts/fetch-fonts.js:7 (CSS_URL); web/ui/fonts.css lines 2-4"
+  },
+  {
+   "fact": "How often the font tokens are used. var(--display): 31 in web/ui and 127 in legacy. var(--body): 18 and 132. var(--mono): 56 and 287. var(--wide) (125%): 31 in web/ui. font-stretch: 130 in legacy. Legacy weights include 300 ×7, which Geist never had. The posture share card (canvas) hard-codes 'Archivo' and 'IBM Plex Mono'.",
+   "ref": "grep counts; web/ui/tokens.css:54-57; web/ossa.html:7276"
+  },
+  {
+   "fact": "The open-source licences screen (ossNotices) credits only MediaPipe, not the fonts. The App Store review notes say the fonts are Archivo, Geist and Geist Mono under the SIL OFL.",
+   "ref": "web/ossa.html:7349-7357, 10224; store/APP-STORE-LISTING.md:90"
+  },
+  {
+   "fact": "Hexagons already exist as clip-path badges: .rk-badge (44×50, lg 64×72) and .rk-hex (124×140 in the rank-up). Both set color:var(--on-cta), dark text on any rank colour, which will fail on Fragile #4A4A4A. Hexagon icons are inline SVG paths in shell.js.",
+   "ref": "web/ui/ranks.css:16-20, 80-83; web/ui/ranks.js:19, 127; web/ui/shell.js:196, 604"
+  },
+  {
+   "fact": "Glass is used on the Body page legend and 3D button (blur 10), the 3D layer switch, the Recovery/Rank switch, the workout bar (blur 14), the workout chips (blur 8), every exercise pill in the strip (blur 10), the nav (--glass-2, blur 18 with saturate 140%), the Profile back bar, seg3 and the paywall. backdrop-filter appears 13× in web/ui and 29× in ossa.html.",
+   "ref": "web/ui/shell.css:10,84-85,236,251,258,266-268; workout.css:9,22,27-28; train.css:8,13,53,166; ranks.css:48; base.css:145"
+  },
+  {
+   "fact": "The render loop runs on demand. The Body page is a still figure with no idle frames. The 3D tab and the workout run idle sway and breathing at about 30 fps and 60 fps during drags and tweens, so every blurred layer over the canvas is re-sampled on each of those frames.",
+   "ref": "web/ossa.html:4699-4722 (frame/kick), 4701 (RDHOME → br=0), 4708 (~30fps idle)"
+  },
+  {
+   "fact": "Tab bar today: UI_TABS is Body/Train/Breathe/Recover/Learn with stroked line icons. The active tab is text-1 with a 2px lime bar at the top. A separate 8px lime 'due' dot sits top-right for a pending check-in, and Train pulses during a workout.",
+   "ref": "web/ui/shell.js:34, 49-63, 92-105; web/ui/shell.css:8-28"
+  },
+  {
+   "fact": "Workout steppers don't show the value; the value lives in the table row's input. The legacy wireActive handler updates only $(\"in_\"+f).value.",
+   "ref": "web/ui/workout.js:40-43; web/ossa.html:7712-7717"
+  },
+  {
+   "fact": "Recover tab: the recovering bars and count use --amber, the rows are one u-list card with dividers, and Today's reset is a non-bone uiNextHTML.",
+   "ref": "web/ui/shell.js:529-560; web/ui/shell.css:206-217"
+  },
+  {
+   "fact": "The six restyle designs keep a bone main button (#F5F2EB, h-16 = 64px, rounded-3xl = 24px, weight 900, 20px). Newer designs use lime (Finish, Start now, Evolve), pure white (Accept Dare, Dismiss), cyan (Start Monk Mode) or gold (Prestige reset). Cards are white/5 on #000 with a white/10 border and rounded-2xl (16px). Labels are 10px (sometimes 8px) uppercase with .1–.2em tracking in gray-500 #6B7280.",
+   "ref": "design/redesign-v2/screens/rank_up_notification-html.html:112, workout_tracker-html.html:188, streak_summary-html.html:135, body_dashboard-html.html:33-38"
+  },
+  {
+   "fact": "The designs' canonical glass is background rgba(255,255,255,.05), backdrop-filter blur(12px) and a 1px rgba(255,255,255,.1) border. A few screens use 10, 16 or 20px blur. The hexagon is clip-path polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%), used in muscle_ranks_detail, rank_up_notification and achievement_gallery. Italic 900 headlines appear in rank_up, achievement_gallery, monk_mode and vessel_vault.",
+   "ref": "design/redesign-v2/screens/*-html.html (.glass-panel, .hexagon-*, class=\"…italic…\")"
+  },
+  {
+   "fact": "The focus_aura design calls the third tab 'Focus', with a cyan icon, label and dot. Every other design says 'Breathe'. Active tabs are white with a 6px dot in the accent colour at the icon's top right; inactive tabs are at 40% opacity.",
+   "ref": "design/redesign-v2/screens/focus_aura-html.html:160-165; body_dashboard-html.html:175-198"
+  },
+  {
+   "fact": "web/ is not under git. Only the template's 'Initial commit' exists and git ls-files web/ returns 0. Earlier redesigns were protected by folder copies (C:\\Ossa\\backup-before-redesign-2026-10-15).",
+   "ref": "git status / git ls-files; ls C:\\Ossa"
+  },
+  {
+   "fact": "The preview server (port 5178, .claude/launch.json 'ossa-preview') reruns build-html.js on every request, which writes ossaHtml.js and web/.preview.html, so even starting the preview writes files. A seeded demo state exists (SEED, demoData), saved under localStorage key 'corpus-v4'.",
+   "ref": "scripts/preview-server.js; .claude/launch.json; web/ossa.html:3815-3866"
+  },
+  {
+   "fact": "The two docs disagree on overriding legacy functions. UI-SYSTEM.md says not to add new duplicates and to edit the live function; CLAUDE.md says to prefer redefining or wrapping in web/ui/. const values (FS shader string, PILLARS, RANKS) can't be redeclared, so they must be edited in place, or their elements mutated.",
+   "ref": "docs/UI-SYSTEM.md:25; CLAUDE.md 'Overrides'"
+  }
+ ],
+ "items": [
+  {
+   "name": "system: palette tokens",
+   "today": "web/ui/tokens.css:8-99. Green-grey surfaces (--bg #0B0D0C, --surface-1/2/3 #0F1211/#151917/#1E2320, --line #242A26, --line-2 #3A403C, --line-3 #6A716C), bone text and button #F2EDE3, lime #B6F36A/#CFF59A, amber #FFB547, danger #FF7B6B, pillars --move #E9E3D5 / --recover #7FA6FF / --fuel #F2A65A / --mind #A794F7, ranks --rk-0 #2A302C … --rk-5 #8EE4F1. The 2D rank marks take their colour from var(--rk-${t}) in templates (ranks.js:20,26,30,59-60; shell.js:177,196,410). The legacy PILLARS array hard-codes different hex values (ossa.html:9027-9031). check-tokens.js:24 whitelists the old mint (53,230,164) and amber (255,181,71) rgba values.",
+   "changes": [
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Surfaces: --bg #000000, --surface-1 #0A0A0A, --surface-2 #121212 (the brief's charcoal), --surface-3 #1A1A1A (the design's #1a1a1a), --line #262626, --line-2 #333333, --line-3 #6B6B6B (3.5:1 on #121212)."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Text and buttons: --text-1 #FFFFFF, --text-2 #9CA3AF (8.3:1 on #000, 7.4:1 on #121212), --text-3 #6B7280 (decoration only, 4.3:1). --cta #F5F2EB, --on-cta #000, --cta-2 #E4E0D6."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Accents: --glow #D4FF00, --glow-soft #E2FF66 (or the same as --glow, see the risks), --glow-a rgba(212,255,0,.14), --on-accent #000, --danger #FF3B30. New tokens: --cyan #00E5FF, --cyan-a, --gold #FFD700, --gold-a, --alert:var(--danger)."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Recovering: --amber becomes the recovering colour, #C5A059 as in recovery_dashboard (pending Andrej). --amber-a to match."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Pillars (pending Andrej): --mind #00E5FF (the brief's mind/neural colour). Proposed --move #D4FF00, --recover #C5A059, --fuel #FF6B00 (fueling_meter's orange)."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Ranks: --rk-0 #2A2A2A (Unranked), --rk-1 #4A4A4A, --rk-2 #C5A059, --rk-3 #FFFFFF, --rk-4 #FFD700, --rk-5 #00E5FF. New: --on-rk-0 and --on-rk-1 #FFFFFF; --on-rk-2…5 #000000."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Shape: --r-card 18→16px (rounded-2xl), new --r-card-lg 24px (rounded-3xl), --r-btn 16→24px, --btn-h 56→64px. Update the header comment."
+    },
+    {
+     "file": "web/ui/ranks.css / shell.css / workout.css",
+     "change": "Fragile marks (.rk-sq, .rk-leg i, .rk-fig .rk-p, .u-bar fills) get a 1px var(--line-3) inset outline when --c is --rk-1, so they reach 3:1 against black. Use a [data-t=\"1\"] hook added by the templates."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "Point the legacy pillar colours at the tokens: PILLARS.forEach(p=>p.col=`var(--${p.k})`). Every consumer puts the colour in a style attribute (ossa.html:5094, 5121, 5800, 9174, 10015, 10057), so var() resolves. If --glow-soft ends up equal to --glow, UI_TIER_C.Good (shell.js:36) becomes var(--text-1)."
+    },
+    {
+     "file": "web/ui/base.css",
+     "change": "Base rules that need small fixes: .u-chip.lime, the focus outline (line 118), .u-card.bone eyebrow mixes (lines 57-63) recomputed for #000."
+    },
+    {
+     "file": "scripts/check-tokens.js",
+     "change": "Drop the obsolete whitelisted rgba triplets (mint 53,230,164; amber 255,181,71; 10,11,13; 18,20,24) from line 24."
+    },
+    {
+     "file": "docs/UI-SYSTEM.md, docs/DECISIONS.md",
+     "change": "Replace the 'Design tokens' section and log the palette decision, including the Strong-white and Fragile-contrast rules."
+    }
+   ],
+   "dependsOn": [],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "App.js and app.json already use #000. The palette lives entirely in the web bundle.",
+   "effort": "M",
+   "risks": [
+    "Strong #FFFFFF is the same colour as text-1 and 1.12:1 against the bone button, so Strong-coloured marks read as plain text or buttons. On the 3D body, Strong muscles will look like the selection highlight (shader GLOW 0.863,0.902,1.0) and the white HAIR lighting.",
+    "Fragile #4A4A4A is 2.37:1 on #000 and 2.11:1 on #121212, which fails 3:1 for meaningful marks. Dark text on it is 2.4:1, so its badges need white text (8.9:1).",
+    "Text on lime, cyan or gold must be black: 18.1, 13.7 and 15.0:1. White text on them is 1.2–1.5:1. White on the alert red #FF3B30 is only 3.55:1, so it is fine for large bold text only; black on red is 5.9:1.",
+    "Lime #D4FF00 and Forged gold #FFD700 are hard to tell apart for red-green colour-blind users. Keep the word + colour rule (DECISIONS 2026-10-04).",
+    "Cyan now means both Unbreakable and Mind, and gold means both Forged and Prestige. The designs do this on purpose, but say it in the docs.",
+    "If recovering becomes tan #C5A059, it is the same colour as the Stable rank. That collides on the Train session screen, where rank-coloured muscle chips sit next to a recovery tag.",
+    "Tokens alone don't reach the 105 raw legacy hex values or the shader. Without the remap step the older screens keep the green-grey cast."
+   ],
+   "designDeviations": [
+    "Supporting text uses #9CA3AF, not the design's gray-500 #6B7280: gray-500 is 4.3:1 on black and fails AA at the design's 10px.",
+    "Fragile marks get a hairline outline in the 2D UI. The colour itself is unchanged, and the 3D body uses it as designed.",
+    "The designs mix a pure white (#FFFFFF) main button with bone (#F5F2EB). Use bone for every main button so text-1 white and the button stay distinct."
+   ],
+   "showAtEnd": "A swatch-and-contrast board (a throwaway HTML page in the scratchpad, opened in the preview pane) showing every old → new token with its contrast on #000 and #121212. Next to it, the Body page at 393×852 before and after, beside body_dashboard.png.",
+   "stateChanges": [
+    "none (no S.* fields; tokens only)"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "system: Inter typography",
+   "today": "scripts/fetch-fonts.js:7 downloads Archivo (width and weight axes), Geist 400–700 and Geist Mono 400–600 into web/ui/fonts.css (191 KB of base64: Archivo 120.5, Geist 39.5, Mono 31.2). tokens.css:54-57 sets --display Archivo, --body Geist, --mono Geist Mono and --wide 125%. base.css:10-16: .u-eyebrow is mono, .u-h1/.u-h2/.u-num are Archivo 800 at 125% width. In-app licences (ossNotices, ossa.html:7350) don't mention fonts. The review notes (store/APP-STORE-LISTING.md:90) name Archivo, Geist and Geist Mono. The posture share card canvas (ossa.html:7276) hard-codes Archivo and IBM Plex Mono.",
+   "changes": [
+    {
+     "file": "scripts/fetch-fonts.js",
+     "change": "CSS_URL becomes family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,800..900&display=swap. That is the roman at 300–900 (legacy uses 300) plus a true italic only at 800–900, for impact headlines. Drop opsz if it costs too much. Update the comments to 'Inter (SIL OFL)'. The Latin-block regex stays as it is."
+    },
+    {
+     "file": "web/ui/fonts.css",
+     "change": "Regenerate it by running the script once (it prints the KB). Expect about 140–200 KB, against 191 KB today. This is an estimate until the script runs."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "--display, --body and --mono all become 'Inter',-apple-system,system-ui,sans-serif. --wide becomes 100%, since Inter has no width axis and the 130 legacy font-stretch rules then do nothing. New tokens: --fs-title 36px (text-4xl screen titles), --fs-6 44→48px (text-5xl), --fs-8 96px (the streak number), --track-tight -.025em, --track-tighter -.05em, --track-caps .16em. Keep --fs-1 at 12px as the floor."
+    },
+    {
+     "file": "web/ui/base.css",
+     "change": ".u-h1 becomes 900 at --fs-title with -.03em tracking. .u-h2 becomes 800. .u-eyebrow becomes Inter 800, uppercase, .16em, text-2. .u-num becomes 900 with tabular nums. .u-mono keeps tabular-nums in Inter. New .u-impact: italic 900, uppercase, -.04em, line-height .95. The .u-btn label becomes 800. Re-skin the legacy .p-head h2, .sh-top h3 and .td-card h3 to drop font-stretch."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "Wrap ossNotices, like the closePanels wrapper in ranks.js:100, and add a section: 'Inter. Copyright 2016 The Inter Project Authors. SIL Open Font License 1.1.'"
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Optional, in place: psCard's F() default family 'Archivo…' becomes 'Inter…', and M becomes Inter (line 7276)."
+    },
+    {
+     "file": "store/APP-STORE-LISTING.md",
+     "change": "Line 90 becomes: 'The font (Inter) uses the SIL Open Font License and is credited in Settings › Open-source licences.' Repo text only; nothing is sent to App Store Connect until Andrej says."
+    },
+    {
+     "file": "docs/UI-SYSTEM.md",
+     "change": "Update the fonts.css row and the Type section."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "The fonts are embedded as base64 in the web bundle; no native font registration.",
+   "effort": "M",
+   "risks": [
+    "The size is unconfirmed until fetch-fonts runs. The opsz axis plus an italic face could exceed today's 191 KB, so drop opsz if it does.",
+    "Inter 900 is much narrower than Archivo 800 at 125% width. Headlines and anything sized around them reflow: the onboarding hero, the Train session title, the Body page leader placement (uiHeroDraw uses the callout's size, shell.js:444).",
+    "Legacy rules with font-weight 300 render genuinely light in Inter; Geist fell back to 400. Old big numbers (.sring .big, ossa.html:48) get thinner.",
+    "The Latin subset lacks → (U+2192). rkCelebrate's '→' already falls back to a system font today, so nothing changes.",
+    "Desktop Chrome renders Inter differently from WKWebView. Check on the phone."
+   ],
+   "designDeviations": [
+    "Labels stay at 12px minimum. The designs use 10px and 8px, which are hard to read and fail AA at gray-500.",
+    "No Geist Mono (the designs use none). Timers and set tables use Inter tabular figures."
+   ],
+   "showAtEnd": "The Body page header and the rank-up headline, before and after, at 393×852. fonts.css and ossaHtml.js sizes before and after, in KB. A screenshot of Settings › Open-source licences showing Inter.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "system: glass panels",
+   "today": "--glass is rgba(21,25,23,.86), nearly opaque, with blur 8–14px applied rule by rule (shell.css:84-85, 251, 258, 266-268; workout.css:9, 22, 27-28; train.css:8, 13, 53, 166; ranks.css:48). --glass-2 is rgba(15,18,17,.94) on the nav (shell.css:10, blur 18 with saturate 140%), the Profile back bar (shell.css:236), seg3 (base.css:145) and the paywall (onboarding.css:173). There are 29 more backdrop-filter rules in ossa.html. The workout over the animating body has up to about 12 blurred elements: the bar, 3 chips, 3 meta pills and 3–8 strip pills.",
+   "changes": [
+    {
+     "file": "web/ui/tokens.css",
+     "change": "--glass rgba(255,255,255,.05), --glass-line rgba(255,255,255,.10), --glass-blur 12px. --glass-strong rgba(0,0,0,.6), for small text-bearing controls over the moving, bright body. --glass-2 rgba(0,0,0,.8) for the nav (the design's black/80)."
+    },
+    {
+     "file": "web/ui/base.css",
+     "change": "New .u-glass: background var(--glass), 1px var(--glass-line) border, -webkit-backdrop-filter and backdrop-filter blur(var(--glass-blur)). Plus .u-glass.flat: the same look with no blur, for panels over plain black, where blur changes nothing. A comment sets the rule: blur only over the canvas or scrolling content, about 4 blurred elements per screen at most."
+    },
+    {
+     "file": "web/ui/shell.css, workout.css, train.css, ranks.css, onboarding.css",
+     "change": "Point the existing glass rules at the tokens. Remove the blur from the strip pills (.wk-sx), the muscle chips (.wk-chip) and the meta pills (.tf-meta em, .tf-watch): solid var(--surface-3) at 80% instead. Keep the blur on the workout bar, the Body legend and 3D button, the layer switch and the nav."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "CSS only.",
+   "effort": "S",
+   "risks": [
+    "WKWebView composites every backdrop-filter element as its own layer and re-blurs it whenever the WebGL canvas behind it redraws: about 30 fps idle on the 3D tab and the workout, 60 fps during drags. Many blurred layers mean dropped frames and heat on older iPhones during a 45-minute workout. The desktop preview can't show this.",
+    "The design's 5% white glass is much more transparent than today's 86%, so labels over neon rank colours may lose legibility. --glass-strong covers the small controls.",
+    "The -webkit- prefix must stay for older iOS WebKit."
+   ],
+   "designDeviations": [
+    "Small pills and chips over the moving body are solid, not blurred, for performance. Visually they are nearly identical, because the design's 5% white over a dark scene looks flat anyway."
+   ],
+   "showAtEnd": "Body page and workout screenshots at 393×852. A short screen recording on Andrej's iPhone through Expo Go (npm start; web-only, no EAS build) of a workout with the body moving, with an fps readout from a temporary dev-only overlay that is removed afterwards.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "system: hexagon component",
+   "today": "There are two clip-path hexagons: .rk-badge (44×50, lg 64×72; ranks.css:16-20; rkBadge ranks.js:19) and .rk-hex (124×140; ranks.css:80-83; the rank-up markup at ranks.js:127). Both use color:var(--on-cta). The hexagon icons are separate inline SVG paths (shell.js:196 Overall rank tile, shell.js:604 the Train hub's Muscle ranks row).",
+   "changes": [
+    {
+     "file": "web/ui/tokens.css",
+     "change": "--hex: polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%) (the designs' polygon). --on-rk-0…5 (see palette)."
+    },
+    {
+     "file": "web/ui/base.css",
+     "change": ".u-hex: inline-grid, centred, aspect-ratio .875, width var(--hx), background var(--c), color var(--on-c), clip-path var(--hex). .u-hex.ghost: a locked hexagon, var(--surface-2) with a lock glyph in text-3, for future trophies. .u-hexw: a wrapper with filter:drop-shadow(0 0 24px color-mix(in srgb,var(--c) 45%,transparent)), because clip-path clips box-shadow and the glow must sit on the parent. .u-hexring: an SVG outline or progress hexagon."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "uiHex(size,frac,col) beside uiRing (shell.js:108). It draws an SVG <polygon pathLength=\"100\"> track and fill with stroke-dasharray for hexagon progress (RP to the next level)."
+    },
+    {
+     "file": "web/ui/ranks.js / ranks.css",
+     "change": "rkBadge and the rank-up .rk-hex reuse .u-hex, with style=\"--c:var(--rk-N);--on-c:var(--on-rk-N)\". Delete the duplicate clip-path rules."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "The Overall-rank tile icon and the Train hub's Muscle ranks icon use a small filled .u-hex in the rank colour."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "CSS and SVG.",
+   "effort": "S",
+   "risks": [
+    "clip-path removes borders and shadows. Outlines need the SVG variant or two stacked hexagons.",
+    "Fragile and Unranked hexagons need white text; the rest need black.",
+    "Later phases reuse it: trophies (achievement_gallery), prestige and the vault. Keep the API small."
+   ],
+   "designDeviations": [
+    "The hexagon fill is the muscle's actual rank colour. The design only ever shows the white Strong hexagon."
+   ],
+   "showAtEnd": "Part of the Muscle ranks and Rank-up shots: the overall badge for each tier (Fragile…Unbreakable) in one strip, rendered in the preview by setting S.scores temporarily from the console. Nothing is saved.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "system: legacy CSS and 3D shader colour remap",
+   "today": "The legacy CSS in ossa.html (lines 1–3344) holds 105 distinct raw hex values: a green-grey ramp, bone, old limes, amber and reds. The legacy JS has 34 more (templates, PILLARS, psCard). The shader has rkC (4188), recovery heat ACC/AMB/DEEP (4274-4277), the scan line mint (4320), the onboarding tissue palette (3997-4017) and the per-screen auras RD_SCREEN_AURA (11550) and RD_AURA (11052). On 2026-10-15 the same kind of remap was done once as a one-off ('cool greys → green-grey ramp by luminance, mint → lime', UI-SYSTEM.md:46).",
+   "changes": [
+    {
+     "file": "web/ossa.html (CSS, lines 1–3344)",
+     "change": "A one-off remap that looks at the property. In 'background' and 'border' it maps #0B0D0C→#000 (or var(--bg)), #0F1211→#0A0A0A, #151917→#121212, #1A1F1C→#161616, #1E2320→#1A1A1A, #242A26/#2A302C→#262626, #3A403C→#333333 and #4A514C→#4A4A4A. Bone #F2EDE3/#F7F3EA in 'color' becomes #FFF or var(--text-1); in 'background' it becomes #F5F2EB. Text greys: #7E8781/#9AA39D→#9CA3AF, #C9D0CB→#D1D5DB, #D9DDD6→#E5E7EB, #6E7670→#6B7280. Limes: #B6F36A/#CFF59A→#D4FF00/#E2FF66, #A9D97A→#B8DD00. Amber #FFB547 → the recovering token. Legacy reds #FF8A7A/#FF7A6B → #FF3B30. Run the mapping as a throwaway node script in the scratchpad, review the diff, then run check-tokens (target under 40 distinct)."
+    },
+    {
+     "file": "web/ossa.html (JS)",
+     "change": "Replace #CFF59A, #B6F36A, #A9D97A and #FFB547 in template strings with var(--glow-soft), var(--glow) or var(--amber), wherever they land in a style attribute."
+    },
+    {
+     "file": "web/ossa.html (FS shader, in place)",
+     "change": "Rewrite rkC with the new rank colours: Unranked (.165,.165,.165), Fragile (.29,.29,.29), Stable (.773,.627,.349), Strong (1,1,1), Forged (1,.843,0), Unbreakable (0,.898,1). Better still, build that line at load from getComputedStyle --rk-0…5, so CSS and the shader can't drift. ACC (recovery 'ready') becomes (.831,1.,0.). AMB follows the recovering decision. Keep DEEP orange, because red is reserved for injury in Phase 1."
+    },
+    {
+     "file": "web/ossa.html (shader and aura constants, in place)",
+     "change": "The scan line mint (4320) becomes lime. RD_SCREEN_AURA's olive greys (11550) become neutral greys. The onboarding tissue limes (vc and pc at 4006 and 4015-4017) move to the new lime family."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "PILLARS colours become token vars (see palette)."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Everything is in ossa.html or web/ui. (app.json's Android notification colour #9BFCEC and the widget descriptions that mention 'mint/amber' are native. Leave them for the next EAS build, which already has to rebuild the widgets.)",
+   "effort": "L",
+   "risks": [
+    "#F2EDE3 and #F7F3EA appear both as text and as fills, so a blind find-and-replace would turn bone buttons pure white or text bone. The script must look at the CSS property.",
+    "The FS shader is a template-string const and can't be overridden from web/ui; it must be edited in place. web/ is not in git, so take a folder backup first.",
+    "Strong now reads as pure white on the body, close to the selection GLOW (ossa.html:4307-4309). The selection may need a lime edge (open question).",
+    "The Mind and Breathe screen's violets (#A7A3C9, #8E88BF, #C9C0FF…) stay until Phase 3 and will look off next to the cyan 'mind' token on the third tab."
+   ],
+   "designDeviations": [
+    "Only colours change on the 3D body (ground rule 1). The 'neon outline' look in the renders (rank colour on the fibres and seams instead of on the fill) is an optional shader variant, shown side by side, not the default."
+   ],
+   "showAtEnd": "Body page 3D figure, front and back, before and after, next to body_dashboard.png. The 3D tab in Recovery mode, before and after. check-tokens output before (105 hex / 59 px) and after.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "system: tab bar",
+   "today": "shell.js:34 UI_TABS (Body·Train·Breathe·Recover·Learn), stroked 22px icons from UI_IC (shell.js:10, 11, 19, 21, 12). shell.css:8-23: --glass-2 with blur 18 and a top border in surface-3, 12px labels at 500, active text-1 at 600 with a 2px lime bar at the top (:19), a lime 'due' dot at the top right (:22), and a pulsing Train dot during a workout (:23).",
+   "changes": [
+    {
+     "file": "web/ui/shell.css",
+     "change": ".u-nav: background var(--glass-2) (black/80), blur var(--glass-blur) at 24px, top border rgba(255,255,255,.05). Inactive buttons at opacity .4 (labels stay 12px); active is text-1 at full opacity. Replace the 2px top bar with a 6px dot at the icon's top right in var(--tab-c,var(--glow)). Move 'due' to a ring around that dot, or onto the label, so it no longer sits where the active dot goes."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "A new set of filled 24px glyphs drawn in-house (body, dumbbell, wind, moon with z, book with bookmark), close to the design's Solar icons without copying their paths. Solar is CC BY 4.0 and would need credit. Set --tab-c per tab so Phase 3 can make the third tab cyan."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens",
+    "system: Inter typography"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "CSS and SVG in the WebView.",
+   "effort": "S",
+   "risks": [
+    "The 40% inactive opacity on 10px labels fails AA, so keep 12px labels in text-2 instead of an opacity fade.",
+    "The design's active dot sits where today's 'check in due' dot is, so they need different treatments.",
+    "Breathe vs Focus is undecided. Today the label is the single string in UI_TABS."
+   ],
+   "designDeviations": [
+    "Labels stay 12px and readable, not 10px at 40%.",
+    "The icons are our own filled glyphs, not the Solar set."
+   ],
+   "showAtEnd": "A strip of five tab-bar crops (each tab active), before and after, beside the footers in body_dashboard.png and recovery_dashboard.png.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "body_dashboard",
+   "today": "renderToday (web/ui/shell.js:150-244). The header is the date eyebrow plus .u-h1 'Your body' at 28px Archivo, a streak chip (outline flame, mono number, 44px, shell.css:52-55) and the avatar (bone initial or anon). The hero #rdHero (shell.js:164-170) is see-through over the canvas (ossa.html:2388). It holds a glass legend (shell.css:85), Front/Back as a u-seg (shell.css:60-61), the 'Weak link' callout as a sentence-case lime chip at 600 (shell.css:66, 81-82), an SVG leader with a pulsing ring (shell.css:72-77) and a glass 3D button (shell.css:84). Below it: the weak or picked-muscle card .u-weak with a 14px square (shell.js:177-178, 406-417; shell.css:90-93) and the bone Today card (uiNextHTML, shell.js:129-136; shell.css:109-121), then the dare, check-in, score, tiles, week and standards. The figure is coloured by rank (Body.setRank(true), shell.js:369 → shader rkC).",
+   "changes": [
+    {
+     "file": "web/ui/shell.css",
+     "change": "Header: .u-top .u-h1 at --fs-title (36px) weight 900. The date eyebrow tracks at .16em."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": ".u-streak: var(--surface-3) pill, no border, filled lime flame (svg fill var(--glow) when .on), Inter 900 number. .u-avatar.anon: var(--surface-3) with a 1px glass-line border and a filled user glyph."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": "Hero controls: .u-rk3dh .rk-leg becomes .u-glass with 12px padding and r12. .u-rkview active is var(--line-2) (#333). .u-rk3d becomes a glass r12 square."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": "Weak-link callout: .u-rkcall3 b becomes uppercase 900, -.02em, r8, black on lime. .u-rk-lead keeps the 1px lime line; the dot gets a 4px lime/20 ring."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": "Weak card: .u-weak becomes glass, r16, with border-left:4px solid var(--c). .rk-sq becomes 32px, r8, opacity .8. Its b is 16px/800 and its small is 12–14px text-2."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "Put style=\"--c:var(--rk-${t})\" on the #uWeak button itself (shell.js:177, 410, 415) so the left border can use it. Switch UI_FLAME to a filled path for the chip."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": "Today card: .u-next.bone radius becomes --r-card-lg (the design uses 32px). The title is uppercase 900, tight, about 28px. The cap eyebrow sits at 60% black."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Covered by the shader and colour remap item: the new rkC colours and the #000 page."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens",
+    "system: Inter typography",
+    "system: glass panels",
+    "system: legacy CSS and 3D shader colour remap",
+    "system: tab bar"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web only.",
+   "effort": "M",
+   "risks": [
+    "The leader-label placement (uiHeroDraw, shell.js:431-456) avoids the legend, Front/Back and the 3D button using the chip's measured size. A larger uppercase chip can collide on a 375×667 screen.",
+    "A Strong (white) weak muscle next to a white selected muscle reads ambiguously on the body.",
+    "Everything below the hero (dare, check-in, score, tiles…) changes look only through tokens. It isn't in the design, so judge it by eye."
+   ],
+   "designDeviations": [
+    "Our own 3D body coloured by rank, not the render (ground rule 1).",
+    "44px tap targets, not the design's 40px.",
+    "Keep today's copy: 'Recovery day' / 'Wind down', not 'RECHARGE YOUR CHARACTER.'.",
+    "Keep the parts of the page the design crops off (dare, check-in, Body Score, tiles, week, standards)."
+   ],
+   "showAtEnd": "Three images side by side: before, after and body_dashboard.png, all at 393×852 in the preview with the seeded demo body. Plus a 375×667 crop of the hero, and one shot with a muscle tapped.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "muscle_ranks_detail",
+   "today": "openRanks / rkPanel (web/ui/ranks.js:46-74) builds the #ranksP panel on the legacy .panel/.p-head (ossa.html:933-937, re-skinned in base.css:130-133, so the header is 20px with a bottom divider). Then .rk-hero (badge lg, 'Overall', bar, 'N RP' / 'N to X'; ranks.css:24-28), .rk-figs (2D front and back; ranks.css:29-32), the legend row (ranks.css:33), the explainer, 'Weakest first / Progress' rows .rk-row (ranks.css:36-44), a 'Not trained yet' group and 'See your ranks in 3D'. The copy already matches the design word for word.",
+   "changes": [
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Header: #ranksP .p-head has no divider and its title is 24px/900. The close button becomes a 44px circle in var(--glass) with an x glyph."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Overall card: .rk-hero becomes r16, 24px padding, white/5 with the glass-line border. The badge is a .u-hex 64px wide. The bar is 6px on a white/10 track, in the rank colour. The 'N RP' / 'N to …' line is Inter 700."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Figures and legend: .rk-figs cards are r16 in surface-2 with an uppercase .16em 'FRONT'/'BACK'. The legend dots are 8px with 12px/700 labels."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "List: .rk-list is wrapped in one card (r16, white/5 border, rows on #000 with 16px padding and white/5 dividers). The square is 12px, r3. The name is 14–16px/700. 'Weak link' is 12px/900, uppercase, lime. .rk-t is text-2/700. The .rk-b bar is 48px×4px."
+    },
+    {
+     "file": "web/ui/ranks.js",
+     "change": "rkBadge renders .u-hex with --on-c. Swap the close button's markup for the icon in a circle."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens",
+    "system: Inter typography",
+    "system: hexagon component"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web only.",
+   "effort": "S",
+   "risks": [
+    "Changing .p-head globally in base.css restyles every legacy panel (Score, lessons, posture…). Scope it to #ranksP, or decide on purpose to do them all.",
+    "Phase 1 (Vessel Engine) will add a paused-fade or injury state to these rows. Leave room in the row grid (one more 16px status column)."
+   ],
+   "designDeviations": [
+    "The 2D figures stay our uiRankFig in true rank colours. The design's lime and white art is a placeholder.",
+    "Keep the 'Not trained yet' group and the 'See your ranks in 3D' button.",
+    "Labels are 12px, not 10px or 8px."
+   ],
+   "showAtEnd": "Before, after and muscle_ranks_detail.png at 393×852, scrolled to the top and to the list, with the seeded demo scores.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "rank_up_notification",
+   "today": "rkCelebrate (web/ui/ranks.js:113-151), drawn on .rk-up (ranks.css:54-95) with fx.css rays, glow and embers and fx.js confetti. Story segments when there is more than one rank-up. An eyebrow in the rank colour. A 220px badge with two concentric rings (one dashed and spinning) plus rays and embers around a 124×140 .rk-hex. .rk-up-tier at 44px Archivo uppercase in the rank colour with a glow. The h1 at 20px. 'Strong II → Strong III'. An RP bar, '+N RP' and 'N to X'. Three stats in mono 16px. A bone Continue/Next and a 'See all your ranks' link.",
+   "changes": [
+    {
+     "file": "web/ui/ranks.js",
+     "change": "Markup: remove the two ring <i> elements and add <span class=\"fx-streaks\">. The eyebrow becomes grey with a double chevron and 'Rank up · 1 of 2'. The tier line gets class .u-impact ('STRONG III', italic 900). The arrow becomes '›'. The RP number is lime. Stat values become b.u-num."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Badge: .rk-hex becomes .u-hex 160px wide (about 183 tall) inside a .u-hexw glow in the rank colour, with the level at 60px/900 and the tier at 12px/900 .2em."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Type: .rk-up-tier at --fs-6 (48px), italic 900, in the rank colour. The 'Glutes ranked up' line at 24px/700."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Progress and stats: a 4px bar. The stats become cards (r16, white/5, glass-line border, centred, 18px/900 values, 12px caps labels, +RP in lime). The button is 64px, r24, 900. The link is 12px caps .2em."
+    },
+    {
+     "file": "web/ui/fx.css",
+     "change": "New .fx-streaks: three diagonal 4px lines at 45° and opacity .1, animated with transform and opacity only, stopped for reduced motion. The radial light reuses .fx-glow."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens",
+    "system: Inter typography",
+    "system: hexagon component"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web only.",
+   "effort": "M",
+   "risks": [
+    "A 160px hexagon, 48px headline, stats and a 64px button won't fit 375×667 without scrolling. .rk-up already scrolls, but add a max-height media rule that scales the hexagon to about 120px.",
+    "On a Strong rank-up the white glow and the bone button merge visually.",
+    "Keep the reduced-motion paths (fxBar, fxCount, confetti) working after the markup change."
+   ],
+   "designDeviations": [
+    "The hexagon, headline and glow use the muscle's rank colour; the design shows only Strong white.",
+    "Keep the confetti, the RP fill and the count-up (the motion decisions of 2026-10-15). Keep the story segments as thin lines when there is more than one rank-up (open question)."
+   ],
+   "showAtEnd": "Triggered in the preview from the console with rkCelebrate({ranks:[{k:'glute_max'}],gains:{glute_max:3},logs:[]},()=>{}): one Strong and one Forged rank-up, each as before, after and design at 393×852. Plus a 3-second recording of the animation.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "workout_tracker",
+   "today": "floatHTML (web/ui/workout.js:44-77) with workout.css. The top is a glass card .wk-bar (back, a mono 20px timer, a 12px meta line, a small lime Finish, a 3px progress bar). Under it the exercise strip .wk-sx (train.css:164-178): glass pills at blur 10, the active one bordered lime. Chips in sentence case with lime text on the primary plus a separate #tfDot. .tf-name at 28px Archivo, 64% wide. Meta pills. A .wk-nudge star note. wkTableHTML rows (done rows tinted lime 7%, the current row on surface-2, 24px ticks). Steppers with − label + and no value (workout.js:40-43). The bone 56px 'Log set N' (.btn.primary.big). The rest card, effort check, plates, and an 'Up next' row. On max-height 760 the strip and nudge are dropped (train.css:210-227).",
+   "changes": [
+    {
+     "file": "web/ui/workout.css",
+     "change": "Header: .wk-bar becomes a plain row with no glass card: back as a 44px r12 white/5 square, the timer at 30px/900 tabular, the meta in 12px caps .12em, and Finish as lime r12 at 700. The progress becomes a 1px hairline under the header and strip (a border-bottom of white/5 plus the lime fill)."
+    },
+    {
+     "file": "web/ui/train.css",
+     "change": "Strip: .wk-sx without blur. The active pill is lime/10 with lime text, a lime/20 border and a 20px lime number in black. The others are white/5 with a #333 number."
+    },
+    {
+     "file": "web/ui/workout.css",
+     "change": "Exercise: .wk-chip is uppercase 12px/700 .08em, white/10 with a white/10 border, r8. The primary chip is white with a 6px lime dot inside, replacing lime text. .tf-name is about 40px/900 at -.03em within 72% width. .tf-meta pills are r12, white/5, 700, and the Insights icon is lime. .wk-nudge is r16 white/5 with a filled lime star."
+    },
+    {
+     "file": "web/ui/workout.css",
+     "change": "Set table: header in 12px caps .14em. Done rows are cards (white/5, white/10 border, r16) with a 32px lime tick. The current row has a lime/30 border with #1A1A1A input wells, 40px tall at 900. Upcoming rows sit at opacity .4."
+    },
+    {
+     "file": "web/ui/workout.css",
+     "change": "Steppers and button: two #1A1A1A r16 boxes 56px tall, with filled grey circles for − and +, and the value at 18px/900 above a 10–12px caps label. The 'Log set' button comes from tokens (64px, r24, 900, 20px)."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "Move the dot into the primary chip's markup. wkStepsHTML adds <b data-sv=\"kg|r|s\">. A delegated click/change listener on #train (after the legacy handler at ossa.html:7712-7717) mirrors TR.cur into the [data-sv] values. Use the larger tick."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens",
+    "system: Inter typography",
+    "system: glass panels"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web only.",
+   "effort": "M",
+   "risks": [
+    "The value shown in the stepper must stay in sync with the legacy stepper handler (ossa.html:7714), with typed input (:7717) and with curDefaults after a jump (workout.js:93).",
+    "The bottom stack (nudge, table, steppers, 64px button, Up next) gets taller. Keep 56px and the short-phone rules under max-height 760.",
+    "A larger name can push the chips and meta into the lit muscle the leader line points at (drawTrainLeader).",
+    "Glass performance over the animating body (see the glass item)."
+   ],
+   "designDeviations": [
+    "Our own lit 3D body stays visible on the right; the design shows only faint art behind the content. So the name is about 40px within 72% width, not 48px full width.",
+    "Keep the bone rest card, the effort check, plates per side and the progress hairline. None of them are in the design.",
+    "Keep 44px targets."
+   ],
+   "showAtEnd": "In the preview at 393×852, start today's session and log one set. Then before, after and workout_tracker.png, plus the resting state and a 375×667 crop. Later, a short recording on the iPhone through Expo Go.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "streak_summary",
+   "today": "openStreak (web/ui/ranks.js:185-223), styled in ranks.css:97-141. The only exit is the bottom 'Not now' / 'Close' link. The flame is an outline at 64px, inside a 116px tap-to-light circle after the first workout of the day. The number is 64px Archivo. 'day streak' is sentence case at 16px. The week has 34px dots (done lime, today a lime ring, missed dashed, rest 'Z'). Then the widget preview .sk-wg / .sk-wg-i and 'Add widget' in bone.",
+   "changes": [
+    {
+     "file": "web/ui/ranks.js",
+     "change": "Add a 44px round close button at the top right (it reuses close()). Use a filled UI_FLAME. Uppercase the 'Day streak', 'DAYS' and 'NEEDS YOU' labels."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Hero: .sk-fl becomes an 80px lime/10 circle with a lime/5 ring and a filled lime flame with a drop-shadow glow; the ignition keeps its states. .sk-n uses --fs-8 (96px) at 900 and -.05em. .sk-l is 20px/700 caps .2em."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Week: .sk-week becomes r24, white/5 with the glass-line border, 24px padding. .sk-d i is min(40px, calc((100% - 6*4px)/7)) wide, with done as a black double-tick on lime and future days at opacity .3."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Widget preview: .sk-wg is r40 on #1A1A1A with 32px padding; .sk-wg-i is r32 black with a white/10 border. The number is 30px/900 and the labels caps. Then the 64px bone button and the 'NOT NOW' caps link."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens",
+    "system: Inter typography"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web only. The real rank-body widget is a known native gap and stays out of scope.",
+   "effort": "S",
+   "risks": [
+    "Seven 40px dots inside an 85%-wide card overflow on 375-wide phones. Use the min() size above.",
+    "The widget preview shows a layout the native widget doesn't have yet (already true today, UI-SYSTEM.md:136)."
+   ],
+   "designDeviations": [
+    "Keep tap-to-light, the number roll and the confetti. The design is static.",
+    "The widget preview keeps our 2D rank figure, not the render."
+   ],
+   "showAtEnd": "openStreak(true) (unlit, then lit) and openStreak(false), each as before, after and streak_summary.png at 393×852. Plus a short recording of lighting the flame.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "recovery_dashboard",
+   "today": "renderRecover (web/ui/shell.js:529-560) with shell.css:206-217. The .u-recnow card shows 'N ready · N recovering' (bold lime and amber), with .u-recr rows (a name, a 72px bar in --amber, 'Ready …' at 118px) separated by dividers. Today's reset is a non-bone uiNextHTML: grey cap, 20px title (.u-recover override), bone .u-play. 'Look after it' is one .u-list card with four .u-row rows (aches, desk reset, posture scan, wind-down), then a footer note.",
+   "changes": [
+    {
+     "file": "web/ui/shell.js",
+     "change": "Count markup: <b>19</b> <span>ready</span> and <b>4</b> <span>RECOVERING</span>. Mark the reset cap as lime. Render 'Look after it' as separate cards (add class .u-rowcards to the wrapper, or one u-card per row)."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": "Recovering now: .u-recnow is r16, 20px padding, white/5 with the glass-line border. The header is caps 900 .16em. The numbers are 900 (lime, recovering colour) and the words grey."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": "Rows: .u-recr loses its dividers and gets a 20px gap, with the name at 14–16px/700, a 96px×4px bar in var(--amber) (the recovering token) and 12px text-2."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": "Today's reset: .u-recover .u-next is r24 with 24px padding. The cap is lime caps 900. The title is 30px/900. The sub is 14px/700 text-2. The play button is 56px bone or white."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": "Look after it: .u-rowcards .u-row becomes a card (r16, white/5, 16px padding, 12px gap). .u-ic is a 40px r12 tile tinted with --c at 10%."
+    }
+   ],
+   "dependsOn": [
+    "system: palette tokens",
+    "system: Inter typography"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web only.",
+   "effort": "S",
+   "risks": [
+    "If recovering is tan #C5A059, the bars look like Stable rank bars. That's acceptable here (no ranks on this tab) but not on Train.",
+    "Splitting the u-list into cards changes the tab order and VoiceOver grouping slightly. Check the focus order."
+   ],
+   "designDeviations": [
+    "Keep all four rows. The design shows two (aches and desk reset); posture scan and wind-down stay.",
+    "Keep 12px text. The aches subtitle can shorten to the design's 'Tap where. Get a 5-minute routine.', which needs Andrej's OK."
+   ],
+   "showAtEnd": "Before, after and recovery_dashboard.png at 393×852, with a seeded recent workout so muscles show as recovering. Plus the 'Everything's recovered' empty state.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "system: before/after review (process, no app code)",
+   "today": "scripts/preview-server.js serves http://localhost:5178 and runs build-html.js on every request, writing ossaHtml.js and web/.preview.html. .claude/launch.json names it 'ossa-preview'. A demo body is seeded (ossa.html:3815-3864, saved under 'corpus-v4'). web/ isn't in git, and earlier redesigns were backed up as folders under C:\\Ossa. Expo Go on Andrej's iPhone (npm start, HOW-TO-RUN.txt) shows web-only changes with no EAS build.",
+   "changes": [
+    {
+     "file": "(no repo file)",
+     "change": "After 'go', before any edit: copy web/, scripts/, docs/ and store/ to C:\\Ossa\\backup-before-redesign-v2-<date>, as for the previous redesigns."
+    },
+    {
+     "file": "(no repo file)",
+     "change": "Start the preview (Browser preview_start 'ossa-preview') and set the viewport to 393×852. The design PNGs are 786×1704, which is 393×852 at 2×."
+    },
+    {
+     "file": "(no repo file)",
+     "change": "Capture BEFORE shots of all six screens by driving the app from the console: uiGo('today'), openRanks(), rkCelebrate(R,()=>{}), TR.hub=false;startWorkout(), openStreak(true|false), uiGo('recover')."
+    },
+    {
+     "file": "(no repo file)",
+     "change": "After each step, retake the same shots and put before | after | design side by side on a throwaway comparison page in the scratchpad. Run node scripts/check-tokens.js every time."
+    },
+    {
+     "file": "(no repo file)",
+     "change": "At the end of the visual phase: npm start, then open it in Expo Go on the iPhone to check glass performance, Inter rendering and the #000 edges in WKWebView."
+    }
+   ],
+   "dependsOn": [],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Expo Go loads the rebuilt web bundle; nothing native changes.",
+   "effort": "S",
+   "risks": [
+    "Desktop Chrome is not WKWebView. Blur cost, colour and font rendering differ, so the phone check is required before calling the phase done.",
+    "Seeding state from the console changes the preview's localStorage only, not Andrej's phone."
+   ],
+   "designDeviations": [],
+   "showAtEnd": "One comparison sheet per screen (before | after | design at 393×852), sent as images, plus the lint numbers. Screens go in pairs: Body + Recover, Muscle ranks + Rank-up, Workout + Streak.",
+   "stateChanges": [
+    "none"
+   ],
+   "newFiles": []
+  }
+ ],
+ "openQuestions": [
+  {
+   "question": "Which colour is the main button: bone (as the six restyle designs show) or lime (the brief says 'primary action: neon lime')?",
+   "why": "The designs disagree: bone for Next, Log set and Add widget; lime for Finish, Start now and Evolve; pure white for Accept Dare and Dismiss. One rule keeps every screen consistent.",
+   "options": [
+    "Bone for the one main button; lime for finish, accept and start-now moments; cyan for Focus actions; gold only for Prestige",
+    "Lime for every main button",
+    "Pure white for every main button"
+   ],
+   "recommendation": "Bone for the one main action on each screen (it's what the restyle designs show, and it is 18.8:1 with black text). Lime for finish, accept and reward moments, cyan for Focus, gold for Prestige. Drop pure white so text and buttons stay distinct."
+  },
+  {
+   "question": "What colour means 'recovering': the design's tan #C5A059 (the same as the Stable rank), or keep a separate amber?",
+   "why": "recovery_dashboard colours the recovering bars and count with var(--stable). Today it's amber #FFB547, which isn't in the brief's palette. Tan would match the Stable rank on screens that show both, such as Train's session screen.",
+   "options": [
+    "Tan #C5A059, as designed",
+    "Keep amber #FFB547",
+    "A new orange such as #FF6B00 (fueling_meter's)"
+   ],
+   "recommendation": "Follow the design (tan) on Recover and the Train hub, always with the word 'Recovering' next to it. Use the same tan in the 3D Recovery view. Revisit if the Train session screen looks confusing."
+  },
+  {
+   "question": "What should the four Body Score pillar colours be?",
+   "why": "The brief only fixes mind = cyan. Today's blue, orange and violet don't belong to the new palette, and the legacy PILLARS array has a different set again.",
+   "options": [
+    "Move lime, Recover tan, Fuel orange #FF6B00, Mind cyan",
+    "Keep today's hues with only Mind becoming cyan",
+    "All four neutral white, with the colour only on the bars"
+   ],
+   "recommendation": "Move lime, Recover tan, Fuel orange #FF6B00, Mind cyan. These are all colours that appear in the designs."
+  },
+  {
+   "question": "Strong is pure white #FFFFFF. Should it stay pure white, including on the 3D body?",
+   "why": "White is also the text colour, nearly the bone button colour (1.12:1 apart), and nearly the 3D selection glow, so a Strong muscle and a picked muscle would look the same.",
+   "options": [
+    "Keep white everywhere and make the 3D selection a lime edge",
+    "Keep white in 2D, use a cool silver (#E6EEF5) on the 3D body",
+    "Use silver everywhere"
+   ],
+   "recommendation": "Keep white as designed, and change the 3D selection highlight to a lime edge."
+  },
+  {
+   "question": "Fragile #4A4A4A is only 2.1–2.4:1 on black. Can its dots, squares and bars get a thin light outline in 2D?",
+   "why": "Below 3:1, colour-blind users and users in bright light can't see Fragile marks, which breaks the 'never colour alone' decision of 2026-10-04.",
+   "options": [
+    "Keep #4A4A4A with a 1px #6B6B6B outline in 2D UI",
+    "Lighten Fragile to #6B6B6B",
+    "Leave as designed"
+   ],
+   "recommendation": "Keep the colour and add the 1px outline in 2D. The 3D body uses it unchanged."
+  },
+  {
+   "question": "What should the third tab be called: 'Breathe' (every design but one) or 'Focus' (focus_aura, in cyan)?",
+   "why": "The brief leaves it open. 'Focus' only makes sense once Neural State and Monk Mode exist (Phase 3).",
+   "options": [
+    "Keep 'Breathe' now, rename to 'Focus' with a cyan accent in Phase 3",
+    "Rename to 'Focus' now",
+    "Keep 'Breathe' for good"
+   ],
+   "recommendation": "Keep 'Breathe' in the visual phase. The tab bar gets a per-tab accent, so Phase 3 can switch it to 'Focus' in cyan with a one-word change."
+  },
+  {
+   "question": "On the Body page, should the 3D body only change its rank colours, or also try the renders' 'neon outline' look (rank colour on the fibres and seams, darker fill)?",
+   "why": "Ground rule 1 keeps our model. The outline look is a shader tweak on that model, but it changes how the body reads.",
+   "options": [
+    "Colour swap only",
+    "Colour swap, then a neon-outline variant shown side by side to choose from",
+    "Neon outline straight away"
+   ],
+   "recommendation": "Swap the colours first, then show a neon-outline variant side by side and let Andrej pick."
+  },
+  {
+   "question": "Fonts: Inter only (roman plus a true italic at 800–900) and drop Geist Mono?",
+   "why": "The designs use only Inter. A true italic adds size; without it iOS slants the roman artificially. Inter has tabular figures, so timers and tables don't need a mono font.",
+   "options": [
+    "Inter roman 300–900 + italic 800–900, no mono",
+    "Inter roman only, slanted for italic",
+    "Inter + keep Geist Mono for numbers"
+   ],
+   "recommendation": "Inter roman 300–900 plus italic 800–900, no mono. Check the KB when the script runs."
+  },
+  {
+   "question": "Can labels stay at 12px rather than the designs' 10px (and 8px)?",
+   "why": "10px gray-500 is 4.3:1 on black and fails AA. The WebView doesn't follow iOS text size.",
+   "options": [
+    "12px minimum with the designs' tracking",
+    "Follow the designs at 10px"
+   ],
+   "recommendation": "12px minimum. The uppercase, tracking and weight still give the designs' look."
+  },
+  {
+   "question": "The designs show some new copy. Keep today's copy during the restyle, or take some of it?",
+   "why": "Restyle means no feature changes. Some design copy is new: 'RECHARGE YOUR CHARACTER.' on rest days, and the shorter aches line 'Tap where. Get a 5-minute routine.'.",
+   "options": [
+    "Keep today's copy everywhere",
+    "Take the shorter aches line only",
+    "Take all the design copy"
+   ],
+   "recommendation": "Keep today's copy, except the shorter aches line, which is simpler and less diagnostic."
+  },
+  {
+   "question": "web/ isn't in git. Folder backup again, or start committing?",
+   "why": "There's no history to undo a token or shader change, and this phase touches ossa.html in place (shader, legacy CSS).",
+   "options": [
+    "Folder backup like 2026-10-15",
+    "Commit the current state to git and commit after each step (only when you say)",
+    "Both"
+   ],
+   "recommendation": "Both: a folder backup now, and a git baseline so every step can be reviewed as a diff."
+  }
+ ],
+ "orderNotes": "Do the visual system first, as Phase 0. Every later phase builds new screens on these tokens and components, and the shader's rank colours are shared with Phase 1 (the injury red pulse) and Phase 3 (the cyan aura).\n\nOrder inside Phase 0:\n(0) Backup, plus BEFORE shots of all six screens.\n(1) Palette tokens.\n(2) Inter.\n(3) Glass and hexagon components.\n(4) Legacy CSS and shader colour remap, including rkC, recovery heat and auras.\n(5) Tab bar.\n(6) Screens in pairs: Body + Recover (the biggest visible change, and both rely only on tokens, glass and the shader), then Muscle ranks + Rank-up (need the hexagon), then Workout + Streak (need the stepper JS change and the glass performance rules).\n(7) Phone check in Expo Go.\n\nEach step ends with check-tokens, a build and a before | after | design sheet at 393×852.\n\nThe brief puts 'Ranks and rank-up restyle' under Phase 1 (Vessel Engine). I recommend restyling them in Phase 0 so the new screens don't inherit the old look. Phase 1 then adds data to the markup (kinetic-chain %, paused fade, the 'You flagged …' state), so leave room in .rk-row and .rk-up-stats.\n\nDefine --alert #FF3B30, --cyan and --gold now, even though Phase 1 and Phase 3 use them.\n\nPhase 3 renames Breathe to Focus through UI_TABS and the per-tab accent added here. It also recolours the Mind screen's violets, which this phase leaves alone.\n\nNothing in this area needs an EAS build. The native leftovers are app.json's Android notification colour #9BFCEC and the widget descriptions mentioning mint and amber; batch them with the native widget rebuild before shipping.\n\nThe whole phase stays web-only and testable in Expo Go, and nothing goes to Apple.\n\nCritical files: web/ui/tokens.css, web/ui/base.css, web/ui/shell.js and shell.css, web/ui/ranks.js and ranks.css, web/ui/workout.js and workout.css, web/ossa.html (FS shader rkC at 4188, ACC/AMB at 4274-4277, legacy CSS at 1–3344), scripts/fetch-fonts.js."
+}

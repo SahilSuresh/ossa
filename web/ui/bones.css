@@ -1,0 +1,43 @@
+/* BONE RANKS ON THE BODY (bones.js): the overlay for head, eyes and shadow, the header bits, the banners */
+.bo-cv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.bo-ban{position:absolute;left:50%;top:38%;z-index:5;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 18px;border-radius:14px;background:var(--glass-strong);border:1px solid var(--c);box-shadow:0 0 30px -6px var(--c);transform:translate(-50%,8px) scale(.96);opacity:0;transition:opacity .3s var(--ease),transform .3s var(--ease);pointer-events:none;text-align:center}
+.bo-ban.on{opacity:1;transform:translate(-50%,0)}
+.bo-ban small{font-size:var(--fs-1);font-weight:900;letter-spacing:.14em;color:var(--c)}
+.bo-ban b{font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-4);text-transform:uppercase;color:var(--text-1)}
+/* the "Before" layout, tidied (20 Oct) */
+.bo-mat{display:block;margin-top:3px;font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--me);white-space:nowrap}
+.bo-rank{position:relative;flex:none;display:grid;place-items:center;width:40px;height:46px;clip-path:var(--hex);border:0;background:linear-gradient(160deg,var(--m1),var(--m2));color:var(--text-1);text-shadow:0 1px 3px rgba(0,0,0,.6);filter:drop-shadow(0 0 6px var(--me))}
+.bo-rank small{position:absolute;top:8px;font-size:var(--fs-1);transform:scale(.7);font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+.bo-rank b{margin-top:9px;font-size:var(--fs-4);font-weight:900;line-height:1}
+.bo-sk{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:var(--sp-1) 0 2px}
+.bo-sk button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-width:0;min-height:50px;padding:6px 9px;border-radius:12px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 9%,var(--surface-2)),var(--surface-2) 70%);border:1px solid var(--line);border-top:2px solid var(--c);color:var(--text-1);text-align:left}
+.bo-sk small{font-size:var(--fs-1);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--c);white-space:nowrap}
+.bo-sk b{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-2);font-weight:800}
+.bo-sk em{font-style:normal;font-size:var(--fs-1);color:var(--text-2)}
+/* a header on one line: title, then RANK, streak, profile; the material and aura stack under the title */
+#tv-today .u-top{align-items:flex-start}
+#tv-today .u-top-r{gap:6px;margin-top:var(--sp-2)}
+#tv-today .u-top-r .u-streak{padding:0 10px 0 8px}
+#tv-today .u-top-tx{min-width:0}
+.u-top-tx .ab-tx{white-space:nowrap}
+/* the colour key stays, tighter, so the skill cards fit; the body gives a little height; the checks are a slim row */
+.u-home3d #rdHero .u-rkrail:not(.lx-leg){gap:2px;bottom:var(--sp-2)}
+.u-home3d #rdHero .u-rkrail:not(.lx-leg) span{font-size:var(--fs-1);line-height:1.15}
+.u-home3d:has(.bo-sk) .u-rk3dh{min-height:250px}
+@media (max-height:700px){ .u-home3d:has(.bo-sk) .u-rk3dh{min-height:200px} .bo-sk button{min-height:44px;padding:4px 7px} .u-home3d #rdHero .u-rkrail:not(.lx-leg){display:none} }
+.u-home3d .lx-quests{display:none}
+/* the weak-link card a little tighter so the body keeps its size */
+.u-home3d:has(.bo-sk) .u-weak{min-height:0;padding:var(--sp-2) var(--sp-3)}
+.u-home3d:has(.bo-sk) .u-weak .rk-sq{width:38px;height:38px}
+.bo-sk button{min-height:46px;padding:5px 9px}
+/* Recover's "Checks" (Posture scan, Body check) */
+.rcv-checks{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-2)}
+.rcv-checks .u-section-h{margin:0}
+.rcv-cks{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
+.rcv-ck{display:flex;align-items:center;gap:10px;min-width:0;min-height:56px;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line);color:var(--text-1);text-align:left}
+.rcv-ck .u-ic{flex:none;--c:var(--text-1)}
+.rcv-ck span:last-child{display:flex;flex-direction:column;min-width:0}
+.rcv-ck b{font-size:var(--fs-2);font-weight:800;white-space:nowrap}
+.rcv-ck small{font-size:var(--fs-1);line-height:1.3;color:var(--text-2)}
+.rcv-ck.due{border-color:color-mix(in srgb,var(--glow) 40%,transparent)}
+.rcv-ck.due small{color:var(--glow)}

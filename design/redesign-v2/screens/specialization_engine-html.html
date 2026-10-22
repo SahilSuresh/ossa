@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>specialization_engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --background: #000000;
+            --card-bg: #121212;
+            --accent-lime: #D4FF00;
+            --accent-gold: #FFD700;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-h-screen;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: #000000;
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .label-sm-caps {
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col text-white">
+        <!-- #header_001 -->
+        <header class="flex-shrink-0 px-6 pt-12 pb-4 z-20 flex justify-between items-center">
+            <button class="w-10 h-10 glass-panel rounded-full flex items-center justify-center active:scale-95">
+                <iconify-icon icon="solar:close-circle-bold" class="text-2xl text-gray-500"></iconify-icon>
+            </button>
+            <div class="label-sm-caps">Archetype Engine</div>
+            <div class="w-10"></div>
+        </header>
+        <!-- /#header_001 -->
+
+        <!-- #scroll-content_002 -->
+        <div class="flex-1 overflow-y-auto px-6 pb-20">
+            <h1 class="text-4xl font-black tracking-tight mb-2">Choose your path</h1>
+            <p class="text-gray-400 text-sm mb-8 leading-relaxed">Evolution locked until Overall Rank Forged II. Specializing shifts your attribute caps and recovery priority.</p>
+
+            <!-- #archetype-comparison_003 -->
+            <div class="relative mb-10">
+                <img src="https://media.screensdesign.com/gasset/d229b759c5ec4aa2af96251ec3c390ce_screen_image_specialization_archetypes_c7c7b77e0e.png" data-media-ref="generated:138026" alt="3D model of two contrasting physiques: 'The Tank' (heavy, muscular, broad shoulders) and 'The Scout' (lean, athletic, long limbs), both in Ossa's black mesh with neon gold and silver highlights, side by side comparison, cinematic lighting, dark background" class="w-full h-auto rounded-3xl" data-image-aspect="3:2" data-image-background="transparent">
+                
+                <div class="absolute inset-x-0 bottom-4 flex justify-around px-4">
+                    <div class="flex flex-col items-center">
+                        <span class="text-[10px] font-black tracking-widest text-[var(--accent-gold)]">THE TANK</span>
+                        <div class="w-1 h-1 rounded-full bg-[var(--accent-gold)] mt-1"></div>
+                    </div>
+                    <div class="flex flex-col items-center opacity-40">
+                        <span class="text-[10px] font-black tracking-widest">THE SCOUT</span>
+                        <div class="w-1 h-1 rounded-full bg-white mt-1"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#archetype-comparison_003 -->
+
+            <!-- #radar-chart_004 -->
+            <div class="glass-panel rounded-3xl p-6 mb-8 flex flex-col items-center">
+                <div class="label-sm-caps text-gray-500 mb-6">ATTRIBUTE SPREAD</div>
+                <div class="relative w-48 h-48">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <!-- Background Hexagon -->
+                        <polygon points="50,5 93,30 93,70 50,95 7,70 7,30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+                        <polygon points="50,25 72,38 72,62 50,75 28,62 28,38" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                        <!-- The Tank Path (Gold) -->
+                        <polygon points="50,10 85,35 85,65 50,90 15,65 15,35" fill="rgba(255,215,0,0.15)" stroke="var(--accent-gold)" stroke-width="2" />
+                        <!-- Labels -->
+                        <text x="50" y="2" text-anchor="middle" fill="white" font-size="4" font-weight="bold">STRENGTH</text>
+                        <text x="98" y="30" text-anchor="start" fill="gray" font-size="4">POWER</text>
+                        <text x="98" y="70" text-anchor="start" fill="gray" font-size="4">STAMINA</text>
+                        <text x="50" y="98" text-anchor="middle" fill="gray" font-size="4">SPEED</text>
+                        <text x="2" y="70" text-anchor="end" fill="gray" font-size="4">AGILITY</text>
+                        <text x="2" y="30" text-anchor="end" fill="gray" font-size="4">DENSITY</text>
+                    </svg>
+                </div>
+            </div>
+            <!-- /#radar-chart_004 -->
+
+            <!-- #perks_005 -->
+            <div class="space-y-3">
+                <div class="label-sm-caps text-gray-500">TANK SPECIALIZATION PERKS</div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
+                    <iconify-icon icon="solar:bolt-circle-bold" class="text-2xl text-[var(--accent-gold)]"></iconify-icon>
+                    <div>
+                        <div class="text-sm font-bold">+25% Maximum Power Cap</div>
+                        <div class="text-xs text-gray-500">Unlocks Tier IV rank requirements for upper body.</div>
+                    </div>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
+                    <iconify-icon icon="solar:shield-check-bold" class="text-2xl text-[var(--accent-gold)]"></iconify-icon>
+                    <div>
+                        <div class="text-sm font-bold">Reinforced Joint Density</div>
+                        <div class="text-xs text-gray-500">Reduces injury risk by 15% on high-load compound lifts.</div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#perks_005 -->
+        </div>
+        <!-- /#scroll-content_002 -->
+
+        <!-- #footer_006 -->
+        <footer class="flex-shrink-0 p-6 pb-12">
+            <button class="w-full h-16 bg-[var(--accent-lime)] text-black rounded-3xl font-black text-xl active:scale-95 transition-transform">
+                Evolve to Tank
+            </button>
+        </footer>
+        <!-- /#footer_006 -->
+    </div>
+</body>
+</html>

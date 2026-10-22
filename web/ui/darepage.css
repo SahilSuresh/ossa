@@ -1,0 +1,100 @@
+/* =========================================================
+   DARE PAGE (Ossa 2.0 Phase 6) — the weather dare in Evolve's #evV panel, and the weather glyphs
+   (dpGlyph, also used by the Weather dares page). See darepage.js. Class prefix dp-. Tokens only.
+   Lives in core's .ev-body, a flex column that never scrolls: the glyph takes what is left (168 px at
+   most, 112 on short phones) and gives way first; the actions and the credit sit at the foot.
+   ========================================================= */
+
+/* ---------- the glyphs: line drawings, strokes on --text-2, details --line-3, the reason mark amber ---------- */
+.dp-g{display:block;width:100%;height:100%;color:var(--text-2);fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.dp-g svg{overflow:hidden}
+.dp-g .dp-d{stroke:var(--line-3)}
+.dp-g .dp-r{stroke:var(--amber)}
+.dp-g .dp-m{stroke-width:5}
+.dp-g .dp-fall{animation:dpFall 1.1s linear infinite}
+.dp-g .dp-drift{animation:dpDrift 3.2s var(--ease) infinite alternate}
+.dp-g .dp-spin{transform-box:fill-box;transform-origin:center;animation:dpSpin 14s linear infinite}
+@keyframes dpFall{to{transform:translateY(16px)}}
+@keyframes dpDrift{from{transform:translateX(-3px)}to{transform:translateX(3px)}}
+@keyframes dpSpin{to{transform:rotate(45deg)}}
+@media (prefers-reduced-motion:reduce){ .dp-g .dp-fall,.dp-g .dp-drift,.dp-g .dp-spin{animation:none} }
+
+/* ---------- the page: one column, nothing scrolls ---------- */
+.dp{flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-2)}
+.dp>*{flex:none;margin:0}
+.dp .dp-art{flex:1 1 0;min-height:0;max-height:168px;overflow:hidden;display:grid;place-items:center}
+.dp-art .dp-g{max-width:168px}
+.dp-eye{color:var(--glow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-h{font-family:var(--display-italic);font-style:italic;font-weight:900;text-transform:uppercase;letter-spacing:-.03em;
+  font-size:min(var(--fs-6),12vw);line-height:1;padding-right:.08em;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-cond{font-size:var(--fs-2);line-height:1.4;color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-warn{font-size:var(--fs-2);line-height:1.4;font-weight:600;color:var(--amber);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dp-lead{font-size:var(--fs-3);line-height:1.375;color:var(--text-1);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* the three things */
+.u-card.dp-card{padding:var(--sp-3);background:var(--surface-2)}
+.dp-card-eye{margin:0 0 var(--sp-1)}
+.dp-rows{display:grid;gap:var(--sp-1)}
+/* box | title | right side (progress or chevron); the sub sits under the title. With a progress count ("0 of 1,500")
+   the count rides on the title line and the sub runs under both, so "Ticks at 1,500 steps." keeps its width */
+.dp-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;align-content:center;
+  column-gap:var(--sp-3);row-gap:1px;width:100%;min-height:var(--tap);padding:0;text-align:left;color:var(--text-1);border-radius:var(--r-sm)}
+.dp-row>.dp-box{grid-column:1;grid-row:1/3}
+.dp-rt{display:contents}
+.dp-row .dp-rt b{grid-column:2;grid-row:1}
+.dp-row .dp-rt small{grid-column:2;grid-row:2}
+.dp-row>svg{grid-column:3;grid-row:1/3}
+.dp-row>.dp-prog{grid-column:3;grid-row:1}
+.dp-row.dp-pg .dp-rt small{grid-column:2/4}
+button.dp-row{transition:background var(--dur-1),transform var(--dur-1) var(--ease)}
+button.dp-row:active{background:var(--surface-3);transform:scale(.99)}
+.dp-box{display:grid;place-items:center;width:24px;height:24px;border-radius:var(--r-xs);border:1.5px solid var(--line-3);color:var(--on-accent);
+  transition:background var(--dur-2),border-color var(--dur-2)}
+.dp-box.on{background:var(--glow);border-color:var(--glow)}
+.dp-box svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.dp-rt b{min-width:0;font-size:var(--fs-3);font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-rt small{min-width:0;font-size:var(--fs-1);line-height:1.3;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-done .dp-rt b{color:var(--text-2)}
+.dp-prog{font-style:normal;font-size:var(--fs-1);font-weight:700;color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dp-foot{display:flex;align-items:center;gap:var(--sp-2);margin:var(--sp-2) 0 0;font-size:var(--fs-1);line-height:1.3;color:var(--text-2);min-width:0}
+.dp-foot span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dp-hex{flex:none;width:12px;height:14px;background:var(--gold);clip-path:var(--hex)}
+
+.dp-safe{font-size:var(--fs-1);line-height:1.35;color:var(--text-2);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* one row of actions at the foot */
+.dp .dp-acts{display:flex;align-items:center;gap:var(--sp-2);min-height:var(--btn-h);margin-top:auto}
+.dp-acts .u-btn{padding:0 var(--sp-3)}
+.dp-acts .dp-go{flex:1;min-width:0}
+.dp-acts .dp-no{flex:none;width:112px}
+.dp-acts .dp-did{flex:none;justify-content:center;padding:0 var(--sp-2)}
+.dp-acts .dp-off{opacity:.55}
+.dp-acts .dp-off:active{transform:none}
+.dp-acts .dp-go[aria-busy="true"]{font-size:var(--fs-3)}
+.dp-credit{font-size:var(--fs-1);line-height:1.3;color:var(--text-3);text-align:center}
+
+/* the bar: Coach / Drill, 32 px to look at, 44 px to tap */
+.dp-tone{position:relative;display:inline-flex;align-items:center;height:32px;padding:0 var(--sp-3);border-radius:var(--r-pill);border:1px solid var(--line-2);
+  font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.dp-tone::before{content:"";position:absolute;inset:-7px -2px}
+.dp-tone:active{color:var(--text-1)}
+
+/* not a weather dare today */
+.dp-none-t{margin:auto 0 0;font-size:var(--fs-3);line-height:1.4;color:var(--text-2);text-align:center}
+
+/* ---------- short phones (iPhone SE): --btn-h 56, --fs-6 40 (tokens.css) ---------- */
+@media (max-height:700px){
+  .dp .dp-art{max-height:112px}
+  .dp-art .dp-g{max-width:112px}
+  .dp-card-eye{display:none}
+}
+
+/* BUG-36: at 375 px a long walk title next to the step count lost ~8 px; a tighter gap on narrow phones */
+@media (max-width:380px){ .dp-row{column-gap:var(--sp-2)}
+  /* 22 Oct, BUG-36: let the title take the full row and move the count beside the sub; both stay whole */
+  .dp-row.dp-pg .dp-rt b{grid-column:2/4}
+  .dp-row.dp-pg>.dp-prog{grid-column:3;grid-row:2}
+}

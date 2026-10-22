@@ -1,0 +1,17 @@
+/* =========================================================
+   THE HARD PAYWALL — see gate.js. The lock screen covers everything (z above the paywall sheet and the
+   Focus/Evolve panels) and hosts the same paywall as the intro. Tokens only.
+   ========================================================= */
+.gt-lock{position:absolute;inset:0;z-index:12;display:flex;align-items:flex-end;justify-content:center;background:var(--bg);opacity:0;transition:opacity var(--dur-3) var(--ease)}
+.gt-lock.on{opacity:1}
+.gt-in{width:100%;height:100%;display:flex;align-items:flex-end}
+.gt-lock .pw{position:absolute;left:0;right:0;bottom:0;top:auto;max-height:100%;overflow-y:auto;border-radius:0;border-top:0;padding-top:calc(var(--sp-5) + var(--ev-sat));transform:none;opacity:1;transition:none}
+.gt-lock .pw.pw-ob1 .u-pw-sum{display:none}
+.gt-lock .pw.pw-ob2 .pw-wk{display:none}
+.gt-lock .pw.pw-ob3 .u-pw-tl{display:none}
+.gt-lock .pw.pw-ob4 .pw-h{font-size:var(--fs-4);line-height:1.2}
+.gt-lock .pw.pw-ob5 .u-pw-plan{padding:var(--sp-2) var(--sp-3)}
+.gt-lock .pw.pw-ob5 .pw-fine{line-height:1.3}
+/* while locked, nothing under the lock takes a tap */
+.app.gt-on>*:not(.gt-lock){pointer-events:none}
+.app.gt-on .gt-lock{pointer-events:auto}

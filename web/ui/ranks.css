@@ -1,0 +1,206 @@
+/* =========================================================
+   RANKS AND STREAK — see ranks.js (dares: dares.css)
+   ========================================================= */
+
+/* ---------- the 2D body coloured by rank ---------- */
+.rk-fig{display:block;height:100%;width:auto;overflow:visible}
+.rk-fig .rk-sil{fill:var(--surface-3)}
+.rk-fig .rk-p{fill:var(--c);stroke:var(--bg);stroke-width:1.2;stroke-linejoin:round}
+.rk-fig .rk-p.hl{stroke:var(--glow);stroke-width:2.4}
+.rk-fig .rk-p[data-t="1"]:not(.hl){stroke:var(--line-3)}   /* Fragile is faint on black: outline it */
+.rk-fig .rk-out{fill:none;stroke:var(--line-2);stroke-width:1.4;stroke-linecap:round}
+.rk-leg{display:flex;flex-direction:column;gap:7px;font-size:var(--fs-1);font-weight:600;color:var(--text-2)}
+.rk-leg span{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.rk-leg i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+
+/* ---------- the rank badge: a hexagon in the rank's colour ---------- */
+.rk-badge{display:inline-grid;place-items:center;flex:none;width:44px;height:50px;background:var(--c);color:var(--on-c,var(--on-cta));clip-path:var(--hex)}
+.rk-badge b{font-family:var(--display);font-weight:900;font-size:var(--fs-3);line-height:1;letter-spacing:-.02em}
+.rk-badge.lg{width:96px;height:110px}
+.rk-badge.lg b{font-size:var(--fs-6)}
+/* the close button on a full screen: a round glass button with an x */
+.u-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+
+/* ---------- the Muscle ranks screen ---------- */
+#ranksP{background:var(--bg)}
+#ranksP .p-head{border-bottom:0;min-height:72px}
+#ranksP .p-head h2{font-size:var(--fs-5);letter-spacing:var(--track-tight)}
+.rk-hero{display:flex;align-items:center;gap:var(--sp-5);padding:var(--sp-5);border-radius:var(--r-card-lg);background:var(--glass);border:1px solid var(--glass-line)}
+.rk-hero-tx{flex:1;min-width:0;display:grid;gap:6px}
+.rk-hero-tx .u-h2{margin:0;font-size:var(--fs-5);font-weight:900;letter-spacing:var(--track-tight)}
+.rk-hero-tx .u-bar{margin-top:6px;height:8px;border-radius:4px}
+.rk-hero-m{display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 var(--sp-2);margin-top:2px;font-size:var(--fs-2);font-weight:700;color:var(--text-2)}
+.rk-hero-m>span{white-space:nowrap}
+/* the hero badge as in the design (64 wide), so "43 RP average" and "4 to Strong II" share a line on a small phone */
+.rk-hero .rk-badge.lg{width:64px;height:74px}
+.rk-hero .rk-badge.lg b{font-size:var(--fs-5)}
+.rk-figs{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-top:var(--sp-5)}
+.rk-figs>.rk-card{display:grid;justify-items:center;align-content:space-between;gap:var(--sp-3);width:100%;min-width:0;height:300px;padding:var(--sp-4) 0 var(--sp-3);border-radius:var(--r-card-lg);background:var(--glass);border:1px solid var(--glass-line);overflow:hidden}
+.rk-figs>.rk-card:active{background:var(--surface-3)}
+.rk-figs .rk-fig{height:240px}
+/* the 3D stills are on black: lighten drops the black so the card shows through around the body */
+.rk-figs .rk-shot{display:block;height:240px;width:auto;max-width:100%;object-fit:contain;mix-blend-mode:lighten;pointer-events:none;-webkit-user-select:none;user-select:none}
+.rk-figs small{font-family:var(--body);font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+#ranksP .rk-leg{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:var(--sp-2) var(--sp-3);margin-top:var(--sp-5);font-size:var(--fs-1);color:var(--text-1)}
+#ranksP .rk-leg span{gap:6px}
+.rk-how{margin:var(--sp-5) 0 0;font-size:var(--fs-3);line-height:1.55}
+.rk-list{display:flex;flex-direction:column;padding:0 var(--sp-4);border-radius:var(--r-card-lg);background:var(--glass);border:1px solid var(--glass-line)}
+.rk-row{display:grid;grid-template-columns:14px minmax(0,1fr) auto 64px;align-items:center;gap:var(--sp-3);min-height:64px;width:100%;text-align:left;border-bottom:1px solid var(--glass-line)}
+.rk-row:last-child{border-bottom:0}
+.rk-row:active{background:var(--glass)}
+.rk-sq{width:14px;height:14px;border-radius:4px;background:var(--c)}
+.rk-n{display:grid;min-width:0;font-size:calc(var(--fs-3) + 1px);font-weight:700;color:var(--text-1)}
+.rk-n>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* tags under the name: Weak link (lime), Fading (grey), Flagged (sore-spot red). Never animated. */
+.rk-tags{display:flex;flex-wrap:wrap;gap:0 var(--sp-2);margin-top:2px}
+.rk-tags em,.rk-tag{font-style:normal;font-size:var(--fs-1);font-weight:900;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--glow)}
+.rk-tag.fade{color:var(--text-2)}
+.rk-tag.flag{color:var(--alert)}
+/* a fading muscle's square fades as much as the muscle does on your body */
+.rk-row.fade .rk-sq{opacity:calc(1 - .55 * var(--f,0))}
+.rk-t{font-size:var(--fs-2);font-weight:700;color:var(--text-2);white-space:nowrap}
+.rk-b{height:4px}
+.rk-3d{margin-top:var(--sp-5)}
+
+/* the Recovery / Rank switch on the 3D body */
+.rk-sw{display:none;width:200px;margin-bottom:var(--sp-1);pointer-events:auto;background:var(--glass-strong);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.rk-sw button{min-height:34px}
+.rk-sw.on{display:grid}
+.app.peek .rk-sw,.app.full .rk-sw,.app.sys .rk-sw{display:none}
+
+/* ---------- the rank-up moment ---------- */
+.rk-up,.sk-up{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;background:var(--bg);opacity:0;transition:opacity var(--dur-3) var(--ease);overflow-y:auto}
+.rk-up.on,.sk-up.on{opacity:1}
+.rk-up-in{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:calc(var(--sp-7) + var(--sat)) var(--sp-5) calc(var(--sp-5) + var(--sab))}
+.rk-up-eye{display:inline-flex;align-items:center;gap:8px;color:var(--text-2);animation:fxUp .45s var(--ease) .1s both}
+/* three diagonal light streaks behind the moment (transform and opacity only) */
+.rk-up-in{position:relative;overflow:hidden}
+.rk-streaks{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.rk-streaks i{position:absolute;left:-30%;width:160%;height:3px;background:var(--text-1);opacity:.08;transform:rotate(-45deg);animation:rkStreak 7s linear infinite}
+.rk-streaks i:nth-child(1){top:52%}.rk-streaks i:nth-child(2){top:58%;animation-delay:-2.3s}.rk-streaks i:nth-child(3){top:64%;height:2px;animation-delay:-4.6s}
+@keyframes rkStreak{0%{transform:rotate(-45deg) translateX(-6%)}50%{transform:rotate(-45deg) translateX(6%)}100%{transform:rotate(-45deg) translateX(-6%)}}
+@media (prefers-reduced-motion:reduce){ .rk-streaks i{animation:none} }
+.rk-up-eye svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* more than one rank-up: story segments along the top */
+.rk-segs{display:flex;gap:4px;width:100%;margin-bottom:var(--sp-5)}
+.rk-segs i{flex:1;height:3px;border-radius:2px;background:var(--surface-3);overflow:hidden}
+.rk-segs b{display:block;width:0;height:100%;background:var(--text-1)}
+.rk-segs i.done b{width:100%}
+.rk-segs i.now b{animation:rkSeg .7s var(--ease) .1s forwards}
+/* the legacy global .now (ossa.html) adds a 16 px top margin: keep the current segment level with the others */
+.rk-segs i.now{margin-top:0}
+.rk-up-in.more{margin-top:0;border-top:0}   /* the legacy global .more rule (ossa.html) dropped the "And N more" step by 26 px */
+@keyframes rkSeg{to{width:100%}}
+/* the new rank, big, italic, in its own colour */
+.rk-up-tier{position:relative;font-size:calc(var(--fs-6) + 8px);color:var(--c);white-space:nowrap;
+  text-shadow:0 0 28px color-mix(in srgb,var(--c) 40%,transparent);animation:fxUp .5s var(--ease) .38s both}
+/* "Unbreakable III" needs to stay on one line on a 375 × 667 screen (22 Oct, BUG-29) */
+@media (max-height:700px){ .rk-up-tier{font-size:var(--fs-6)} }
+.rk-up .u-h1.rk-up-m{position:relative;margin-top:var(--sp-3);font-size:calc(var(--fs-4) + 4px);font-weight:800;color:var(--text-1);animation:fxUp .5s var(--ease) .46s both}
+.rk-up-ft{position:relative;font-size:var(--fs-3);font-weight:700}
+.rk-up-ft span{color:var(--text-2)}
+.rk-up-ft i{font-style:normal;margin:0 var(--sp-2);color:var(--text-3)}
+.rk-up-ft b{color:var(--text-1)}
+.rk-up .rk-up-more{position:relative;margin:var(--sp-1) 0 0;font-size:var(--fs-2);color:var(--text-2);animation:fxIn .5s var(--ease) .5s both}
+.rk-up .u-p{animation:fxIn .5s var(--ease) .5s both}
+.rk-up-rp{display:grid;gap:var(--sp-2);width:100%;margin-top:var(--sp-5);animation:fxUp .5s var(--ease) .55s both}
+.rk-up-rp .u-bar{height:4px}
+.rk-up-rp .u-bar i{width:0;background:var(--c);box-shadow:0 0 12px color-mix(in srgb,var(--c) 60%,transparent)}
+.rk-up-rpt{display:flex;justify-content:space-between;gap:var(--sp-2);font-size:var(--fs-1);font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
+.rk-up-rpt b{font-weight:900;letter-spacing:0;color:var(--glow)}
+.rk-up-rpt em{font-style:normal}
+.rk-up-badge{position:relative;display:grid;place-items:center;width:220px;height:220px;margin:var(--sp-5) 0 var(--sp-3)}
+.rk-hex{position:relative;display:grid;place-items:center;align-content:center;gap:10px;width:164px;aspect-ratio:.866;background:var(--c);color:var(--on-c,var(--on-cta));
+  clip-path:var(--hex);animation:rkpop .7s var(--ease) both .15s}
+.rk-hex b{font-family:var(--display);font-weight:900;font-size:var(--fs-7);line-height:.9;letter-spacing:-.04em}
+.rk-hex small{font-size:var(--fs-1);font-weight:900;letter-spacing:.2em;text-transform:uppercase}
+.rk-up .u-h1{max-width:330px}
+.rk-up .u-p{margin-top:var(--sp-3)}
+.rk-up-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);width:100%;margin:var(--sp-5) 0 auto}
+.rk-up-stats>div{animation:fxUp .45s var(--ease) .62s both}
+.rk-up-stats>div:nth-child(2){animation-delay:.7s}.rk-up-stats>div:nth-child(3){animation-delay:.78s}
+.rk-up-stats>div{position:relative;padding:var(--sp-4) var(--sp-2);border-radius:var(--r-card);background:var(--glass);border:1px solid var(--glass-line)}
+.rk-up-stats b{display:block;font-size:var(--fs-4);color:var(--text-1);white-space:nowrap}
+.rk-up-stats .rk-up-gain b{color:var(--glow)}
+.rk-up-stats span{display:block;margin-top:6px;font-size:var(--fs-1);font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2)}
+.rk-up .u-btn{position:relative;margin-top:var(--sp-5)}
+.rk-up .u-link{position:relative;margin-top:var(--sp-2);font-size:var(--fs-1);font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+/* short phones: the badge and headline come down so Next stays on screen */
+@media (max-height:700px){
+  .rk-up-in{padding-top:calc(var(--sp-5) + var(--sat))}
+  .rk-up-badge{width:160px;height:160px;margin:var(--sp-3) 0 var(--sp-2)}
+  .rk-hex{width:120px}
+  .rk-hex b{font-size:var(--fs-6)}
+  .rk-up-stats{margin-top:var(--sp-4)}
+  /* the segment that also says "And 2 more muscles ranked up": a smaller badge keeps "See all your ranks" on screen */
+  .rk-up-in.more .rk-up-badge{width:112px;height:112px;margin:var(--sp-2) 0 var(--sp-1)}
+  .rk-up-in.more .rk-hex{width:88px;gap:6px}
+  .rk-up-in.more .rk-hex b{font-size:var(--fs-5)}
+}
+@keyframes rkpop{from{transform:scale(.6);opacity:0}60%{transform:scale(1.06);opacity:1}to{transform:none}}
+@keyframes rkspin{to{transform:rotate(360deg)}}
+
+/* ---------- the streak ---------- */
+.sk-in{position:relative;flex:1;display:flex;flex-direction:column;padding:calc(var(--sp-7) + var(--sat)) var(--sp-5) calc(var(--sp-5) + var(--sab))}
+.sk-x{position:absolute;top:calc(var(--sp-4) + var(--sat));right:var(--gutter);z-index:2}
+.sk-head{display:flex;flex-direction:column;align-items:center;text-align:center}
+/* the flame: filled lime inside a soft lime disc */
+.sk-fl{display:grid;place-items:center;width:96px;height:96px;border-radius:50%;background:var(--glow-a);box-shadow:0 0 0 1px color-mix(in srgb,var(--glow) 22%,transparent),0 0 48px color-mix(in srgb,var(--glow) 22%,transparent)}
+.sk-fl svg{width:52px;height:52px;fill:var(--glow);stroke:none}
+.sk-fl svg path+path{fill:var(--bg)}
+.sk-n{margin-top:var(--sp-3);font-size:var(--fs-8);letter-spacing:-.05em}
+.sk-n.pop{animation:rkpop .7s var(--ease) both .2s}
+/* lighting today's flame */
+.sk-n{line-height:1}
+.sk-ign{position:relative;display:grid;place-items:center;width:104px;height:104px;border-radius:50%;background:var(--surface-2);border:1px solid var(--glass-line);box-shadow:none;transition:background .5s var(--ease),border-color .5s var(--ease)}
+.sk-ign::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid var(--line-3);animation:skHint 1.8s ease-out infinite}
+.sk-ign svg{transition:transform .5s var(--ease),filter .5s var(--ease)}
+.sk-in.unlit .sk-fl svg path:first-child{fill:var(--text-3)}
+.sk-ign.lit{background:var(--glow-a);border-color:color-mix(in srgb,var(--glow) 22%,transparent)}
+.sk-ign.lit::before{display:none}
+.sk-ign.lit svg{filter:drop-shadow(0 0 14px color-mix(in srgb,var(--glow) 60%,transparent));transform-origin:50% 90%;animation:fxPop .5s var(--ease),skFlick 2.6s ease-in-out .5s infinite}
+@keyframes skHint{0%{opacity:.8;transform:scale(.92)}100%{opacity:0;transform:scale(1.18)}}
+@keyframes skFlick{0%,100%{transform:scale(1)}30%{transform:scale(1.03,1.06) skewX(1.5deg)}60%{transform:scale(.99,1.02) skewX(-1deg)}}
+.sk-roll{display:inline-block;height:1em;overflow:hidden;vertical-align:top}
+.sk-roll span{display:block;height:1em;transition:transform .6s cubic-bezier(.3,1.35,.5,1)}
+.sk-roll.go span{transform:translateY(-100%)}
+.sk-in .sk-eye,.sk-in .sk-wg,.sk-in .sk-acts{transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.sk-in.unlit .sk-eye,.sk-in.unlit .sk-wg,.sk-in.unlit .sk-acts{opacity:0;transform:translateY(12px);pointer-events:none}
+.sk-d i{transition:background .3s var(--ease),border-color .3s var(--ease)}
+@media (prefers-reduced-motion:reduce){ .sk-ign::before,.sk-ign.lit svg,.rk-segs i.now b{animation:none} .rk-segs i.now b{width:100%} }
+.sk-l{margin-top:var(--sp-2);font-size:calc(var(--fs-4) + 2px);font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+.sk-head .u-small{margin-top:var(--sp-2)}
+.sk-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:var(--sp-6);padding:var(--sp-5) var(--sp-3);border-radius:var(--r-card-lg);background:var(--glass);border-color:var(--glass-line)}
+.sk-d{display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);min-width:0}
+.sk-d small{font-family:var(--body);font-size:var(--fs-1);font-weight:800;color:var(--text-2)}
+.sk-d i{display:grid;place-items:center;width:min(40px,100%);aspect-ratio:1;border-radius:50%;box-sizing:border-box;border:2px solid var(--line-2);background:transparent;font-style:normal;font-size:var(--fs-1);font-weight:800;color:var(--text-2)}
+.sk-d.sk-todo i{opacity:.5}
+.sk-d i svg{width:14px;height:14px;fill:none;stroke:var(--on-accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.sk-d.sk-done i{background:var(--glow);border-color:var(--glow)}
+.sk-d.sk-now i{border-color:var(--glow)}
+.sk-d.sk-now small{color:var(--text-1)}
+.sk-d.sk-miss i{border-style:dashed}
+.sk-eye{margin-top:var(--sp-6);text-align:center;letter-spacing:.2em}
+.sk-wg{display:flex;justify-content:center;margin-top:var(--sp-3);padding:var(--sp-5);border-radius:40px;background:var(--surface-3)}
+.sk-wg-i{display:flex;gap:6px;width:158px;height:158px;box-sizing:border-box;padding:14px;border-radius:32px;background:var(--bg);border:1px solid var(--glass-line)}
+.sk-wg-l{display:flex;flex-direction:column;justify-content:flex-start}
+.sk-wg-fl svg{width:20px;height:20px;fill:var(--glow);stroke:none}
+.sk-wg-fl svg path+path{fill:var(--bg)}
+.sk-wg-l .u-num{margin-top:6px;font-size:var(--fs-5)}
+.sk-wg-l small{font-size:var(--fs-1);font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2)}
+.sk-wg-l em{margin-top:auto;font-style:normal;font-size:var(--fs-1);font-weight:800;line-height:1.25;color:var(--glow)}
+.sk-acts .u-link{font-size:var(--fs-1);font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+.sk-wg-f{flex:1;display:flex;justify-content:center;height:132px}
+.sk-acts{display:flex;flex-direction:column;align-items:center;gap:var(--sp-1);margin-top:auto;padding-top:var(--sp-5)}
+
+/* ---------- Workout complete: your overall rank, when it climbed, leads the rank points list ---------- */
+.wk-gl>.wk-ov{background:var(--glow-a);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--glow) 28%,transparent)}
+.wk-gl>.wk-ov b{font-weight:800}
+.wk-gl>.wk-ov em{color:var(--text-1)}
+
+/* ---------- Profile: the rank count, by tier ---------- */
+.rk-dist{grid-template-columns:repeat(3,1fr)!important}
+.rk-dist .r-unranked b{color:var(--text-3)}
+.rk-dist .r-fragile b{color:var(--line-3)}.rk-dist .r-stable b{color:var(--rk-2)}.rk-dist .r-strong b{color:var(--rk-3)}
+.rk-dist .r-forged b{color:var(--rk-4)}.rk-dist .r-unbreakable b{color:var(--rk-5)}
+.rk-dist span{font-size:var(--fs-1)!important;overflow:hidden;text-overflow:ellipsis}

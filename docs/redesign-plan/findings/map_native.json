@@ -1,0 +1,762 @@
+{
+ "key": "native",
+ "title": "Phase 6-7 Challenge, native bridge and shipping",
+ "area": "Weather dares (dare_generator), all native work across the redesign, and shipping (builds, store, review, testing)",
+ "keyFacts": [
+  {
+   "fact": "Dares today live entirely in web/ui/ranks.js. DARE_LIFE has 5 life dares, including a 'cold' shower finish. dareMuscle picks a muscle that is trained, untouched 21+ days and not recovering. dareToday makes one seeded pick per day: a lift dare half the time if a muscle qualifies, otherwise a life dare. dareText writes Coach/Drill copy, and uiDareHTML/uiWireDare give Accept / Not today, then Done / Start now. There is no weather, location, objective list or reward.",
+   "ref": "web/ui/ranks.js:226-300 (DARE_LIFE 233-239, dareMuscle 241-246, dareToday 247-264, dareText 265-275, uiDareHTML 276-289, uiWireDare 290-300)"
+  },
+  {
+   "fact": "The dare is a card on the Body/Home page, between Today and the check-in. The onboarding voice step sets its tone.",
+   "ref": "web/ui/shell.js:210 (uiDareHTML in renderToday), :238 (uiWireDare), :655 (S.dares.tone from OBD.tone)"
+  },
+  {
+   "fact": "Shape of S.dares: {scale:0.5..1, tone:'coach'|'drill', won:number, cur:{d:'YYYY-MM-DD', kind:'lift'|'life', st:'new'|'yes'|'no'|'done', lift → k,ex,sets,reps,kg,days; life → id,sc}}. 'Not today' multiplies scale by 0.85. Done adds 0.05 to scale and 1 to won.",
+   "ref": "web/ui/ranks.js:248, 258, 261, 294-296"
+  },
+  {
+   "fact": "Andrej's dare rules: once a day; half are lift dares (at most 1.5x logged reps and 80% of best weight), otherwise a life dare; Coach by default, Drill on a switch; it roasts the neglect, never the person; 'Not today' costs nothing and shrinks the next dare.",
+   "ref": "docs/UI-SYSTEM.md:74-76"
+  },
+  {
+   "fact": "There is no XP or other currency. A done dare is only marked done. Rank points (RP) exist per muscle only. '+50 GRIT' would be a new currency.",
+   "ref": "docs/DECISIONS.md:87-89; web/ui/ranks.js:67"
+  },
+  {
+   "fact": "expo-location is not installed, there is no location plugin in app.json, and ios.infoPlist has only camera and Health strings (no NSLocationWhenInUseUsageDescription).",
+   "ref": "package.json:5-26; app.json:12-16, 40-119; node_modules has no expo-location"
+  },
+  {
+   "fact": "react-native-webview 13.16.1 has no iOS geolocation support. geolocationEnabled exists only in AndroidWebViewProps, and the iOS native code never mentions geolocation. In-page geolocation would therefore use plain WKWebView: it needs the Info.plist key (a build) and WebKit adds its own per-site prompt naming 'ossa.app'.",
+   "ref": "node_modules/react-native-webview/src/WebViewTypes.ts:947 (AndroidWebViewProps), :1003 (geolocationEnabled); grep of node_modules/react-native-webview/apple finds no geolocation"
+  },
+  {
+   "fact": "The WebView loads {html, baseUrl:'https://ossa.app/'} with originWhitelist ['*']. The built page has no Content-Security-Policy, and it already fetches external HTTPS (Mixpanel). I checked with curl on 16 Oct: api.open-meteo.com, geocoding-api.open-meteo.com and api.met.no all return Access-Control-Allow-Origin: *, so the page can call them directly. App Transport Security is satisfied because all three are HTTPS.",
+   "ref": "App.js:163-164; scripts/build-html.js:21-23; web/ossa.html:10246"
+  },
+  {
+   "fact": "LICENSING CONFLICT with ground rule 4: Open-Meteo's free API is for non-commercial use only, and apps with subscriptions count as commercial. Ossa sells Ossa Pro. Commercial use needs a paid plan through customer-api.open-meteo.com with an &apikey= parameter. The pricing page gives no prices. The free tier allows 10,000 calls a day.",
+   "ref": "open-meteo.com/en/terms and /en/pricing (fetched 16 Oct 2026); native/purchases.js:6-10"
+  },
+  {
+   "fact": "MET Norway's data is CC BY 4.0, which allows commercial use with credit. Mobile apps must identify themselves in the User-Agent, keep coordinates to 4 decimals at most, cache until the Expires time, and move to a caching proxy once traffic grows. The WebView supports applicationNameForUserAgent, and a native fetch in App.js can set the User-Agent directly.",
+   "ref": "api.met.no/doc/TermsOfService (fetched 16 Oct 2026); node_modules/react-native-webview/src/WebViewTypes.ts:1339"
+  },
+  {
+   "fact": "Web → native messages handled in App.js: buzz{p}, hello, remind{on,list,ask}, widget{snap}, widget:pin, health:connect, health:read, health:settings (the web never sends this one), iap:offerings, iap:buy{pkg}, iap:restore, iap:manage, link{url} (https: or mailto: only), pose:get{f,i}, share:image{b64,name}. Injected before page load: navigator.vibrate rerouted to buzz, a navigator.userActivation stub, and window.OSSA_NATIVE={platform}.",
+   "ref": "App.js:19-22 (BRIDGE), 79-127 (onMessage); web senders ossa.html:6752, 10079, 10124, 10349, 11889"
+  },
+  {
+   "fact": "Native → web messages (injectJavaScript calling window.OssaNative.recv, queued until 'hello'): caps{platform,expoGo,notif,widget,health,healthSrc,iap}, pro{...}, health{...}, remind{granted,count,asked}, widget:pin{ok}, iap:offerings, iap:result, iap:restore, pose:chunk, fg (app back in front), open{go}. The web side handles them in nrecv.",
+   "ref": "App.js:39-45, 52-61, 65, 72-74, 98, 100, 107-109, 117-119, 133, 139, 142-146; web/ossa.html:10093-10105"
+  },
+  {
+   "fact": "Exports in native/*.js. reminders: permission, schedule, clear, onOpen. health.ios: source, status, connect, read, openSettings; it reads only StepCount, SleepAnalysis and RestingHeartRate. purchases: available, ENTITLEMENT='pro', setup, summarise, status, offerings, buy, restore, manage. pose: chunk, shareImage. widget.ios: NAME, available, register, update, pin. widget-shared: KEY, C, dayKey, saveSnap, loadSnap, todayOf, fresh, lines, dotColour. OssaWidget.ios: default createWidget('OssaBody').",
+   "ref": "native/reminders.js:35-87; native/health.ios.js:15-98 (permissions :44); native/purchases.js:10-131; native/pose.js:29-46; native/widget.ios.js:18-77; native/widget-shared.js:6-55; native/OssaWidget.ios.js:115"
+  },
+  {
+   "fact": "Notification taps and deep links already work, including from a cold start. Reminders.onOpen reads getLastNotificationResponse plus a listener. ossa://<word> URLs match /^ossa:\\/\\/([a-z]+)/. Both send {t:'open',go} to nativeOpen, which knows review, train, score, check, desk, scan and pro, and falls back to Today (ignored during onboarding). The scheme 'ossa' is set in app.json.",
+   "ref": "native/reminders.js:73-87; App.js:141-149; web/ossa.html:10100, 10106-10116; app.json:120"
+  },
+  {
+   "fact": "Local notifications are planned entirely in the web page. remindPlan() = remindPlan0() + deskPlan(), up to 60 items of {at,title,body,go}. Native cancels everything and reschedules on each sync with DATE triggers, skipping items less than 30 s away. Every save() calls nativeSoon, which resends the list after 1.6 s if it changed. So a one-off nudge 45 minutes after a workout is a web-only change.",
+   "ref": "web/ossa.html:10279-10300, 3868, 10083-10092; native/reminders.js:46-67"
+  },
+  {
+   "fact": "Haptics mapping: an array becomes one Success notification haptic. A single number ≤6 is a selection tap, ≤10 a light impact, anything larger a medium impact. Pulse.beat() already buzzes 10 per heartbeat. expo-haptics offers Soft, Rigid and Heavy, but App.js never uses them, and there is no custom-pattern API.",
+   "ref": "App.js:24-31; web/ossa.html:7921-7944; node_modules/expo-haptics/build/Haptics.types.d.ts:35-43"
+  },
+  {
+   "fact": "A native share sheet already exists. The web sends share:image with a base64 PNG, which is written to the cache and opened with React Native's Share.share({url}). The posture card uses it. Body.snapshot() and Body.glowShot() return a PNG of our 3D body, so the trading card needs no build.",
+   "ref": "App.js:121; native/pose.js:41-46; web/ossa.html:7300, 4905-4915"
+  },
+  {
+   "fact": "Apple Health resting heart rate (7-day average) is already read and stored in S.health.rhr and S.bpm. That is enough for the heartbeat screen without new HealthKit types.",
+   "ref": "native/health.ios.js:94-96; web/ossa.html:10357"
+  },
+  {
+   "fact": "app.json: name 'Ossa', version '1.0.0', no ios.buildNumber, root backgroundColor '#000000', userInterfaceStyle dark. There is no 'splash' key and no expo-splash-screen plugin; by the SDK 57 docs the default splash background is white #ffffff (unconfirmed on the phone). App.js already paints its root and the WebView #000, and expo-system-ui is installed.",
+   "ref": "app.json:3-8, 39, 40-119; App.js:191-192; docs.expo.dev/versions/v57.0.0/sdk/splash-screen (fetched)"
+  },
+  {
+   "fact": "eas.json: appVersionSource 'remote'. Profiles: development (dev client, internal), preview (internal), production (autoIncrement). submit.production has ascAppId 6818619462. expo-updates is not installed, so every change, web-only ones included, reaches TestFlight only through a new EAS build. Expo Go runs the latest App.js and web code from the PC, but not widgets, HealthKit or RevenueCat.",
+   "ref": "eas.json:1-32; package.json:5-26; HOW-TO-RUN.txt Part 1"
+  },
+  {
+   "fact": "build-for-app-store.bat runs build-html and then 'eas build --platform ios --profile production --auto-submit'. That uploads to TestFlight only and is not a review submission; Andrej runs it himself and types his own credentials.",
+   "ref": "build-for-app-store.bat:1-38; package.json:34-35"
+  },
+  {
+   "fact": "Store files: store/APP-STORE-LISTING.md holds the name, subtitle, promo text, description, keywords, screenshot order, the six-section review notes, the privacy label and a pre-submit checklist. Screenshot folders: 6.3in-v2 (6 shots, 1206x2622), 6.9in-v2 (6, 1320x2868), the old 6.9in set (5) and google-play. No script in scripts/ makes screenshots and no doc says how they were made (unconfirmed). Settings has a 'Load demo data' button that would suit store shots.",
+   "ref": "store/APP-STORE-LISTING.md:1-108; ls store/*; scripts/ (build-html, check-tokens, fetch-fonts, preview-server, share); web/ossa.html:9869-9874"
+  },
+  {
+   "fact": "The app's name is written three different ways. The listing says 'Ossa: Posture and Training' (earlier 'Ossa: Body Map'). HOW-TO-RUN.txt and build-for-app-store.bat still say 'Ossa: Body Map'. The design manifest says 'Ossa: Body Level Up'. The home-screen name is 'Ossa'.",
+   "ref": "store/APP-STORE-LISTING.md:7; build-for-app-store.bat:24; HOW-TO-RUN.txt Part 3; design/redesign-v2/manifest.json:2; app.json:3"
+  },
+  {
+   "fact": "For review: the notes' screen recording shows the old app, the header image is old art, and the 8 Oct rejection reason isn't written down anywhere. Review note §6 names the fonts Archivo/Geist. The licences screen credits only MediaPipe.",
+   "ref": "docs/REDESIGN-BRIEF.md:183-188; store/APP-STORE-LISTING.md:64, 90; web/ossa.html:7350-7358"
+  },
+  {
+   "fact": "There are no automated tests: no *.test/*.spec files and no test script. The only check is lint:tokens (scripts/check-tokens.js). .claude/launch.json defines 'ossa-preview' (node scripts/preview-server.js, port 5178), which rebuilds the page on every request. In the browser preview NATIVE.on is false, so every native call does nothing.",
+   "ref": "package.json:27-39; scripts/check-tokens.js; .claude/launch.json; scripts/preview-server.js:8-16; web/ossa.html:10078"
+  },
+  {
+   "fact": "Git holds only one 'Initial commit' (b9b62ea). Almost every project file is modified or untracked, so there is no history to roll the redesign back to.",
+   "ref": "git log --oneline; git status --short"
+  },
+  {
+   "fact": "The native widgets hard-code the old palette (mint #9BFCEC, amber, background #05090B) and the old Body Score layout. Widgets were deliberately left for a native build. The streak screen already advertises a rank-body widget that doesn't exist yet. The widget's body picture is a PNG the web draws (figSvg), so its colours can change without a build.",
+   "ref": "native/OssaWidget.ios.js:24, 63, 71; native/widget-shared.js:9-15; docs/DECISIONS.md:99-100; docs/UI-SYSTEM.md:136; web/ui/ranks.js:196-197; web/ossa.html:10313-10341"
+  }
+ ],
+ "items": [
+  {
+   "name": "dare_generator (weather dares)",
+   "today": "Home shows one dare card (web/ui/shell.js:210) built by uiDareHTML (web/ui/ranks.js:276-289): a single line of text, Accept / Not today, then Done (or Start now for lift and mobility dares), with a Coach/Drill switch. The daily pick is seeded in dareToday (ranks.js:247-264). Life dares include a cold-shower finish (ranks.js:234). There is no weather, location, objective list or reward; a done dare only increments S.dares.won (ranks.js:295). No full-screen dare page exists.",
+   "changes": [
+    {
+     "file": "web/ui/dares.js (new)",
+     "change": "Move the dare block (ranks.js:225-300) here unchanged so dares have one owner, then extend it. Add WX_DARES: {id:'rain'|'cold'|'wind'|'sun'|'heat'|'indoor', name ('Storm Resistance', 'Cold Front', 'Headwind', 'Daylight', 'Heat Check', 'Indoor Day'), test(w), obj(scale)→[objective…], coach, drill}. Add a safety gate wxSafe(w) that allows no outdoor dare in thunder, heavy or freezing rain, sleet, heavy snow, fog, gusts ≥50 km/h, temperatures below 0 °C or above 30 °C, or after dark; those days get 'indoor' or the normal life dare."
+    },
+    {
+     "file": "web/ui/dares.js",
+     "change": "Redefine dareToday(): lift dares keep Andrej's rules exactly. On the life half, if S.dares.wxOn and the S.wx reading is fresh, notable and safe, pick a kind:'wx' dare scaled by S.dares.scale; otherwise use today's DARE_LIFE. Still one dare a day, and 'Not today' still costs nothing."
+    },
+    {
+     "file": "web/ui/dares.js",
+     "change": "Redefine dareText() and uiDareHTML() for kind 'wx'. The Home card shows a weather pill and the title; tapping it opens the full-screen dare. uiWireDare gains objective ticks; when every objective is ticked, st becomes 'done' (same scale and won rules as today) and S.dares.wxWon[id] goes up by 1."
+    },
+    {
+     "file": "web/ui/dares.js",
+     "change": "New full-screen page openDare(), built as '#dareP' with class 'panel u-own' (the rkPanel pattern in ranks.js:46-52) so the closePanels wrapper (ranks.js:100) closes it. Contents: back button; pill with town and temperature ('LONDON, UK · 8 °C'); a 'Weather dare' eyebrow in the cyan token; the headline; a line with the real conditions; an objectives card with checkboxes and the reward label (per the open question); a safety line; Accept Dare / Not today; and the weather-data credit."
+    },
+    {
+     "file": "web/ui/dares.js",
+     "change": "Objectives tick themselves where the app has data: steps through hSteps(0) counted from the moment of acceptance (Apple Health), water through the water log (waterToday, shell.js:192), mobility through a finished flow (mobilitySession, ossa.html:7567). Other objectives are ticked by hand."
+    },
+    {
+     "file": "web/ui/dares.js",
+     "change": "wxGet(): get the place (loc:get through the bridge, or a typed town), then the weather (wx:get through the bridge, or a direct fetch with a 6 s AbortController timeout). Cache in S.wx for 60 minutes; if offline, use a reading up to 6 hours old and say when it was taken ('8 °C at 08:10'); after that, no weather dare. Only fetch while Home or the dare page is on screen (MET's rule against fetching when the app isn't in use)."
+    },
+    {
+     "file": "web/ui/dares.js",
+     "change": "Wrap phoneCard() and wirePhone() (ossa.html:10369, 10383) to add a 'Weather dares' row: Off / Use my location / Type your town. Wrap ossNotices() (ossa.html:7350) to add the weather-data credit (CC BY 4.0) and Inter's OFL notice."
+    },
+    {
+     "file": "web/ui/dares.css (new)",
+     "change": "Styles for the dare page from tokens.css only: glass card, checkbox, pill, big italic headline. The weather glyph is an SVG (rain, cold, wind, sun) with CSS rain streaks, static when reduced motion is on. Must pass check-tokens."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Include markers only: '/*@include ui/dares.css*/' after line 3350 and '/*@include ui/dares.js*/' after line 11875 (after ranks.js), so the later declarations win."
+    },
+    {
+     "file": "web/ui/ranks.js",
+     "change": "Delete lines 225-300 once they live in dares.js (or keep them and let dares.js override). Nothing else changes."
+    },
+    {
+     "file": "docs/UI-SYSTEM.md, docs/DECISIONS.md",
+     "change": "Add weather rules, safety thresholds and the S.dares/S.wx shapes to the Dares section; log the weather source, currency and opt-in decisions."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "The screen, the weather logic and the typed-town path are web-only and work in the desktop preview and Expo Go. 'Use my location' and native weather fetching come from the Location item, which goes into the native build.",
+   "effort": "L",
+   "dependsOn": [
+    "Location and weather source (system)",
+    "App.js bridge v2 (system)",
+    "Phase 0 tokens (cyan, lime, glass, Inter)",
+    "Currency decision (GRIT vs a shared XP from the Focus phase)",
+    "Trophy room (Evolve phase) for a 'Weatherproof' trophy, optional"
+   ],
+   "newFiles": [
+    "web/ui/dares.js",
+    "web/ui/dares.css"
+   ],
+   "stateChanges": [
+    "S.dares.wxOn: boolean. Starts false and turns true once the user allows location or types a town (opt-in).",
+    "S.dares.cur for a weather dare: {d:'YYYY-MM-DD', kind:'wx', id:'rain'|'cold'|'wind'|'sun'|'heat'|'indoor', st:'new'|'yes'|'no'|'done', sc:number, acc:ms|null (when accepted), wx:{place:'London, UK', t:8, code:string|number, gust:number, day:boolean, at:ms}, obj:[{id:'walk'|'breathe'|'steps'|'water'|'flow', t:'10-minute walk outside', s:'Dress for the weather.', done:false, auto:'steps'|'water'|'flow'|null, base:number|null}]}. kind 'lift' and 'life' are unchanged, so old saves still work.",
+    "S.dares.wxWon: {rain:n, cold:n, wind:n, sun:n, heat:n}, for trophies.",
+    "S.wx: {place:{name:'London', region:'GB', lat:51.51, lon:-0.13, src:'gps'|'typed'}, at:ms, exp:ms, src:'met'|'open-meteo', cur:{t:8.2, code:'lightrain'|61, gust:24, precip:0.4, day:true}}. Coordinates are rounded to 2 decimal places (about 1 km).",
+    "Reward: if Andrej picks one shared XP, S.xp={total:n, log:[{d, src:'dare'|'monk'|…, n}]}, owned by the Focus phase. Otherwise there is no new field."
+   ],
+   "risks": [
+    "The weather source licence (see the open question). Open-Meteo's free tier can't legally ship in an app with a subscription.",
+    "A wrong mapping from weather code to dare could send someone out in a storm. Hence one tested gate and a node check of all severe codes (see Testing).",
+    "Weather changes during the day while the dare is fixed at first open: show the time of the reading.",
+    "Auto-ticking steps needs Apple Health; without it, the objective is ticked by hand.",
+    "Rendering the Home card must not block on the network: draw with the cached reading, then update.",
+    "Cold-exposure wording in review (guideline 1.4.1). Keep it non-medical, opt-in and never in severe weather.",
+    "The privacy label and privacy policy may need 'Coarse Location' if coordinates leave the phone."
+   ],
+   "designDeviations": [
+    "Background storm photo hotlinked from media.screensdesign.com: use a token-coloured SVG weather glyph and light CSS rain on black instead (ground rule 1, no stock renders).",
+    "'Environment conditions: Severe' and 'Locate Storm Center': dares never run in severe weather, so the line shows the real reading ('Light rain · 8 °C') and that objective is dropped. It is unsafe and the app can't check it; its slot goes to something the app can check, such as 'Add 1,500 steps' (Apple Health) or 'Two glasses of water when you're back' (water log).",
+    "'Verification complete': dropped, because the app has nothing to verify.",
+    "'No heavy outer layers. Let the skin sense the storm.': becomes 'Dress for the weather. Keep a brisk pace.' No advice to underdress.",
+    "'Stoic Stance · 1-min deep breathing in rain': becomes 'One minute of slow breathing outside. Under cover is fine.'",
+    "'Level up your grit by exposing your character to the elements': becomes 'Ten minutes out in it, then back in the warm.' (short, plain, no claims).",
+    "'WEATHER-TRIGGERED EVENT': becomes 'Weather dare'.",
+    "'+50 GRIT': waits on the currency decision. Until then, show 'Counts towards Weatherproof (2 of 5)' or nothing.",
+    "Add 'Not today' next to 'Accept Dare' (Andrej's rule: saying no costs nothing), a safety line ('Skip it if you feel unwell or it's icy underfoot. Head in if you start shivering.') and a weather-data credit.",
+    "'London, UK • 8°C' stays, using the user's own place and the live reading, written '8 °C'."
+   ],
+   "showAtEnd": "Four 390x844 preview screenshots, each next to design/redesign-v2/images/dare_generator.png: (1) a rain dare, (2) the 'too wild out, here's an indoor dare' fallback, (3) the no-location state (type your town), (4) the Home card. Plus a 20-second iPhone recording in Expo Go: allow approximate location, the pill fills in, Accept, tick the objectives, Done. Plus the output of the severe-weather check (every severe case gives an indoor dare)."
+  },
+  {
+   "name": "Location and weather source (system)",
+   "today": "None. No expo-location, no NSLocationWhenInUseUsageDescription, and no iOS geolocation support in react-native-webview (WebViewTypes.ts:947, :1003). The page can fetch external HTTPS (ossa.html:10246). I checked CORS for Open-Meteo and MET Norway on 16 Oct.",
+   "changes": [
+    {
+     "file": "package.json",
+     "change": "Add expo-location with 'npx expo install expo-location', after Andrej says go. It is first-party and included in Expo Go."
+    },
+    {
+     "file": "app.json",
+     "change": "Add plugin ['expo-location', {locationWhenInUsePermission: 'Ossa uses your approximate location to check the weather for your daily dare. It's rounded to your area and only used for the forecast.'}], and ios.infoPlist 'NSLocationDefaultAccuracyReduced': true so iOS hands Ossa approximate location only. If Android ever ships, block ACCESS_FINE_LOCATION."
+    },
+    {
+     "file": "native/location.js (new)",
+     "change": "status() returns 'ok', 'denied', 'undetermined' or 'needs-build'. get(ask): requestForegroundPermissionsAsync only when ask is true; then getLastKnownPositionAsync({maxAge: 3 h, requiredAccuracy: 5000}), falling back to getCurrentPositionAsync({accuracy: Accuracy.Lowest}); round to 2 decimal places; reverseGeocodeAsync gives the label {name: city or subregion, region: isoCountryCode}. find(q): geocodeAsync(q) for a typed town, up to 5 results with labels (Apple's geocoder, no key)."
+    },
+    {
+     "file": "native/weather.js (new; only if MET Norway through native fetch)",
+     "change": "Fetch https://api.met.no/weatherapi/locationforecast/2.0/compact with the header User-Agent 'Ossa/<version> https://getossa.app'. Keep Expires and Last-Modified (If-Modified-Since) in AsyncStorage. Return a summary {ok, t, code (symbol_code), gust, precip, day, at}."
+    },
+    {
+     "file": "App.js",
+     "change": "Import ./native/location (and ./native/weather). Add loc: await Loc.status() to caps (lines 52-61). New handlers in onMessage: 'loc:get' {ask} replies {t:'loc', ok, lat, lon, place, acc}; 'loc:find' {q} replies {t:'loc:find', q, list}; 'wx:get' {lat, lon} replies {t:'wx', ...}. Each must also reply with {ok:false, why} in the catch at lines 122-126. If the web page calls MET directly instead, add applicationNameForUserAgent='Ossa' to the WebView (line 160)."
+    },
+    {
+     "file": "web/ui/dares.js",
+     "change": "Wrap nrecv (ossa.html:10093) to take loc, loc:find and wx before the original handler; window.OssaNative.recv looks nrecv up by name at call time (ossa.html:10080), so the wrapper works. Add a promise helper like iapAsk (ossa.html:10136) with a timeout. In the browser preview (NATIVE.on false), use navigator.geolocation (localhost counts as secure) or Open-Meteo geocoding and forecast, for development only."
+    }
+   ],
+   "needsNativeBuild": true,
+   "nativeBuildWhy": "A new native module (expo-location) and new Info.plist strings. Any App.js change also ships only in a binary, since there is no expo-updates. It can be tried in Expo Go first, where expo-location is included but the prompt shows Expo Go's own wording.",
+   "effort": "M",
+   "dependsOn": [
+    "Open question: weather source",
+    "App.js bridge v2 (system)"
+   ],
+   "newFiles": [
+    "native/location.js",
+    "native/weather.js (if MET Norway through native fetch)"
+   ],
+   "stateChanges": [
+    "NATIVE.caps.loc: 'ok'|'denied'|'undetermined'|'needs-build' (new caps field)",
+    "S.wx.place (see dare_generator), stored rounded; raw coordinates are never stored"
+   ],
+   "risks": [
+    "App Store guideline 5.1.1: the purpose string must say exactly why. Location is optional, and the typed town is the fallback when it's denied.",
+    "Approximate location can be several km off. Fine for weather, but the place label can name a nearby town.",
+    "Reverse and forward geocoding need the network and Apple rate-limits them. Cache the label in S.wx.place.",
+    "geocodeAsync without permission on iOS: the docs only state a permission requirement for Android (unconfirmed for iOS).",
+    "MET traffic rules (≤20 requests/s across all installs; a proxy once traffic is large). Hourly caching and fetching only while in use keep the launch well under that.",
+    "If the coordinates go to a weather service, the App Privacy label probably needs 'Coarse Location: App Functionality, not linked to identity, no tracking'. Andrej decides, and the privacy policy at getossa.app needs a line (that site isn't in this repo)."
+   ],
+   "designDeviations": [
+    "No live GPS and no exact coordinates anywhere: only the town name and the temperature are shown."
+   ],
+   "showAtEnd": "An iPhone screen recording of the system prompt in Ossa's own words with 'Precise: Off', the pill filling with the town, the Settings 'Weather dares' row, and the denied-permission path to 'Type your town'."
+  },
+  {
+   "name": "App.js bridge v2 (system: every App.js change for 2.0 in one go)",
+   "today": "Fifteen web→native message types and twelve native→web ones (see keyFacts). There is no 'background' event, no haptic styles beyond selection/light/medium/success, and no location or weather. The bridge code is injected before page load (App.js:19-22).",
+   "changes": [
+    {
+     "file": "App.js",
+     "change": "Location and weather handlers (see Location)."
+    },
+    {
+     "file": "App.js",
+     "change": "New message {t:'haptic', s:'soft'|'rigid'|'heavy'|'light'|'medium'|'select'|'success'|'warning'} mapped to Haptics.impactAsync(ImpactFeedbackStyle.Soft/Rigid/Heavy/...), selectionAsync or notificationAsync. Keep 'buzz' exactly as it is for older pages."
+    },
+    {
+     "file": "App.js",
+     "change": "AppState listener (lines 138-140): besides 'fg' on 'active', send {t:'bg'} on 'background', so Monk Mode can honestly record 'You left Ossa at 10:42'."
+    },
+    {
+     "file": "App.js",
+     "change": "Optional {t:'awake', on} using expo-keep-awake (npx expo install expo-keep-awake), to keep the screen on during the Monk Mode timer."
+    },
+    {
+     "file": "App.js",
+     "change": "Add to caps: v:2 (bridge version), haptic:true, loc. The web uses them to decide what to offer and stays compatible with build 8."
+    },
+    {
+     "file": "web/ui/native.js (new)",
+     "change": "Web helpers: hapticFx(s), which falls back to Pulse.buzz numbers when caps.v is below 2 or in the preview; heart(bpm) loop with start and stop; a nrecv wrapper for 'bg'; a nativeOpen wrapper (ossa.html:10106) for new go values 'flow', 'dare' and 'monk' that falls through to the original."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Include marker '/*@include ui/native.js*/' near line 11878."
+    }
+   ],
+   "needsNativeBuild": true,
+   "nativeBuildWhy": "App.js is compiled into the app binary, and expo-updates isn't installed. Expo Go runs App.js from the PC, so all of this can be tested before the build.",
+   "effort": "M",
+   "dependsOn": [
+    "Open question: weather source (decides wx:get vs applicationNameForUserAgent)"
+   ],
+   "newFiles": [
+    "web/ui/native.js"
+   ],
+   "stateChanges": [
+    "NATIVE.caps gains v:2, haptic:true and loc. No new S fields."
+   ],
+   "risks": [
+    "Build 8 (in App Store Connect) and Expo Go don't answer the new messages. Every web call must check caps.v and time out cleanly.",
+    "Today's catch block swallows errors, and only iap:* get an error reply (App.js:122-126). New handlers must always reply.",
+    "Haptics only fire while Ossa is in front and are quieter in Low Power Mode."
+   ],
+   "designDeviations": [],
+   "showAtEnd": "A one-page table of message types, today vs 2.0, plus a short Expo Go demo of the new haptic styles and the 'bg' event being logged."
+  },
+  {
+   "name": "Notifications: recovery nudge 45 min after a workout, snooze, tap → flow (native side)",
+   "today": "The web builds the full list and native schedules it (ossa.html:10279-10300; native/reminders.js:46-67). Taps route through {t:'open',go} to nativeOpen (ossa.html:10106-10116). A '45 minutes after this workout' one-off doesn't exist yet.",
+   "changes": [
+    {
+     "file": "web/ui/native.js (or the Recover-phase file)",
+     "change": "Wrap remindPlan() (ossa.html:10279) to add {at:S.nudge.at, go:'flow', title:'Your chest did the work', body:'3 minutes of stretching while it's warm?'} when S.nudge.on and the time is still ahead. Also add a Monk Mode end notice (go:'monk'). Drop desk-mode nudges that fall inside an active Monk Mode window."
+    },
+    {
+     "file": "web/ui/native.js",
+     "change": "Wrap finishWorkout() (ossa.html:7743) to set S.nudge={on, at:end + 45 min, ks:[muscles trained]}. The first time, ask on the workout-complete screen, then call nativeSoon(true) so iOS asks for notification permission."
+    },
+    {
+     "file": "web/ui/native.js",
+     "change": "'Remind me in 15 min' sets S.nudge.at = now + 15 min and calls nativeSync(true) straight away, not the 1.6 s debounce (ossa.html:10083), so it isn't lost if the app goes to the background at once."
+    },
+    {
+     "file": "web/ui/native.js",
+     "change": "nativeOpen wrapper: 'flow' opens the 3-minute flow for S.nudge.ks (built like trJointSession, train.js:337); 'dare' opens openDare(); 'monk' opens the Monk Mode completion screen."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "reminders.js already accepts any {at,title,body,go} and forwards any go on tap, from a cold start too. The deep-link pattern [a-z]+ fits the new words. Works in Expo Go and in build 8.",
+   "effort": "S",
+   "dependsOn": [
+    "Recover phase (3-minute flow content)",
+    "Focus phase (Monk Mode)"
+   ],
+   "newFiles": [],
+   "stateChanges": [
+    "S.nudge: {on:boolean, at:ms|null, ks:string[] (muscle keys trained), snoozed:number}"
+   ],
+   "risks": [
+    "Nothing is scheduled if notification permission was never given (the Daily nudge was never switched on). Needs an ask moment.",
+    "iOS allows 64 pending notifications; the list is already capped at 60 (ossa.html:10279).",
+    "nativeOpen ignores taps during onboarding (ossa.html:10107).",
+    "The copy must not imply geofencing."
+   ],
+   "designDeviations": [
+    "'Welcome home.' / 'SMART TRIGGER' / 'Post-Home Reset': there's no geofencing (ground rule 4). It becomes 'After your session', sent about 45 minutes after the workout ends.",
+    "'Your Pecs need 3 mins.': becomes 'Your chest worked hard. 3 minutes?'",
+    "'REMIND ME IN 15 MINS' stays, as a rescheduled local notification."
+   ],
+   "showAtEnd": "A phone recording in Expo Go with a 1-minute test delay standing in for 45 minutes: finish a workout, lock the phone, the notification arrives, tap it and the 3-minute flow opens. Then snooze, and the second notification arrives."
+  },
+  {
+   "name": "Haptic heartbeat (bio_rhythm_sync) and HealthKit types",
+   "today": "buzz maps single numbers to selection, light or medium taps (App.js:24-31). Pulse.beat() already taps once per beat (ossa.html:7944). HealthKit reads steps, sleep and resting heart rate only (health.ios.js:44), stored in S.health.rhr and S.bpm (ossa.html:10357).",
+   "changes": [
+    {
+     "file": "web/ui/native.js",
+     "change": "heart(bpm): 'lub' (rigid or medium) then 'dub' (soft or light) about 120 ms later, at the tempo of S.health.rhr or S.bpm, labelled 'from Apple Health' or 'from your pulse reading · an estimate'. Stops when the screen closes or the app goes to the background. With build 8 it falls back to vibrate(10) then vibrate(5)."
+    },
+    {
+     "file": "App.js",
+     "change": "Only the 'haptic' style message from bridge v2."
+    },
+    {
+     "file": "native/health.ios.js, app.json",
+     "change": "No change recommended. Only if Andrej wants HRV or breathing rate: add the HealthKit types in init(), update NSHealthShareUsageDescription (app.json:14) and healthSharePermission (app.json:60), and update review notes §4."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "A basic heartbeat works with today's binary. The softer, more natural feel needs the bridge v2 'haptic' styles, which ride in the native build. New HealthKit types would need a build plus a new permission prompt (not recommended).",
+   "effort": "S",
+   "dependsOn": [
+    "App.js bridge v2 (system)",
+    "Focus phase (the screen and the tempo rules)"
+   ],
+   "newFiles": [],
+   "stateChanges": [
+    "None. Optional S.prefs.heartbeat:boolean to switch it off."
+   ],
+   "risks": [
+    "The bridge is asynchronous, so the rhythm can jitter by tens of milliseconds.",
+    "Haptics stop in the background or in Low Power Mode.",
+    "Battery use if left running."
+   ],
+   "designDeviations": [
+    "'0.8 Hz Pulse frequency': becomes 'Resting 58 bpm · from Apple Health' (or 'estimate' for the pulse reading).",
+    "'Respiration 14 BPM' and 'Haptic Sync 98%': dropped; there is no such data. Could show the user's own Breathe pace instead.",
+    "'LIVE SYNC': becomes 'Your resting rhythm'. Nothing is live."
+   ],
+   "showAtEnd": "On Andrej's iPhone (haptics can't be screenshotted): the basic version in Expo Go, then the soft/rigid version in build 9, plus a screenshot of the label showing where the number comes from."
+  },
+  {
+   "name": "Trading card share sheet (native side of vessel_trading_cards)",
+   "today": "The share path exists: the web sends share:image (a base64 PNG), native writes it to the cache and opens the share sheet (App.js:121; native/pose.js:41-46), as the posture card does (ossa.html:7300). Body.snapshot() renders our 3D body to a PNG (ossa.html:4913-4915).",
+   "changes": [
+    {
+     "file": "web (Evolve-phase file)",
+     "change": "Draw the card on a canvas from Body.snapshot() plus overall rank, uiStreak().n and the rarest trophy, then nsend({t:'share:image', b64, name:'ossa-card.png'}). In the browser preview, show the image as the posture card does (ossa.html:7301)."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "The share bridge is already in build 8.",
+   "effort": "S",
+   "dependsOn": [
+    "Evolve phase (card design, trophies)"
+   ],
+   "newFiles": [],
+   "stateChanges": [],
+   "risks": [
+    "A large base64 PNG crosses the bridge (the posture card already does this).",
+    "The WebGL snapshot must be taken in the same frame."
+   ],
+   "designDeviations": [
+    "'Power 9800 / Defense / Speed / Stamina', 'Neon Surge +20% for 3 turns', 'Mythic Rare' and the stock hero render: becomes our own 3D body with real values (overall rank and RP, streak, rarest trophy). Owned by the Evolve phase."
+   ],
+   "showAtEnd": "An iPhone screenshot of the iOS share sheet showing the card PNG preview."
+  },
+  {
+   "name": "Home-screen and Lock Screen widgets restyle",
+   "today": "The old Body Score layout in mint, amber and #05090B (OssaWidget.ios.js:24-110; widget-shared.js:9-15). The web draws the body figure as a PNG (figSvg, ossa.html:10313-10320) and sends widgetSnap v2 (ossa.html:10324-10334). The streak screen already shows a rank-body widget preview that doesn't exist (ranks.js:196-197). The brief lists this as a known gap (REDESIGN-BRIEF.md:197).",
+   "changes": [
+    {
+     "file": "web/ui/native.js",
+     "change": "Wrap widgetSnap() to add {streak:n, weak:'Lower back', rank:'Forged II', rkC:'#FFD700'}. Override figSvg's fill() so muscles are coloured by rank, and the Settings preview widgetHTML() to match. Mark the 2.0 widget data colours 'token-ok'."
+    },
+    {
+     "file": "native/OssaWidget.ios.js",
+     "change": "New layout: black background, figure in rank colours, streak flame with the day count, '<weak link> needs you', today's session. The lock-screen accessories show the streak and overall rank. Deep links stay ossa://score and ossa://train (add ossa://dare if wanted)."
+    },
+    {
+     "file": "native/widget.ios.js",
+     "change": "update() passes the new props into each timeline entry."
+    },
+    {
+     "file": "native/widget-shared.js",
+     "change": "New palette C and wording in lines() ('New day. Train to keep your streak.')."
+    },
+    {
+     "file": "native/widget.android.js",
+     "change": "Only if Android is in scope for 2.0."
+    }
+   ],
+   "needsNativeBuild": true,
+   "nativeBuildWhy": "SwiftUI widget code runs in the widget extension and can only be checked on a device build. Expo Go can't show widgets.",
+   "effort": "M",
+   "dependsOn": [
+    "Phase 0 tokens",
+    "Phase 1 rank colours (must be final before build 9)"
+   ],
+   "newFiles": [],
+   "stateChanges": [
+    "widgetSnap gains streak, weak, rank and rkC (snapshot v:3, saved under the AsyncStorage key 'ossa-widget-v1'). Readers must cope with v2 snapshots."
+   ],
+   "risks": [
+    "The layout is written without a way to see it until the build arrives.",
+    "expo-widgets 'widget' functions can't use hooks or anything outside themselves (OssaWidget.ios.js:3-4).",
+    "Native colours can't read tokens.css, and check-tokens doesn't cover native/."
+   ],
+   "designDeviations": [
+    "No widget appears in the 26 designs; it follows the streak_summary preview and the 2.0 tokens."
+   ],
+   "showAtEnd": "An iPhone home-screen screenshot with the small and medium widgets, plus a Lock Screen screenshot, next to the streak screen's widget preview."
+  },
+  {
+   "name": "App shell look: black background, splash, icon, status bar",
+   "today": "The root background is already #000000 (app.json:39; App.js:191-192). The page uses --bg #0B0D0C (web/ui/tokens.css:10). There is no splash config; SDK 57 defaults to a white splash background (unconfirmed on the phone). The icon is assets/icon.png. The notification accent is #9BFCEC (app.json:53, Android only). The status bar is light (App.js:159).",
+   "changes": [
+    {
+     "file": "web/ui/tokens.css",
+     "change": "--bg to #000000 and the rest of the Phase 0 palette. Web-only."
+    },
+    {
+     "file": "package.json, app.json",
+     "change": "'npx expo install expo-splash-screen'; plugin ['expo-splash-screen', {backgroundColor:'#000000', image:'./assets/splash-icon.png', imageWidth:120}]."
+    },
+    {
+     "file": "assets/icon.png, assets/android-icon-*.png, app.json:53",
+     "change": "Only if Andrej wants a 2.0 icon (for example lime #D4FF00); notification colour to #D4FF00."
+    }
+   ],
+   "needsNativeBuild": true,
+   "nativeBuildWhy": "The splash screen and the app icon are part of the binary. Moving the page to #000 needs no build.",
+   "effort": "S",
+   "dependsOn": [
+    "Phase 0 (palette)",
+    "Open question: icon"
+   ],
+   "newFiles": [],
+   "stateChanges": [],
+   "risks": [
+    "A white flash before the page loads (to confirm on the phone).",
+    "A new icon means the screenshots and header image should match it."
+   ],
+   "designDeviations": [],
+   "showAtEnd": "A 3-second cold-launch recording on iPhone: black splash, then the black app with no white flash, plus the icon on the home screen."
+  },
+  {
+   "name": "EAS build batching (system)",
+   "today": "Andrej builds with build-for-app-store.bat (production profile, auto-submit to TestFlight only). Build 8 is attached to the 1.0.0 version that's held. Build numbers are kept by EAS and go up by one each build (eas.json:4, 21). There is no expo-updates, so even web changes need a build to reach TestFlight. Expo Go runs the latest App.js and web code from the PC, without widgets, HealthKit or RevenueCat.",
+   "changes": [
+    {
+     "file": "(process)",
+     "change": "Phases 0-2: desktop preview plus Expo Go on Andrej's iPhone. Meanwhile, all 2.0 native work is written and tried in Expo Go where possible: bridge v2, location, weather, haptic styles, notification routes, 'bg', keep-awake. The widget restyle and splash are written without being seen."
+    },
+    {
+     "file": "(process)",
+     "change": "Build 9, the 'native batch': Andrej runs build-for-app-store.bat at the end of Phase 2, once the rank colours are final, and only on his go. It holds every 2.0 native change plus the web work so far. Check on TestFlight: location prompt, widgets, splash, haptics, notification taps, Health and purchases still working."
+    },
+    {
+     "file": "(process)",
+     "change": "Phases 3-6: web-only, tested in the preview and Expo Go. No native changes are planned for them."
+    },
+    {
+     "file": "(process)",
+     "change": "Build 10, the release candidate, after Phase 6. Screenshots, the review recording and the final checks come from it. Submit only when Andrej says. Build 11 only if build 10 needs fixes."
+    }
+   ],
+   "needsNativeBuild": true,
+   "nativeBuildWhy": "This is the build plan itself: two planned builds (9 and 10) instead of one per feature.",
+   "effort": "S",
+   "dependsOn": [
+    "Andrej's go for each build (he signs in himself)"
+   ],
+   "newFiles": [],
+   "stateChanges": [],
+   "risks": [
+    "Each build takes 30-60 minutes plus the EAS queue.",
+    "--auto-submit uploads to App Store Connect (TestFlight). Confirm Andrej is fine with that between review submissions.",
+    "Any native gap found after build 10 costs another build."
+   ],
+   "designDeviations": [],
+   "showAtEnd": "A one-page table: build number, what's in it, date, and what Andrej checked on the phone. Builds 9 and 10 ticked off."
+  },
+  {
+   "name": "Shipping 2.0: listing, screenshots, review notes, recording, version and name",
+   "today": "Version 1.0.0 is at 'Prepare for Submission' with build 8 (REDESIGN-BRIEF.md:178). The listing and review notes are saved but not submitted. Screenshots are the v2 sets (6.3\" and 6.9\"), with no script that makes them. The recording and the header image are from the old app. The 8 Oct rejection reason isn't recorded. The name differs across files (see keyFacts). The privacy label covers RevenueCat purchase history only (APP-STORE-LISTING.md:94-98).",
+   "changes": [
+    {
+     "file": "store/APP-STORE-LISTING.md",
+     "change": "Add a 2.0 section. Name and subtitle as decided. Promo text and description: the character, Focus / Monk Mode, weather dares, Ideal Self, prestige, the trading card and Vessel Vault; never 'ad-free', no health claims. Keywords. Screenshot order. Privacy label: add 'Coarse Location' if device coordinates leave the phone, and the weather provider."
+    },
+    {
+     "file": "store/APP-STORE-LISTING.md (review notes)",
+     "change": "§1 new recording. §2 purpose (a character you level up). §3 tabs, if Breathe is renamed Focus, and the new flows: Monk Mode suggests iOS Focus and doesn't block apps; weather dares are optional and use approximate location, or a typed town; the recovery nudge is a local notification. §4 add the weather provider and Apple location services. §6 Inter (OFL), weather data licence (CC BY 4.0), heart rate labelled as an estimate."
+    },
+    {
+     "file": "store/screenshots-6.3in-v3/, store/screenshots-6.9in-v3/ (new folders)",
+     "change": "New 1206x2622 (required) and 1320x2868 (optional) sets from release-candidate content, using 'Load demo data' (ossa.html:9869). Either the preview in Chrome device mode at 402x874 CSS px and DPR 3, or device screenshots."
+    },
+    {
+     "file": "web/ossa.html ossNotices (through a wrapper)",
+     "change": "Credits for Inter (OFL) and the weather data, matching review note §6."
+    },
+    {
+     "file": "app.json",
+     "change": "'version': stays '1.0.0' or becomes '2.0.0' (decision). Build numbers stay with EAS."
+    },
+    {
+     "file": "HOW-TO-RUN.txt, build-for-app-store.bat",
+     "change": "Replace 'Ossa: Body Map' with the agreed App Store name."
+    },
+    {
+     "file": "docs/REDESIGN-BRIEF.md §5, docs/DECISIONS.md",
+     "change": "Status and decisions."
+    },
+    {
+     "file": "App Store Connect (Andrej)",
+     "change": "Header image, the new recording (Andrej records it on his iPhone from build 10), a new review screenshot for each subscription if Vessel Vault changes the paywall, and the privacy policy page on getossa.app. Only with Andrej's go; nothing submitted until he says."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Store metadata changes need no build, but the release itself is build 10.",
+   "effort": "M",
+   "dependsOn": [
+    "Every build phase",
+    "Build 10",
+    "Decisions: name, version, currency, weather source"
+   ],
+   "newFiles": [
+    "store/screenshots-6.3in-v3/*",
+    "store/screenshots-6.9in-v3/*"
+   ],
+   "stateChanges": [],
+   "risks": [
+    "The 8 Oct rejection reason is still unknown; read it in App Store Connect before rewriting the review notes.",
+    "Guideline 2.3: screenshots must show the real app, not the design renders.",
+    "Guidelines 5.1.1 (location) and 1.4.1 (cold-exposure wording).",
+    "Renaming must not clash with an existing App Store name; check availability.",
+    "The version string in App Store Connect must match the build's version."
+   ],
+   "designDeviations": [
+    "Store art must show our own 3D body, not the designs' stock renders."
+   ],
+   "showAtEnd": "A contact sheet of the new screenshots next to the old six, a side-by-side of the listing and review notes (old vs new), the recording file, and the pre-submit checklist (APP-STORE-LISTING.md:104-108) ticked. Nothing submitted."
+  },
+  {
+   "name": "Testing and preview (system)",
+   "today": "No automated tests. The only check is lint:tokens (scripts/check-tokens.js). .claude/launch.json 'ossa-preview' runs scripts/preview-server.js on port 5178 and rebuilds on every request. In the browser NATIVE.on is false (ossa.html:10078), so native flows can't be tried. Git has a single commit and almost everything is untracked.",
+   "changes": [
+    {
+     "file": "web/ui/devnative.js (new, preview only)",
+     "change": "Runs only on localhost with ?native=fake: sets NATIVE.on and caps, and replaces nsend with a fake phone that answers loc, wx, remind (prints the planned notifications), share:image (shows the image) and haptic (logs). This lets the dare, nudge and card flows be checked at 390x844. Has no effect in the app."
+    },
+    {
+     "file": "scripts/check-dares.js (new)",
+     "change": "A Node safety check. It loads the WX_DARES table and wxSafe from web/ui/dares.js in a vm sandbox and runs every severe weather code and threshold (thunder, freezing, heavy, gusts ≥50 km/h, below 0 °C, above 30 °C, night). It fails if any gives an outdoor dare. Read-only, no new packages."
+    },
+    {
+     "file": "(process)",
+     "change": "Per phase: node scripts/build-html.js; node scripts/check-tokens.js; node scripts/check-dares.js; the preview at 390x844 and 375x667; then Expo Go on the iPhone."
+    },
+    {
+     "file": "(git, after Andrej's go)",
+     "change": "Commit a baseline before Phase 0, then one commit per phase, so every phase can be undone."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "S",
+   "dependsOn": [],
+   "newFiles": [
+    "web/ui/devnative.js",
+    "scripts/check-dares.js"
+   ],
+   "stateChanges": [],
+   "risks": [
+    "The fake phone must never run inside the app: guard it on window.ReactNativeWebView and the localhost host name.",
+    "A vm-loaded dares.js must keep its pure functions free of DOM access."
+   ],
+   "designDeviations": [],
+   "showAtEnd": "The preview with the fake phone on, showing the planned notifications list and the location flow, plus the terminal output of check-dares.js with every severe case giving an indoor dare."
+  }
+ ],
+ "openQuestions": [
+  {
+   "question": "Which weather source should weather dares use? Open-Meteo's free API is non-commercial only, and Ossa sells a subscription.",
+   "why": "Ground rule 4 assumed Open-Meteo is free with no key, but its terms say apps with subscriptions are commercial. This choice also decides what goes into App.js for build 9.",
+   "options": [
+    "MET Norway (yr.no data): free including commercial use, needs a credit line and the app's name in each request",
+    "Open-Meteo paid API: a key inside the app (Andrej adds it), monthly cost not listed on their page",
+    "Apple WeatherKit: native Swift module, App ID capability, Apple Weather credit; the most work"
+   ],
+   "recommendation": "MET Norway, with the request made natively in App.js and cached for an hour. Open-Meteo only in the desktop preview while building."
+  },
+  {
+   "question": "How should Ossa find the user's town?",
+   "why": "Location needs a permission prompt, a native module and an App Store privacy answer. Inside the WebView, location would show a second prompt naming 'ossa.app', a domain Ossa doesn't own.",
+   "options": [
+    "Approximate location through expo-location, with typing a town as the fallback",
+    "Typing a town only",
+    "Location inside the WebView"
+   ],
+   "recommendation": "Approximate location through expo-location, OS-enforced as approximate, with Apple's free town lookup and typing a town as the fallback. It goes into build 9 and can be tried in Expo Go before that."
+  },
+  {
+   "question": "What does '+50 GRIT' become?",
+   "why": "Ossa has no XP or currency (DECISIONS.md:89). The Monk Mode designs also show '+150 XP' and '880 XP', so dares shouldn't invent a separate currency.",
+   "options": [
+    "One shared XP across dares, Monk Mode and focus (decided in the Focus phase)",
+    "A separate GRIT for dares",
+    "No currency: dares count towards trophies (a 'Weatherproof' trophy)"
+   ],
+   "recommendation": "No separate GRIT. Use the shared XP if Andrej approves XP in the Focus phase; otherwise count towards a 'Weatherproof' trophy."
+  },
+  {
+   "question": "When does a weather dare appear, and is it opt-in?",
+   "why": "Andrej's rules say one dare a day, half lift dares. A weather event on top of that would double the daily dares.",
+   "options": [
+    "It replaces the life dare on days with notable, safe weather; opt-in",
+    "An extra 'event' alongside the daily dare",
+    "On by default for everyone"
+   ],
+   "recommendation": "It replaces the life dare on notable, safe-weather days, still one dare a day, and is opt-in from the dare card or Settings."
+  },
+  {
+   "question": "How far should cold exposure go?",
+   "why": "The design says 'No heavy outer layers' and runs in 'Severe' conditions. The existing cold-shower finish (ranks.js:234) is also cold exposure.",
+   "options": [
+    "Only 'walk in cool weather, dressed for it', never in severe weather, with a safety line",
+    "Also allow 'fewer layers' challenges"
+   ],
+   "recommendation": "Dressed-for-the-weather walks only, never in severe weather or after dark, with 'Not today' always free. The cold-shower dare stays, under the same switch."
+  },
+  {
+   "question": "Ship as version 1.0.0 or 2.0.0?",
+   "why": "1.0 was never released; App Store Connect has a 1.0.0 version waiting for submission, and app.json says 1.0.0.",
+   "options": [
+    "1.0.0 (2.0 is the internal name)",
+    "2.0.0 (rename the waiting version in App Store Connect)"
+   ],
+   "recommendation": "1.0.0. It's the first public release, and it saves renaming the version in App Store Connect."
+  },
+  {
+   "question": "What is the App Store name for this release?",
+   "why": "The listing says 'Ossa: Posture and Training', the run notes and build script say 'Ossa: Body Map', and the designs say 'Ossa: Body Level Up'. The screenshots and subtitle depend on it.",
+   "options": [
+    "Keep 'Ossa: Posture and Training'",
+    "'Ossa: Body Level Up'",
+    "Something else"
+   ],
+   "recommendation": "Decide before Phase 7 screenshots. 'Ossa: Body Level Up' fits the character concept, if the name is free on the App Store."
+  },
+  {
+   "question": "Restyle the home-screen widgets in this release?",
+   "why": "The widgets still show the old Body Score layout while the streak screen already advertises a rank widget. Doing it later costs another build.",
+   "options": [
+    "Yes, in build 9",
+    "Later"
+   ],
+   "recommendation": "Yes, in build 9."
+  },
+  {
+   "question": "New launch screen and icon for the release?",
+   "why": "There's no splash config, so the launch screen is probably white today. An icon change needs a build and matching store art.",
+   "options": [
+    "Black launch screen only",
+    "Black launch screen plus a new lime icon",
+    "Neither"
+   ],
+   "recommendation": "Black launch screen yes (build 9). New icon only if Andrej wants the brand to move to lime."
+  },
+  {
+   "question": "OK to plan two builds (9 for the native batch, 10 as the release candidate), both run by you?",
+   "why": "Every native change and the final release need a build. Batching them keeps it to two plus a possible fix build.",
+   "options": [
+    "Two builds as planned",
+    "One build at the end (riskier: native problems found late)"
+   ],
+   "recommendation": "Two builds."
+  },
+  {
+   "question": "Add new Apple Health data (heart-rate variability, breathing rate) for the heartbeat screen?",
+   "why": "It needs a new permission prompt, new wording in the app and review notes, and a build. Resting heart rate is already read.",
+   "options": [
+    "No, use resting heart rate and the pulse reading",
+    "Yes, add the new types"
+   ],
+   "recommendation": "No."
+  },
+  {
+   "question": "Is Android part of this release?",
+   "why": "build-for-google-play.bat and Play screenshots from 10 Oct exist, but there's no RevenueCat Android key (purchases.js:8), and Android widgets, location and splash would each need their own work.",
+   "options": [
+    "iPhone only",
+    "iPhone and Android"
+   ],
+   "recommendation": "iPhone only."
+  }
+ ],
+ "orderNotes": "Native work, all phases. Write every native change during Phases 1 and 2: App.js bridge v2, native/location.js, the weather fetch, haptic styles, the 'bg' event, keep-awake, the widget restyle, the splash plugin and the location strings in app.json. Test them in Expo Go, which runs App.js and includes expo-location, haptics and notifications. Then build 9 at the end of Phase 2, once the Phase 0 tokens and Phase 1 rank colours are final, because the widgets use them. The weather-source decision (MET Norway, Open-Meteo paid or WeatherKit) and the location method must be settled before build 9, since they decide what goes into App.js.\n\nPhases 3 to 6 then need no native changes:\n- Recovery nudge, snooze and tap → flow: web-only on today's reminder bridge.\n- Heartbeat: works with build 8, better with build 9's haptic styles.\n- Trading card share: the share bridge already exists.\n- Monk Mode end notice: web-only.\n\nWeather dares (Phase 6) depend on the Phase 0 tokens, the Phase 3 currency or XP decision (for '+50 GRIT') and, optionally, the Phase 5 trophy room. They use the location and weather messages that ship in build 9; until then the typed town and a browser fallback work in the preview.\n\nShipping (Phase 7) is build 10, the release candidate. Screenshots, the review recording, the listing, the review notes, the privacy label and the licences screen all follow from it. Decide the name, version number and currency early, because the screenshots depend on them. Read the 8 Oct rejection reason in App Store Connect before rewriting the review notes. Nothing goes to Apple until Andrej says.\n\nBefore Phase 0, and only after Andrej's go, commit a git baseline: today there is one commit and almost everything is untracked.\n\nOne note on my checks: to confirm that MET Norway allows calls from a web page, I sent one test request whose User-Agent included the text 'andrejgazi25-test'. That passed part of Andrej's email address to api.met.no once. No other requests carried it, and no project files were changed."
+}

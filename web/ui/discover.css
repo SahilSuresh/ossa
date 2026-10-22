@@ -1,0 +1,142 @@
+/* =========================================================
+   EXERCISES AND KINETIC CHAIN — see discover.js. Tokens only (node scripts/check-tokens.js).
+   Class prefixes dx- (Exercises) and kc- (Kinetic chain).
+   ========================================================= */
+
+/* ---------- Exercises: a full screen that keeps the tab bar under it (as in the design) ---------- */
+#dxP{bottom:var(--tabH)}
+/* the tab bar is hidden in a workout, under a sheet, in Sore spots and while typing: no gap at the bottom */
+.app.train.tactive #dxP,.app.peek #dxP,.app.full #dxP,.app.u-soreon #dxP,.app.onboarding #dxP,.app.storying #dxP,.app.dx-typing #dxP{bottom:0}
+/* over another screen (Insights, Where your sets went …: Kinetic chain's "View related lifts"): every panel is
+   full height and sits above the tab bar, so a gap would show that screen and pass it taps. Panels share one
+   z-index and uiPanelFront puts the newest last, so an open panel before #dxP is one under it */
+.panel.on ~ #dxP{bottom:0}
+.app.dx-typing .u-nav{transform:translateY(100%);opacity:0;pointer-events:none}
+
+.dx-head,.kc-head{flex:none;display:grid;align-items:center;gap:var(--sp-3);padding:calc(var(--sp-2) + var(--sat)) var(--gutter) var(--sp-2)}
+.dx-head{grid-template-columns:var(--tap) minmax(0,1fr) auto}
+.dx-head h2,.kc-head h2{margin:0;min-width:0;font-family:var(--display);font-size:var(--fs-4);font-weight:900;letter-spacing:var(--track-tight);line-height:1.2;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dx-kit{width:128px}
+.dx-kit button::after{content:"";position:absolute;left:0;right:0;top:-3px;bottom:-3px}   /* a 44px hit area on a 38px segment */
+.dx-b{flex:1 1 auto;min-height:0;padding:var(--sp-2) var(--gutter) calc(var(--sp-6) + var(--sab))}
+
+/* search: 16px text so iOS doesn't zoom in */
+.dx-search{display:flex;align-items:center;gap:var(--sp-3);height:52px;padding:0 var(--sp-1) 0 var(--sp-4);border-radius:var(--r-card);background:var(--glass);border:1px solid var(--glass-line);transition:border-color var(--dur-1)}
+.dx-search:focus-within{border-color:var(--line-3)}
+.dx-search>svg{width:20px;height:20px;flex:none;fill:none;stroke:var(--text-2);stroke-width:1.8;stroke-linecap:round}
+.dx-search input{flex:1;min-width:0;height:100%;padding:0;font-family:var(--body);font-size:var(--fs-3);color:var(--text-1);background:none;border:0;outline:0;border-radius:0;-webkit-appearance:none;appearance:none}
+.dx-search input::placeholder{color:var(--text-2);opacity:1}
+.dx-search input::-webkit-search-cancel-button,.dx-search input::-webkit-search-decoration{-webkit-appearance:none;appearance:none;display:none}
+.dx-search input:focus-visible{outline:0}
+.dx-qx{display:grid;place-items:center;flex:none;width:var(--tap);height:var(--tap);color:var(--text-2)}
+.dx-qx[hidden]{display:none}
+.dx-qx svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+
+/* type chips: the chosen one is lime here (the app's chips are white elsewhere) */
+.dx-types{display:flex;gap:6px;margin:var(--sp-3) calc(-1 * var(--gutter)) 0;padding:0 var(--gutter);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.dx-types::-webkit-scrollbar{display:none}
+.dx-types .u-chip{flex:none;padding:0 var(--sp-3)}
+.dx-types .u-chip[aria-checked="true"]{background:var(--glow);border-color:var(--glow);color:var(--on-accent)}
+
+/* Recommended: an accent edge in the muscle's rank colour (never red: red means a sore spot) */
+.dx-pick{display:grid;grid-template-columns:minmax(0,1fr) var(--tap);align-items:center;gap:var(--sp-1);padding:var(--sp-3) var(--sp-2) var(--sp-3) var(--sp-4);border-radius:var(--r-card-lg);background:var(--glass);border:1px solid var(--glass-line);box-shadow:inset 3px 0 0 var(--c)}
+.dx-pick + .dx-pick{margin-top:var(--sp-2)}
+.dx-pick-main{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--sp-3);min-height:var(--tap);text-align:left;color:inherit}
+.dx-pick-main .rk-badge{width:40px;height:46px}
+.dx-pick-tx{display:grid;gap:2px;min-width:0}
+.dx-pick-tx .u-eyebrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 var(--sp-2)}
+.dx-pick-tx b{font-family:var(--display);font-size:var(--fs-4);font-weight:900;letter-spacing:var(--track-tight);line-height:1.15;color:var(--text-1)}
+.dx-pick-tx small{font-size:var(--fs-2);line-height:1.35;color:var(--text-2)}
+.dx-rp{font-style:normal;font-weight:800;color:var(--glow)}
+.dx-add{display:grid;place-items:center;width:var(--tap);height:var(--tap)}
+.dx-add-c{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--glow);color:var(--on-accent);transition:transform var(--dur-1) var(--ease)}
+button.dx-add:active .dx-add-c{transform:scale(.9)}
+.dx-add-c svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.dx-add.on .dx-add-c{background:none;color:var(--glow);box-shadow:inset 0 0 0 2px var(--glow)}
+
+/* muscle groups */
+.dx-groups{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
+.dx-g{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;gap:var(--sp-3);min-height:96px;padding:var(--sp-4);border-radius:var(--r-card-lg);background:var(--glass);border:1px solid var(--glass-line);text-align:left;color:inherit;transition:border-color var(--dur-1),background var(--dur-1)}
+.dx-g:active{background:var(--surface-3)}
+.dx-g b{display:block;font-family:var(--display);font-size:var(--fs-4);font-weight:900;letter-spacing:var(--track-tight);line-height:1.15;color:var(--text-1)}
+.dx-g small{display:block;margin-top:2px;font-size:var(--fs-2);color:var(--text-2)}
+.dx-g[aria-pressed="true"]{border-color:var(--glow);background:var(--glow-a)}
+
+/* the list */
+.dx-lh .u-link{min-height:var(--tap);margin:calc(-1 * var(--sp-3)) 0}
+.dx-sub{margin:var(--sp-5) 0 var(--sp-2)}
+.dx-lh + .dx-sub{margin-top:0}
+.dx-row{display:grid;grid-template-columns:40px minmax(0,1fr) 20px;align-items:center;gap:var(--sp-3);width:100%;min-height:64px;padding:var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-3);border-radius:var(--r-card);background:var(--glass);border:1px solid var(--glass-line);text-align:left;color:inherit;transition:background var(--dur-1)}
+.dx-row + .dx-row{margin-top:var(--sp-2)}
+.dx-row:active{background:var(--surface-3)}
+.dx-tile{display:grid;place-items:center;width:40px;height:40px;border-radius:var(--r-sm);background:var(--surface-3)}
+.dx-row-tx{min-width:0}
+.dx-row-tx b{display:block;font-size:var(--fs-3);font-weight:700;line-height:1.3;color:var(--text-1)}
+.dx-row-tx small{display:block;margin-top:2px;font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.dx-row em.vul{font-style:normal;color:var(--alert)}
+.dx-empty{padding:var(--sp-2) 0}
+.dx-empty .u-chips{margin-top:var(--sp-3)}
+.dx-none{margin-top:var(--sp-5)}
+
+/* ---------- Kinetic chain ---------- */
+.kc-head{grid-template-columns:var(--tap) minmax(0,1fr) var(--tap)}
+.kc-head h2{text-align:center}
+.kc-b{flex:1 1 auto;min-height:0;padding:var(--sp-2) var(--gutter) var(--sp-6)}
+.kc-name{margin:var(--sp-1) 0 0;font-family:var(--display);font-size:var(--fs-5);font-weight:900;line-height:1.05;letter-spacing:var(--track-tight);color:var(--text-1);text-wrap:balance}
+.kc-meta{margin:var(--sp-2) 0 0;font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.kc-rp{margin:var(--sp-2) 0 0;font-size:var(--fs-3);line-height:1.4;color:var(--text-2)}
+.kc-rp b{font-weight:900;color:var(--glow)}
+/* pure black under the stills, so they need no blending */
+.kc-hero{margin-top:var(--sp-4);padding:var(--sp-4);border-radius:var(--r-card-lg);background:var(--bg);border:1px solid var(--line)}
+.kc-main{display:flex;align-items:center;gap:var(--sp-3);min-width:0}
+/* the "Main" pill in the main muscle's rank colour (a faint edge so Unranked and Fragile still read) */
+.kc-pill{flex:none;padding:5px 10px;border-radius:var(--r-pill);background:var(--c);color:var(--on-c);box-shadow:inset 0 0 0 1px var(--glass-line);font-size:var(--fs-1);font-weight:900;letter-spacing:var(--track-caps);text-transform:uppercase;line-height:1.2}
+.kc-main-tx{min-width:0}
+.kc-main-tx b{display:block;font-family:var(--display);font-size:var(--fs-4);font-weight:800;letter-spacing:-.02em;line-height:1.15;color:var(--text-1)}
+.kc-main-tx small{display:block;margin-top:2px;font-size:var(--fs-1);color:var(--text-2)}
+.kc-main-tx .rk-tag{font-size:var(--fs-1)}
+.kc-figs{display:flex;justify-content:center;align-items:flex-end;gap:var(--sp-4);margin:var(--sp-3) 0 0}
+.kc-figs figure{margin:0;display:grid;justify-items:center;gap:var(--sp-1);min-width:0}
+.kc-figs img{display:block;height:var(--fh,280px);width:auto;max-width:100%;object-fit:contain;pointer-events:none;-webkit-user-select:none;user-select:none}
+.kc-figs figcaption{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.kc-flat{display:block;text-align:center}
+.kc-flat svg{max-width:100%}
+.kc-list{padding:0 var(--sp-4)}
+.kc-r{display:grid;grid-template-columns:14px minmax(0,1fr) auto auto;align-items:center;gap:var(--sp-3);min-height:56px;padding:var(--sp-3) 0;border-bottom:1px solid var(--line)}
+.kc-r:last-child{border-bottom:0}
+.kc-r.on{margin:0 calc(-1 * var(--sp-3));padding-left:var(--sp-3);padding-right:var(--sp-3);border-radius:var(--r-sm);background:var(--glow-a);box-shadow:inset 0 0 0 1px var(--glow)}
+.kc-r-tx{min-width:0}
+.kc-r-tx b{display:block;font-size:var(--fs-3);font-weight:700;line-height:1.3;color:var(--text-1)}
+.kc-r-tx small{display:block;margin-top:2px;font-size:var(--fs-2);line-height:1.35;color:var(--text-2)}
+.kc-pct{font-size:var(--fs-4);color:var(--text-1)}
+.kc-g{display:inline-flex;align-items:center;justify-content:flex-end;gap:2px;min-width:56px;font-style:normal;font-size:var(--fs-2);font-weight:800;color:var(--glow);white-space:nowrap}
+.kc-g svg{width:14px;height:14px;fill:currentColor;stroke:none}
+.kc-g.low{color:var(--text-2)}
+.kc-none{margin:0}
+.kc-foot{margin:var(--sp-4) 0 0}
+.kc-cta{flex:none;padding:var(--sp-3) var(--gutter) calc(var(--sp-3) + var(--sab));border-top:1px solid var(--line);background:var(--bg)}
+
+/* the muscle sheet's exercise names open Kinetic chain */
+.kc-link{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.kc-link:active{opacity:.7}
+.kc-chev{display:inline-block;vertical-align:-2px;margin-left:2px}
+.kc-chev .u-chev{width:14px;height:14px}
+
+/* short phones */
+@media (max-height:700px){
+  .dx-g{min-height:80px}
+  .dx-search{height:46px}
+  .kc-name{font-size:var(--fs-4)}
+  .kc-hero{margin-top:var(--sp-3);padding:var(--sp-3)}
+}
+
+/* "Your plans" at the top of Exercises (22 Oct, Sahil: "save it in the exercises section ... posture correct plan").
+   One card per saved plan; Start opens it as a workout */
+.dx-plans{display:grid;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.dx-plan{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);padding:var(--sp-3) var(--sp-3) var(--sp-3) var(--sp-3);border-radius:var(--r-card);background:var(--glass);border:1px solid color-mix(in srgb,var(--glow) 35%,var(--glass-line))}
+.dx-plan-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:var(--r-sm);background:color-mix(in srgb,var(--glow) 16%,transparent);color:var(--glow)}
+.dx-plan-ic svg{width:18px;height:18px}
+.dx-plan-tx{min-width:0}
+.dx-plan-tx b{display:block;font-size:var(--fs-3);font-weight:800;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dx-plan-tx small{display:block;margin-top:2px;font-size:var(--fs-1);color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dx-plan-go{flex:none;min-height:36px;padding:0 var(--sp-3);font-size:var(--fs-2);font-weight:800}

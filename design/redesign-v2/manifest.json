@@ -1,0 +1,137 @@
+{
+  "name": "Ossa: Body Level Up",
+  "exportedAt": "2026-10-16T00:14:09.204Z",
+  "screenCount": 26,
+  "screens": [
+    {
+      "id": "generate-body_dashboard",
+      "name": "body_dashboard.html",
+      "file": "screens/body_dashboard-html.html"
+    },
+    {
+      "id": "generate-workout_tracker",
+      "name": "workout_tracker.html",
+      "file": "screens/workout_tracker-html.html"
+    },
+    {
+      "id": "generate-rank_up_notification",
+      "name": "rank_up_notification.html",
+      "file": "screens/rank_up_notification-html.html"
+    },
+    {
+      "id": "generate-muscle_ranks_detail",
+      "name": "muscle_ranks_detail.html",
+      "file": "screens/muscle_ranks_detail-html.html"
+    },
+    {
+      "id": "generate-recovery_dashboard",
+      "name": "recovery_dashboard.html",
+      "file": "screens/recovery_dashboard-html.html"
+    },
+    {
+      "id": "generate-streak_summary",
+      "name": "streak_summary.html",
+      "file": "screens/streak_summary-html.html"
+    },
+    {
+      "id": "generate-focus_aura",
+      "name": "focus_aura.html",
+      "file": "screens/focus_aura-html.html"
+    },
+    {
+      "id": "generate-specialization_engine",
+      "name": "specialization_engine.html",
+      "file": "screens/specialization_engine-html.html"
+    },
+    {
+      "id": "generate-injury_mapping",
+      "name": "injury_mapping.html",
+      "file": "screens/injury_mapping-html.html"
+    },
+    {
+      "id": "generate-dare_generator",
+      "name": "dare_generator.html",
+      "file": "screens/dare_generator-html.html"
+    },
+    {
+      "id": "generate-clan_vessel",
+      "name": "clan_vessel.html",
+      "file": "screens/clan_vessel-html.html"
+    },
+    {
+      "id": "generate-ar_goal_projection",
+      "name": "ar_goal_projection.html",
+      "file": "screens/ar_goal_projection-html.html"
+    },
+    {
+      "id": "generate-fueling_meter",
+      "name": "fueling_meter.html",
+      "file": "screens/fueling_meter-html.html"
+    },
+    {
+      "id": "generate-vessel_trading_cards",
+      "name": "vessel_trading_cards.html",
+      "file": "screens/vessel_trading_cards-html.html"
+    },
+    {
+      "id": "generate-prestige_system",
+      "name": "prestige_system.html",
+      "file": "screens/prestige_system-html.html"
+    },
+    {
+      "id": "generate-recovery_nudge",
+      "name": "recovery_nudge.html",
+      "file": "screens/recovery_nudge-html.html"
+    },
+    {
+      "id": "generate-mirror_match",
+      "name": "mirror_match.html",
+      "file": "screens/mirror_match-html.html"
+    },
+    {
+      "id": "generate-bio_rhythm_sync",
+      "name": "bio_rhythm_sync.html",
+      "file": "screens/bio_rhythm_sync-html.html"
+    },
+    {
+      "id": "generate-vessel_vault",
+      "name": "vessel_vault.html",
+      "file": "screens/vessel_vault-html.html"
+    },
+    {
+      "id": "generate-focus_timer_stance",
+      "name": "focus_timer_stance.html",
+      "file": "screens/focus_timer_stance-html.html"
+    },
+    {
+      "id": "generate-rep_density_history",
+      "name": "rep_density_history.html",
+      "file": "screens/rep_density_history-html.html"
+    },
+    {
+      "id": "generate-exercise_discovery",
+      "name": "exercise_discovery.html",
+      "file": "screens/exercise_discovery-html.html"
+    },
+    {
+      "id": "generate-monk_mode_setup",
+      "name": "monk_mode_setup.html",
+      "file": "screens/monk_mode_setup-html.html"
+    },
+    {
+      "id": "generate-monk_mode_completion",
+      "name": "monk_mode_completion.html",
+      "file": "screens/monk_mode_completion-html.html"
+    },
+    {
+      "id": "generate-achievement_gallery",
+      "name": "achievement_gallery.html",
+      "file": "screens/achievement_gallery-html.html"
+    },
+    {
+      "id": "generate-connectivity_map",
+      "name": "connectivity_map.html",
+      "file": "screens/connectivity_map-html.html"
+    }
+  ]
+}

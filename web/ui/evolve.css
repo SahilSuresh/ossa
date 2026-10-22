@@ -1,0 +1,156 @@
+/* =========================================================
+   EVOLVE (Phase 5) — the hub in Profile › Evolve, the #evV panel every Evolve view draws into, its
+   sheet, the Workout complete lines and the Evolve moments. See evolve.js. Class prefix ev-.
+   Tokens only. Safe-area insets only as var(--ev-sat) / var(--ev-sab) (tokens.css), so ?sa= can
+   simulate an iPhone in Chrome.
+   ========================================================= */
+
+/* ---------- ?sa= (localhost): fixed insets in place of env(), and the legacy chrome the hub sits in ---------- */
+html.ev-sa{--ev-sat:var(--ev-sa-t);--ev-sab:var(--ev-sa-b)}
+/* shell.css makes --tabH the source (--ringH follows it), so both are swapped; .app.train.tactive still wins */
+html.ev-sa .app{--tabH:calc(var(--navH) + var(--ev-sab));--ringH:var(--tabH)}
+html.ev-sa .u-nav{padding-bottom:var(--ev-sab)}
+html.ev-sa .u-backbar{padding-top:calc(var(--sp-2) + var(--ev-sat))}
+html.ev-sa .tabv{padding-top:calc(18px + var(--ev-sat))}
+html.ev-sa #tv-you .seg3{top:calc(var(--ev-sat) + 60px)}
+
+/* ---------- the panel: a 48 px bar (plus the top inset), a body that never scrolls ---------- */
+.panel.ev-v{background:var(--bg)}
+/* the sides never go below their own width (the back label is capped at 44vw and ellipsed past that); the title
+   shrinks first. With room, both sides share what is left equally, so the title is centred on the screen;
+   when the back label is wider than its half, the title moves over by the difference */
+.ev-bar{flex:none;display:grid;grid-template-columns:minmax(max-content,1fr) minmax(0,auto) minmax(max-content,1fr);align-items:center;gap:var(--sp-2);
+  height:calc(48px + var(--ev-sat));padding:var(--ev-sat) var(--sp-3) 0}
+.ev-bar-l{justify-self:start;min-width:0;max-width:44vw;display:flex}
+.ev-bar-c{display:grid;justify-items:center;min-width:0;max-width:62vw;text-align:center}
+.ev-bar-t{display:block;max-width:100%;font-size:var(--fs-3);font-weight:800;line-height:1.2;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-bar-eye{display:block;max-width:100%;font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;line-height:1.3;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-bar-r{justify-self:end;display:flex;align-items:center;min-width:0;max-height:var(--tap)}
+.ev-back{display:inline-flex;align-items:center;gap:var(--sp-1);min-width:0;max-width:100%;min-height:var(--tap);padding:0 var(--sp-2) 0 var(--sp-1);font-size:var(--fs-3);font-weight:700;color:var(--text-1)}
+.ev-back span{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-x{background:none;border-color:transparent}
+.ev-body{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;
+  padding:var(--sp-3) var(--gutter) calc(var(--sp-4) + var(--ev-sab))}
+.ev-err{margin:var(--sp-5) 0 0;text-align:center}
+
+/* ---------- the sheet inside #evV ---------- */
+.ev-sh{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:flex-end;background:rgba(0,0,0,.62);opacity:0;transition:opacity var(--dur-2) var(--ease)}
+.ev-sh.on{opacity:1}
+.ev-sh-in{position:relative;max-height:calc(100% - 48px - var(--ev-sat));overflow-y:auto;scrollbar-width:none;
+  padding:var(--sp-5) var(--gutter) calc(var(--sp-5) + var(--ev-sab));border-radius:var(--r-sheet) var(--r-sheet) 0 0;
+  background:var(--surface-1);border-top:1px solid var(--line);transform:translateY(24px);transition:transform var(--dur-3) var(--ease)}
+.ev-sh-in::-webkit-scrollbar{display:none}
+.ev-sh.on .ev-sh-in{transform:none}
+.ev-sh-x{position:absolute;top:var(--sp-3);right:var(--sp-3);background:none;border-color:transparent}
+.ev-sh-b{display:grid;gap:var(--sp-1)}
+/* for the views' sheets: a title and 44 px rows */
+.ev-sh-h{margin:0 var(--tap) var(--sp-2) 0;font-family:var(--display);font-size:var(--fs-4);font-weight:800;letter-spacing:-.02em;color:var(--text-1)}
+.ev-sh-p{margin:0 0 var(--sp-2);font-size:var(--fs-2);line-height:1.45;color:var(--text-2)}
+.ev-sh-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);width:100%;min-height:var(--tap);padding:var(--sp-1) 0;text-align:left;border-bottom:1px solid var(--line);color:var(--text-1);font-size:var(--fs-2)}
+.ev-sh-row:last-child{border-bottom:0}
+.ev-sh-row b{font-size:var(--fs-3);font-weight:700}
+.ev-sh-row small{display:block;font-size:var(--fs-1);color:var(--text-2)}
+.ev-sh-row em{font-style:normal;font-size:var(--fs-2);color:var(--text-2)}
+
+/* =========================================================
+   THE HUB (Profile › Evolve): fills the height that is left, no scrolling
+   ========================================================= */
+#tv-you.ev-hubon.on{display:flex;flex-direction:column;padding-bottom:var(--sp-3)}
+#tv-you.ev-hubon .seg3{margin-bottom:var(--sp-3)}
+#tv-you.ev-hubon .seg-body{flex:1;min-height:0;display:flex;flex-direction:column}
+.ev-hub{flex:1;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:var(--sp-2)}
+
+/* the overall rank strip → Muscle ranks */
+.ev-strip{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);height:88px;padding:0 var(--sp-3);color:var(--text-1)}
+.u-card.ev-strip + .ev-tiles{margin-top:0}
+.ev-strip-b{display:grid;place-items:center;width:56px;height:64px}
+.ev-strip .rk-badge.lg{width:56px;height:64px}
+.ev-strip .rk-badge.lg b{font-size:var(--fs-4)}
+.ev-strip-tx{display:grid;gap:2px;min-width:0}
+.ev-strip-tx .u-eyebrow{line-height:1.2}
+.ev-strip-tx b{font-size:var(--fs-4);font-weight:800;line-height:1.1;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-strip-tx small{font-size:var(--fs-2);line-height:1.25;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-strip-bar{height:4px;margin-top:var(--sp-1)}
+
+/* six tiles, 2 × 3, sharing the height that is left */
+.ev-tiles{min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,minmax(76px,1fr));gap:var(--sp-2)}
+.ev-tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:2px;min-width:0;min-height:0;overflow:hidden;
+  padding:var(--sp-3) var(--sp-4);text-align:left;border-radius:var(--r-card);border:1px solid var(--line-2);background:var(--surface-2);color:var(--text-1);
+  transition:transform var(--dur-1) var(--ease),background var(--dur-1)}
+.ev-tile:active{transform:scale(.98);background:var(--surface-3)}
+.ev-tile-h{display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-2);min-width:0;max-width:100%}
+.ev-tile-ic{display:inline-grid;place-items:center;flex:none;width:28px;height:28px;color:var(--c,var(--text-1))}
+.ev-tile-ic svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ev-tile b{display:block;max-width:100%;font-size:var(--fs-3);font-weight:800;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-tile small{display:block;max-width:100%;min-height:1.35em;font-size:var(--fs-1);line-height:1.35;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-tile-bar{align-self:stretch;flex:none;height:4px;margin-top:auto}
+.ev-tile .ev-tile-bar i{background:var(--c,var(--glow))}
+.ev-dot{position:absolute;top:var(--sp-3);right:var(--sp-3);width:9px;height:9px;border-radius:50%;background:var(--glow);box-shadow:0 0 10px color-mix(in srgb,var(--glow) 60%,transparent)}
+
+/* Your history → the old Progress page */
+.ev-hist{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);width:100%;height:var(--tap);padding:0 var(--sp-1) 0 var(--sp-1);text-align:left;color:var(--text-1)}
+.ev-hist-ic{display:inline-grid;place-items:center;width:24px;height:24px;color:var(--text-2)}
+.ev-hist-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+/* the u-row pattern in 44 px: the title with its small line under it */
+.ev-hist-tx{display:grid;gap:0;min-width:0}
+.ev-hist-tx b{font-size:var(--fs-3);font-weight:700;line-height:1.2}
+.ev-hist-tx small{min-width:0;font-size:var(--fs-1);line-height:1.3;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-hist:active{opacity:.7}
+.ev-hide{display:none!important}
+
+/* the Ideal self link on the Muscle ranks hero (ranks.js seam 2) */
+.rk-hero .rk-ideal{justify-self:start;min-height:var(--tap);margin:calc(-1 * var(--sp-2)) 0 calc(-1 * var(--sp-3));padding:0;font-weight:800;color:var(--text-1)}
+
+/* =========================================================
+   WORKOUT COMPLETE — the Evolve lines
+   ========================================================= */
+.dn-ul.ev-dn-tro{display:grid;width:100%;text-align:left;border-color:color-mix(in srgb,var(--gold) 45%,transparent);background:var(--gold-a);color:var(--text-1)}
+.dn-ul.ev-dn-tro span{color:var(--gold)}
+.ev-dn{display:grid;gap:var(--sp-2);margin:var(--sp-3) 0}
+.ev-dn-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:var(--sp-3);width:100%;min-height:var(--tap);padding:var(--sp-2) var(--sp-3);text-align:left;
+  border-radius:var(--r-card);border:1px solid color-mix(in srgb,var(--c) 35%,var(--line));background:var(--surface-2);color:var(--text-1)}
+.ev-dn-row:active{transform:scale(.99)}
+.ev-dn-ic{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:var(--r-xs);color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--surface-2))}
+.ev-dn-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ev-dn-tx{display:grid;gap:2px;min-width:0}
+.ev-dn-tx b{font-size:var(--fs-2);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-dn-tx small{font-size:var(--fs-1);color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-dn-bar{height:3px;margin-top:2px}
+.ev-dn-bar i{background:var(--c)}
+.ev-dn-more{font-style:normal;font-size:var(--fs-1);font-weight:800;color:var(--text-2);white-space:nowrap}
+
+/* =========================================================
+   THE EVOLVE MOMENTS — the rank-up look, in gold
+   ========================================================= */
+.ev-up .rk-up-in{padding:calc(var(--sp-7) + var(--ev-sat)) var(--sp-5) calc(var(--sp-5) + var(--ev-sab))}
+.ev-up-hex{--hx:150px;position:relative;align-content:center;gap:var(--sp-2);color:var(--on-accent);animation:rkpop .7s var(--ease) both .15s}
+.ev-up-hex svg{width:64px;height:64px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ev-pips{display:flex;justify-content:center;gap:6px}
+.ev-pips i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.ev-up .rk-up-tier.ev-up-t{margin-top:var(--sp-2);font-size:var(--fs-6);color:var(--gold);text-shadow:0 0 28px color-mix(in srgb,var(--gold) 40%,transparent)}
+.ev-up .ev-up-line{max-width:320px;margin:var(--sp-3) auto 0}
+.ev-up .rk-up-more{margin-top:var(--sp-2)}
+.ev-up-gap{flex:1 0 var(--sp-5)}
+.ev-up .u-btn{margin-top:0}
+/* the current segment: its own class (the legacy global .now rule adds a 16 px top margin) */
+.ev-up .rk-segs i.ev-cur b{animation:rkSeg .7s var(--ease) .1s forwards}
+@media (prefers-reduced-motion:reduce){ .ev-up .rk-segs i.ev-cur b{animation:none;width:100%} }
+
+/* =========================================================
+   SHORT PHONES (iPhone SE and similar)
+   ========================================================= */
+@media (max-height:700px){
+  .ev-strip{height:76px;gap:var(--sp-3)}
+  .ev-strip-b,.ev-strip .rk-badge.lg{width:48px;height:56px}
+  /* the tile becomes a row header: a 24 px icon left of the title, then the sub and the bar */
+  .ev-tile{padding:var(--sp-2) var(--sp-3)}
+  .ev-tile-h{flex-direction:row;align-items:center;gap:var(--sp-2)}
+  .ev-tile-ic,.ev-tile-ic svg{width:24px;height:24px}
+  .ev-tile small{margin-top:var(--sp-1)}
+  /* the "new" dot sits on the icon's corner, like a badge, so it never meets the title */
+  .ev-tile .ev-dot{top:calc(var(--sp-2) - 2px);right:auto;left:calc(var(--sp-3) + 17px);box-shadow:0 0 0 2px var(--surface-2),0 0 10px color-mix(in srgb,var(--glow) 60%,transparent)}
+  .ev-up .rk-up-in{padding-top:calc(var(--sp-5) + var(--ev-sat))}
+  .ev-up-hex{--hx:112px}
+  .ev-up-hex svg{width:48px;height:48px}
+  .ev-up .rk-up-tier.ev-up-t{font-size:var(--fs-5)}
+}

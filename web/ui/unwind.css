@@ -1,0 +1,67 @@
+/* =========================================================
+   UNWIND — see unwind.js. The toy fills the screen above the name strip; tokens only.
+   ========================================================= */
+.uw{display:flex;flex-direction:column;min-height:calc(100dvh - 88px - var(--tabH));padding-bottom:var(--sp-4)}
+.uw-cv{display:block;flex:1;min-height:300px;width:calc(100% + 2 * var(--gutter));margin:0 calc(-1 * var(--gutter));touch-action:none;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+.uw-pick{margin-top:var(--sp-3)}
+.uw-pick .br-name p{min-height:0}
+.uw-toys{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2);margin-top:var(--sp-3)}
+.uw-snd{align-self:center;min-width:120px;min-height:var(--tap);margin-top:var(--sp-3)}
+
+/* ---------- Breathe on its own (Andrej, 17 Oct): a title, not a switch; one focused screen ---------- */
+.mindv.brv .br-tabs{gap:0}
+.br-title{font-size:var(--fs-3);font-weight:800;color:var(--text-1)}
+.mindv .br .br-ar,.mindv .uw .br-ar{visibility:hidden}
+.mindv .br .br-stage{position:relative;min-height:210px}
+.mindv .br .br-cards{display:none}
+.mindv .br .br-name p.br-pat{min-height:0;margin-top:var(--sp-1);font-size:var(--fs-2);font-weight:700;color:var(--text-2);letter-spacing:.02em}
+.br-snd{position:absolute;right:0;top:var(--sp-2);min-height:36px;padding:0 var(--sp-3);border-radius:var(--r-pill);border:1px solid var(--line-2);background:var(--surface-2);font-size:var(--fs-1);font-weight:700;color:var(--text-2)}
+.br-groups{display:grid;gap:var(--sp-2);margin-top:var(--sp-3)}
+.br-grp{display:grid;gap:var(--sp-2)}
+.br-grp .u-eyebrow{padding:0 2px}
+.br-chips{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-2)}
+.br-chips.c4{grid-template-columns:repeat(4,1fr)}
+.br-chip{display:grid;justify-items:center;align-content:center;gap:2px;min-width:0;min-height:64px;padding:var(--sp-2) 2px;border-radius:var(--r-card);border:1px solid var(--line-2);background:var(--surface-2);font-size:var(--fs-1);font-weight:700;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.br-ci svg{width:24px;height:24px;fill:none;stroke:var(--cyan);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.br-chip.on{border-color:var(--cyan);background:var(--cyan-a)}
+.br-durs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-top:var(--sp-3);padding:4px;border-radius:var(--r-pill);background:var(--surface-2);border:1px solid var(--line)}
+.br-dur{min-height:40px;border-radius:var(--r-pill);font-size:var(--fs-2);font-weight:700;color:var(--text-2)}
+.br-dur.on{background:var(--surface-3);color:var(--text-1)}
+.mindv .br .br-play{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);width:100%;height:var(--btn-h);margin:var(--sp-4) 0 0;border-radius:var(--r-pill);border:0;background:var(--cyan);color:var(--on-accent);font-size:var(--fs-3);font-weight:800;box-shadow:none}
+.mindv .br .br-play #brCDv{font-weight:700;opacity:.75}
+.mindv .br .br-play.end{background:var(--surface-3);color:var(--text-1)}
+.br-xp{min-height:1.4em;margin-top:var(--sp-2);text-align:center;font-size:var(--fs-1);font-weight:700;color:var(--cyan)}
+/* while a session runs: only the shape, the cue and End */
+.br.run .br-groups,.br.run .br-durs,.br.run .br-name,.br.run .br-snd,.br.run .br-xp{display:none}
+.mindv .br{padding-bottom:var(--sp-1)}
+@media (max-height:700px){ .mindv .br .br-stage{min-height:110px} .br-chip{min-height:56px} .br-grp .u-eyebrow{display:none} .mindv .br .br-play{margin-top:var(--sp-3)} }
+.app.minding .mindv.brv .br{min-height:calc(100dvh - 88px - var(--tabH))}
+
+/* Unwind on its own (Andrej, 17 Oct): the toy fills the screen, a Sound pill and a one-line hint on it, three icon tiles under it */
+.uw-stage{position:relative;flex:1;display:flex;flex-direction:column;min-height:260px}
+.uw-stage .uw-cv{flex:1}
+.uw-sndp{top:var(--sp-2);right:0}
+.uw-hint{position:absolute;left:0;right:0;bottom:var(--sp-2);margin:0;text-align:center;font-size:var(--fs-2);font-weight:700;color:var(--text-2);pointer-events:none}
+.uw .uw-toys{margin-top:var(--sp-3)}
+@media (max-height:700px){ .uw-stage{min-height:200px} }
+/* Unwind full screen (uwfull, unwind.js) */
+.app.uwfull .u-nav,.app.uwfull .hx-mini,.app.uwfull #mind .mv-top{display:none!important}
+.app.uwfull #mind,.app.uwfull .mindv{bottom:0!important}
+.app.uwfull .uw{position:fixed;inset:0;z-index:20;min-height:0;padding:0;background:var(--bg)}
+.app.uwfull .uw-stage{position:absolute;inset:0;min-height:0}
+.app.uwfull .uw-cv{position:absolute;inset:0;width:100%;height:100%;border-radius:0}
+.uw-x{position:absolute;left:var(--sp-4);top:calc(var(--sat) + var(--sp-3));z-index:3;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--glass-strong);border:1px solid var(--glass-line);color:var(--text-1)}
+.uw-x svg{width:20px;height:20px}
+.app.uwfull .uw-sndp.uw-sndi{top:calc(var(--sat) + var(--sp-3));right:var(--sp-4);z-index:3;width:40px;height:40px;padding:0;border-radius:50%;font-size:0;background:var(--glass-strong);border:1px solid var(--glass-line)}
+.app.uwfull .uw-sndp.uw-sndi::before{content:"";width:14px;height:14px;border-radius:2px;background:var(--text-2);clip-path:polygon(0 30%,35% 30%,75% 0,75% 100%,35% 70%,0 70%)}
+.app.uwfull .uw-sndp.uw-sndi[aria-pressed="true"]::before{background:var(--cyan)}
+.app.uwfull .uw-hint{bottom:calc(var(--sab) + 88px);transition:opacity .6s}
+.uw-hint.gone{opacity:0}
+.app.uwfull .uw .uw-toys{position:absolute;left:50%;bottom:calc(var(--sab) + var(--sp-5));z-index:3;transform:translateX(-50%);display:flex;gap:2px;margin:0;padding:4px;border-radius:var(--r-pill);background:var(--glass-strong);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur));transition:opacity .6s}
+.app.uwfull .uw .uw-toys .br-chip{min-height:36px;padding:0 var(--sp-3);border-radius:var(--r-pill);border:0;background:none;font-size:var(--fs-1)}
+.app.uwfull .uw .uw-toys .br-chip.on{background:var(--surface-3)}
+.app.uwfull .uw .uw-toys .br-ci{display:none}
+.app.uwfull .uw .uw-toys.idle{opacity:0}
+.uw-x svg{fill:none;stroke:var(--text-1);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.app.uwfull .uw-sndp.uw-sndi{display:grid;place-items:center}
+.app.uwfull .uw-sndp.uw-sndi>span{display:none}

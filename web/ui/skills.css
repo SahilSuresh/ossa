@@ -1,0 +1,143 @@
+/* SESSION SKILLS (skills.js): the Focus tab's levels, the session screen, the finish, the rank road, the difficulty. */
+.lu{--lu-h:calc(100dvh - var(--lu-off,104px) - var(--sat) - var(--sab));display:flex;flex-direction:column;gap:var(--sp-2);height:calc(var(--lu-h) - var(--kb,0px));min-height:0;padding-bottom:var(--sp-2);animation:luIn .32s var(--ease) both;transition:height .2s ease}
+.lu.lu-run,.lu.lu-fin{--lu-off:28px}
+.lu.lu-road{height:auto;min-height:var(--lu-h)}
+@keyframes luIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.lu-top{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-2);padding-top:calc(var(--sp-2) + var(--sat))}
+.lu-top .u-h1{margin:0}
+.lu-tr,.lu-rt{display:flex;align-items:center;gap:6px}
+.lu-rt{justify-content:space-between;padding-top:calc(var(--sp-2) + var(--sat))}
+.lu-mode{display:inline-flex;align-items:center;height:24px;padding:0 7px;border-radius:6px;border:1px solid var(--dc);color:var(--dc);font-size:var(--fs-1);font-weight:800;letter-spacing:.08em}
+.lu-chip{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;border-radius:var(--r-pill);border:1px solid var(--line-2);font-size:var(--fs-1);font-weight:800;color:var(--text-2);white-space:nowrap}
+.lu-fire{color:var(--glow);border-color:color-mix(in srgb,var(--glow) 30%,transparent)}
+.lu-skc{color:var(--c);border-color:var(--c)}
+.lu-red{color:var(--alert);border-color:var(--alert)}
+.lu-more{position:relative;width:36px;height:36px;border-radius:50%;border:1px solid var(--line-2);background:none;color:var(--text-2);font-size:var(--fs-3);font-weight:900;line-height:1}
+.lu-more::after{content:"";position:absolute;inset:-4px}
+.lu-down{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-card);background:var(--alert-a);border:1px solid var(--alert);color:var(--text-1);text-align:left}
+.lu-down b{font-size:var(--fs-2);font-weight:900;letter-spacing:.1em;color:var(--alert)}
+.lu-down span{font-size:var(--fs-1);color:var(--text-2)}
+/* the skill tabs */
+.lu-skills{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;flex:none}
+.lu-sk{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;min-height:56px;padding:8px 9px;border-radius:var(--r-card);background:var(--surface-2);border:1px solid transparent;color:var(--text-1);text-align:left;transition:border-color .2s,background .2s}
+.lu-sk b{font-size:var(--fs-2);font-weight:900}
+.lu-sk small{font-size:var(--fs-1);font-weight:700;color:var(--text-2)}
+.lu-sk i{display:block;width:100%;height:3px;border-radius:2px;background:var(--surface-3);overflow:hidden}
+.lu-sk i em{display:block;height:100%;background:var(--c)}
+.lu-sk.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--surface-1))}
+.lu-sk.on b{color:var(--c)}
+/* the hero */
+.lu-hero{position:relative;flex:1 1 0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+.lu-hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.lu-hero>*:not(canvas){position:relative}
+.lu-hex{display:grid;place-items:center;width:clamp(76px,13dvh,112px);aspect-ratio:112/126;clip-path:var(--hex);background:linear-gradient(160deg,var(--c),color-mix(in srgb,var(--c) 35%,var(--bg)));color:var(--on-accent)}
+.lu-hex.sm{width:clamp(60px,9dvh,84px)}
+.lu-hex span{display:flex;flex-direction:column;align-items:center}
+.lu-hex small{font-size:var(--fs-1);font-weight:800;letter-spacing:.1em;transform:scale(.8);white-space:nowrap}
+.lu-hex.sm small{transform:scale(.62)}
+.lu-hex b{font-size:clamp(34px,6.4dvh,var(--fs-6));font-weight:900;line-height:.9;font-variant-numeric:tabular-nums}
+.lu-hex.sm b{font-size:clamp(28px,4.6dvh,40px)}
+.lu-rank{margin-top:4px;font-size:var(--fs-1);font-weight:800;letter-spacing:.16em;color:var(--c)}
+.lu-title{margin:0;font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:clamp(22px,3.8dvh,30px);line-height:1;text-transform:uppercase;color:var(--text-1)}
+.lu-title.night{color:var(--d-night)}
+.lu-xp{width:100%;max-width:260px;margin-top:4px}
+.lu-xp i{display:block;height:8px;border-radius:4px;background:var(--surface-3);overflow:hidden}
+.lu-xp i em{display:block;height:100%;background:var(--c);box-shadow:0 0 10px var(--c);transition:width .5s var(--ease)}
+.lu-xp>span{display:flex;justify-content:space-between;margin-top:5px;font-size:var(--fs-1);font-weight:700;color:var(--text-2);font-variant-numeric:tabular-nums}
+.lu-xp>span b{color:var(--text-1)}
+.lu-next{position:relative;margin-top:4px;padding:6px 8px;min-height:36px;background:none;border:0;font-size:var(--fs-1);color:var(--text-2);line-height:1.35}
+.lu-next b{color:var(--text-1)}
+/* durations and the start button: always on screen */
+.lu-durs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;flex:none}
+.lu-durs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:46px;border-radius:12px;background:var(--surface-2);border:0;color:var(--text-1);min-width:0}
+.lu-durs b{font-size:var(--fs-3);font-weight:900;line-height:1}
+.lu-durs small{font-size:var(--fs-1);color:var(--text-2);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lu-durs button.on{background:var(--text-1);color:var(--bg)}
+.lu-durs button.on small{color:var(--text-3)}
+.lu-durs .lu-cust{border:1px dashed var(--line-2)}
+.lu-durs .lu-cust.on{border-style:solid;border-color:var(--text-1)}
+/* custom-minutes picker (opened from the Custom tile) */
+.lu-dur-row{display:grid;grid-template-columns:52px 1fr 52px;gap:8px;align-items:center;margin:4px 0 2px}
+.lu-dur-step{min-height:52px;border-radius:12px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--text-1);font-size:var(--fs-5);font-weight:900;line-height:1}
+.lu-dur-step:active{transform:scale(.97)}
+.lu-dur-in{width:100%;min-height:52px;padding:0 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1);text-align:center;font-size:var(--fs-5);font-weight:900}
+.lu-dur-in::-webkit-outer-spin-button,.lu-dur-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.lu-dur-note{margin:0;text-align:center;font-size:var(--fs-1);color:var(--text-2);font-variant-numeric:tabular-nums}
+.lu-go{flex:none;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border:0;border-radius:18px;background:var(--glow);color:var(--on-accent);font-size:var(--fs-3);font-weight:900}
+.lu-go small{font-size:var(--fs-1);font-weight:800;opacity:.65}
+.lu-go:active{transform:scale(.98)}
+.lu-ghost{flex:none;width:100%;min-height:46px;border-radius:14px;border:1px solid var(--line-2);background:none;color:var(--text-1);font-size:var(--fs-2);font-weight:800}
+/* the session */
+.lu-tm{font-size:clamp(56px,10dvh,var(--fs-7));font-weight:900;line-height:1;letter-spacing:-.02em;color:var(--text-1)}
+.lu-gain{font-size:var(--fs-4);font-weight:900;color:var(--c)}
+.lu-status{margin:4px 0 0;font-size:var(--fs-1);font-weight:700;letter-spacing:.04em;color:var(--c)}
+.lu-face{display:inline-flex;align-items:center;gap:6px;margin-top:4px;padding:5px 10px;border-radius:var(--r-pill);border:1px solid var(--sk-off);color:var(--sk-off);font-size:var(--fs-1);font-weight:800}
+.lu-face.up{border-color:var(--amber);color:var(--amber);animation:luBlink 1.2s ease-in-out infinite}
+@keyframes luBlink{50%{opacity:.45}}
+.lu-runhero.flash::after{content:"LEVEL UP";position:absolute;inset:auto 0 50%;font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-6);color:var(--c);text-shadow:0 0 24px var(--c);animation:luFlash 1.4s var(--ease) both;pointer-events:none}
+@keyframes luFlash{0%{opacity:0;transform:scale(.8)}20%{opacity:1;transform:scale(1.05)}80%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
+.lu-task{flex:none;width:100%;height:44px;padding:0 12px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1);font-size:var(--fs-3)}
+.lu-task::placeholder{color:var(--text-3)}
+.lu-warn{flex:none;margin:0;padding:8px 12px;border-radius:12px;border:1px solid color-mix(in srgb,var(--alert) 45%,transparent);background:var(--alert-a);font-size:var(--fs-1);line-height:1.45;color:var(--text-2)}
+.lu-warn b{color:var(--alert)}
+.lu-end{flex:none;width:100%;min-height:46px;border-radius:14px;border:1px solid var(--line-2);background:none;color:var(--text-1);font-size:var(--fs-2);font-weight:800}
+.lu-end.arm{border-color:var(--alert);color:var(--alert)}
+.lu-run .mm-endn{margin:0;min-height:0;text-align:center;font-size:var(--fs-1);color:var(--text-2)}
+/* the finish */
+.lu-big{margin:4px 0 0;font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:clamp(38px,7dvh,var(--fs-6));line-height:.92;text-transform:uppercase;color:var(--c);text-shadow:0 0 30px color-mix(in srgb,var(--c) 60%,transparent);animation:luPop .6s var(--ease) both}
+.lu-big.sm{font-size:clamp(30px,5dvh,40px)}
+.lu-big.red{color:var(--alert);text-shadow:none}
+@keyframes luPop{0%{opacity:0;transform:scale(.7)}60%{transform:scale(1.06)}100%{opacity:1;transform:none}}
+.lu-rkup{padding:4px 10px;border-radius:var(--r-pill);background:var(--c);color:var(--on-accent);font-size:var(--fs-1);font-weight:900;letter-spacing:.06em}
+.lu-said{margin:0;max-width:30ch;font-size:var(--fs-2);color:var(--text-2)}
+.lu-loot{flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lu-loot>*{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:64px;padding:8px 6px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);color:var(--text-1);text-align:center}
+.lu-loot b{font-size:var(--fs-4);font-weight:900}
+.lu-loot small{max-width:100%;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:var(--fs-1);line-height:1.3;color:var(--text-2)}
+.lu-loot button[aria-pressed="true"]{border-color:var(--c)}
+/* the rank road */
+.lu-road .u-h1{margin:var(--sp-1) 0 0}
+.lu-steps{list-style:none;margin:var(--sp-1) 0 0;padding:0;display:flex;flex-direction:column}
+.lu-step{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:7px 0}
+.lu-step::before{content:"";position:absolute;left:21px;top:0;bottom:0;width:2px;background:var(--line-2)}
+.lu-step:first-child::before{top:50%}.lu-step:last-child::before{bottom:50%}
+.lu-step>i{position:relative;display:grid;place-items:center;width:44px;height:48px;clip-path:var(--hex);background:var(--surface-3);font-style:normal;font-size:var(--fs-4);font-weight:900;color:var(--text-2)}
+.lu-step.done>i{background:var(--c);color:var(--on-accent)}
+.lu-step.cur>i{background:var(--text-1);color:var(--bg);box-shadow:0 0 0 3px var(--c)}
+.lu-step span{display:flex;flex-direction:column;min-width:0}
+.lu-step b{font-size:var(--fs-3);font-weight:800}
+.lu-step.cur b{color:var(--c)}
+.lu-step small{font-size:var(--fs-1);color:var(--text-2)}
+.lu-step em{font-style:normal;font-size:var(--fs-1);font-weight:700;color:var(--text-2);font-variant-numeric:tabular-nums}
+.lu-musc{align-self:center;min-height:40px}
+/* sheets: ⋯, the task, the difficulty */
+.lu-sheet{position:absolute;inset:0;z-index:40}
+.lu-sh-bg{position:absolute;inset:0;background:var(--glass-2);opacity:0;transition:opacity .25s}
+.lu-sh{position:absolute;left:0;right:0;bottom:var(--kb,0px);display:flex;flex-direction:column;gap:var(--sp-2);max-height:92dvh;overflow-y:auto;padding:var(--sp-4) var(--gutter) calc(var(--sp-5) + var(--sab));border-radius:var(--r-card-lg) var(--r-card-lg) 0 0;background:var(--surface-1);border-top:1px solid var(--line-2);transform:translateY(100%);transition:transform .3s var(--ease),bottom .2s ease}
+.lu-sheet.on .lu-sh-bg{opacity:1}
+.lu-sheet.on .lu-sh{transform:none}
+.lu-row{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:52px;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line);color:var(--text-1);text-align:left}
+.lu-row b{font-size:var(--fs-3);font-weight:800}
+.lu-row small{font-size:var(--fs-1);color:var(--text-2)}
+.lu-urge{min-height:48px;border-radius:var(--r-pill);border:1px solid var(--alert);background:var(--alert-a);color:var(--alert);font-size:var(--fs-3);font-weight:900}
+/* the difficulty (intro and Settings) */
+.lu-dl{display:flex;flex-direction:column;gap:7px}
+.lu-dd{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 12px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1);text-align:left}
+.lu-dd b{font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-4);text-transform:uppercase;color:var(--dc)}
+.lu-dd em{align-self:center;font-style:normal;font-size:var(--fs-1);font-weight:800;color:var(--text-2)}
+.lu-dd small{grid-column:1/-1;font-size:var(--fs-1);line-height:1.4;color:var(--text-2)}
+.lu-dd.on{border-color:var(--dc);background:color-mix(in srgb,var(--dc) 9%,var(--surface-1))}
+.lu-ob{display:flex;flex-direction:column;gap:var(--sp-2);width:100%}
+.lu-sys{position:relative;padding:10px 12px;border:1px solid color-mix(in srgb,var(--glow) 60%,transparent);background:var(--glow-a);border-radius:3px;box-shadow:0 0 22px -8px var(--glow)}
+.lu-sys span{font-size:var(--fs-1);font-weight:800;letter-spacing:.24em;color:var(--glow)}
+.lu-sys p{margin:4px 0 0;font-size:var(--fs-2);line-height:1.45;color:var(--text-1)}
+.lu-obh{margin:var(--sp-1) 0 0;font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-45);line-height:1;text-transform:uppercase;color:var(--text-1)}
+.lu-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.lu-grid .lu-dd small{display:none}
+.lu-grid .lu-dd{grid-template-columns:1fr;min-height:56px;align-content:center}
+.lu-grid .lu-dd em{text-align:left}
+.lu-drule{margin:0;padding:8px 12px;border-left:3px solid var(--dc);background:var(--surface-2);border-radius:0 10px 10px 0;font-size:var(--fs-2);line-height:1.4;color:var(--text-1);min-height:58px}
+.lu-ob .lu-obh{font-size:var(--fs-4)}
+.lu-foot{margin:0;text-align:center;font-size:var(--fs-1);color:var(--text-2)}
+@media (max-height:700px){ .lu-sk{min-height:50px;padding:6px 8px} .lu-dd{padding:7px 10px} .lu-dd small{font-size:var(--fs-1)} .lu-durs button{height:42px} .lu-go{min-height:52px} }
+@media (prefers-reduced-motion:reduce){ .lu,.lu-big{animation:none} .lu-runhero.flash::after{animation:none;opacity:0} }

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="512" cy="470" r="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#17181A"/><stop offset="1" stop-color="#000"/>
+    </radialGradient>
+    <linearGradient id="stone" x1="0" y1="202" x2="0" y2="822" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#727276"/><stop offset=".45" stop-color="#4A4A4E"/><stop offset="1" stop-color="#2C2C30"/>
+    </linearGradient>
+    <filter id="glow" filterUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024"><feGaussianBlur stdDeviation="40"/></filter>
+    <filter id="wide" filterUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024"><feGaussianBlur stdDeviation="60"/></filter>
+    <filter id="spill" filterUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024"><feGaussianBlur stdDeviation="20"/></filter>
+    <filter id="core" filterUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="drop" filterUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="grain" filterUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
+      <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="7"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <clipPath id="cL"><polygon points="512,202 527,284 549,358 537,424 511,500 520,548 488,646 492,736 512,822 202,667 202,357"/></clipPath>
+    <clipPath id="cR"><polygon points="512,202 822,357 822,667 512,822 492,736 488,646 520,548 511,500 537,424 549,358 527,284"/></clipPath>
+    <clipPath id="cX"><polygon points="478,220 493,302 515,376 503,442 477,518 486,566 454,664 458,754 478,840 168,685 168,375"/><polygon points="546,220 856,375 856,685 546,840 526,754 522,664 554,566 545,518 571,442 583,376 561,302"/></clipPath>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+    <!-- shadow and slab thickness -->
+    <polygon points="478,228 493,310 515,384 503,450 477,526 486,574 454,672 458,762 478,848 168,693 168,383" fill="#000" opacity=".8" filter="url(#drop)"/>
+    <polygon points="546,228 856,383 856,693 546,848 526,762 522,672 554,574 545,526 571,450 583,384 561,310" fill="#000" opacity=".8" filter="url(#drop)"/>
+    <polygon points="478,220 493,302 515,376 503,442 477,518 486,566 454,664 458,754 478,840 168,685 168,375" fill="#141416"/>
+    <polygon points="546,220 856,375 856,685 546,840 526,754 522,664 554,566 545,518 571,442 583,376 561,302" fill="#141416"/>
+    <g clip-path="url(#cX)"><path d="M512 220 L527 302 L549 376 L537 442 L511 518 L520 566 L488 664 L492 754 L512 840" fill="none" stroke="#D4FF00" stroke-width="150" opacity=".45" filter="url(#spill)"/></g>
+    <!-- the light in the split -->
+    <path d="M520.3 247.2 L527 284 L549 358 L537 424 L511 500 L520 548 L488 646 L492 736 L501.6 777.2" fill="none" stroke="#D4FF00" stroke-width="170" stroke-linecap="round" stroke-linejoin="round" opacity=".5" filter="url(#glow)"/>
+    <polygon points="546,202 561,284 583,358 571,424 545,500 554,548 522,646 526,736 546,822 478,822 458,736 454,646 486,548 477,500 503,424 515,358 493,284 478,202" fill="#D4FF00"/>
+    <path d="M512 202 L527 284 L549 358 L537 424 L511 500 L520 548 L488 646 L492 736 L512 822" fill="none" stroke="#F6FFD0" stroke-width="36" stroke-linejoin="round" filter="url(#core)"/>
+    <!-- the two stone halves -->
+    <g transform="translate(-34 0)">
+      <polygon points="512,202 527,284 549,358 537,424 511,500 520,548 488,646 492,736 512,822 202,667 202,357" fill="url(#stone)"/>
+      <g clip-path="url(#cL)">
+        <rect x="34" width="1024" height="1024" filter="url(#grain)" opacity=".07"/>
+        <polygon points="512,202 822,357 782,381.7 512,246.7" fill="rgba(255,255,255,.16)"/><polygon points="822,357 822,667 782,642.3 782,381.7" fill="rgba(0,0,0,.28)"/><polygon points="822,667 512,822 512,777.3 782,642.3" fill="rgba(0,0,0,.5)"/><polygon points="512,822 202,667 242,642.3 512,777.3" fill="rgba(0,0,0,.42)"/><polygon points="202,667 202,357 242,381.7 242,642.3" fill="rgba(255,255,255,.07)"/><polygon points="202,357 512,202 512,246.7 242,381.7" fill="rgba(255,255,255,.26)"/>
+        <path d="M512 202 L527 284 L549 358 L537 424 L511 500 L520 548 L488 646 L492 736 L512 822" fill="none" stroke="#D4FF00" stroke-width="90" stroke-linejoin="round" opacity=".5" filter="url(#spill)"/>
+        <path d="M512 202 L527 284 L549 358 L537 424 L511 500 L520 548 L488 646 L492 736 L512 822" fill="none" stroke="#D4FF00" stroke-width="320" stroke-linejoin="round" opacity=".035" filter="url(#wide)"/>
+      </g>
+    </g>
+    <g transform="translate(34 0)">
+      <polygon points="512,202 822,357 822,667 512,822 492,736 488,646 520,548 511,500 537,424 549,358 527,284" fill="url(#stone)"/>
+      <g clip-path="url(#cR)">
+        <rect x="-34" width="1024" height="1024" filter="url(#grain)" opacity=".07"/>
+        <polygon points="512,202 822,357 782,381.7 512,246.7" fill="rgba(255,255,255,.16)"/><polygon points="822,357 822,667 782,642.3 782,381.7" fill="rgba(0,0,0,.28)"/><polygon points="822,667 512,822 512,777.3 782,642.3" fill="rgba(0,0,0,.5)"/><polygon points="512,822 202,667 242,642.3 512,777.3" fill="rgba(0,0,0,.42)"/><polygon points="202,667 202,357 242,381.7 242,642.3" fill="rgba(255,255,255,.07)"/><polygon points="202,357 512,202 512,246.7 242,381.7" fill="rgba(255,255,255,.26)"/>
+        <path d="M512 202 L527 284 L549 358 L537 424 L511 500 L520 548 L488 646 L492 736 L512 822" fill="none" stroke="#D4FF00" stroke-width="90" stroke-linejoin="round" opacity=".5" filter="url(#spill)"/>
+        <path d="M512 202 L527 284 L549 358 L537 424 L511 500 L520 548 L488 646 L492 736 L512 822" fill="none" stroke="#D4FF00" stroke-width="320" stroke-linejoin="round" opacity=".035" filter="url(#wide)"/>
+      </g>
+    </g>
+</svg>

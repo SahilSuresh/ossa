@@ -1,0 +1,450 @@
+{
+ "key": "vessel",
+ "title": "Phase 1 Vessel Engine: RP, kinetic chain, fade, injury, ranks",
+ "area": "Vessel Engine: muscle RP and ranks, Kinetic Chain weights, neglect fade with pause, Injury Mapping, and the muscle_ranks_detail, rank_up_notification and injury_mapping screens",
+ "keyFacts": [
+  {
+   "fact": "RP is a real number today. It is the old muscle score: S.scores = {muscleKey: integer 0–100} for the 23 muscles in GLORDER. New users start at 0 (BASE/fresh); the demo uses SEED. The new UI calls it RP, but legacy strings still say 'Muscle score'.",
+   "ref": "web/ossa.html:3667 (GLORDER), 3861-3863 (BASE, fresh, demoData); 'RP' at web/ui/ranks.js:64,131,135 and web/ui/workout.js:141,148; 'Muscle score' at web/ossa.html:5731, 7790, 7796"
+  },
+  {
+   "fact": "The main credit path is finishWorkout. For each exercise, the primary muscle gets n sets × 1.2 and every secondary gets n × 0.4 (a flat 33%). Then each muscle's gain is g = min(100 − s, max(l ≥ 1 ? 1 : 0, round(l × (1 − s/125)))), rounded once per muscle per session. Mobility sessions credit nothing.",
+   "ref": "web/ossa.html:7748-7750 (finishWorkout)"
+  },
+  {
+   "fact": "The other live credit path is quickLog (the + on a muscle sheet, and the demo's Log). It credits the primary only, g = round(4 × (1 − s/125)) with a minimum of 1. Secondaries get recovery load but no RP. Its rank-ups are a toast only. commitLog/gains() can't be reached (renderSheet(true) is never called).",
+   "ref": "web/ossa.html:5721-5731 (quickLog), 5754-5766 (commitLog); docs/BUGS.md:65 (BUG-08)"
+  },
+  {
+   "fact": "How the rank functions work. RANKS = tier floors 0/1/20/40/60/80 (Unranked to Unbreakable). RK_STEPS = 15 steps of [floor, tier, level]. rankIx(s) is 0–15, rankTier(s) is 0–5, rankOf(s) gives e.g. 'Strong I', toNext(s) gives {pts, name, tier}, and rankFrac(s) is progress within the level. Floors: Strong I 40, II 47, III 54, Forged I 60.",
+   "ref": "web/ossa.html:7380-7390"
+  },
+  {
+   "fact": "rkGainPer(s) = max(1, round(3.6 × (1 − s/125))): the finishWorkout curve for 3 hard sets. rkSessionsToTier and the onboarding 12-week projection use it. rkWeak is the lowest trained muscle in your focus regions, else the lowest trained, else the first focus muscle.",
+   "ref": "web/ui/ranks.js:17-18, 33-39"
+  },
+  {
+   "fact": "There is an overall rank, but it is an average, not a sum. overall() = round(mean of the 9 region means). It is shown as the hex + 'Strong I', '${o} RP', 'n to …' on the Ranks screen and as the Overall rank tile. It is never stored and never celebrated. The design's '43 RP, 4 to Strong II' is exactly what this code prints for overall()=43.",
+   "ref": "web/ossa.html:3905-3906 (rScore, overall); web/ui/ranks.js:55-64; web/ui/shell.js:196"
+  },
+  {
+   "fact": "Rank-ups are detected in finishWorkout: muscles whose rankIx rose go into TR.result.ranks, and R.o0/R.o1 (overall before and after) are kept. rkCelebrate shows at most 3, sorted by rankIx(to), when you leave Workout complete. Phones without WebGL (legacy drawDone) never show rank-ups.",
+   "ref": "web/ossa.html:7772-7773; web/ui/ranks.js:113-151; web/ui/workout.js:167-174; web/ossa.html:7776-7797"
+  },
+  {
+   "fact": "rkCelebrate already shows every field in the design. Best set comes from rkBestSet (Epley kg × (1 + r/30) over exercises where the muscle is primary OR secondary). 100×11 gives 137 kg, matching the PNG.",
+   "ref": "web/ui/ranks.js:105-110, 124-137"
+  },
+  {
+   "fact": "SEC is {exerciseName: [secondary muscle keys]} for 66 exercises, with no weights. The primary comes from context: mkItem(name, dose, primary) filters it out of sec. 17 of the 83 exercise names the app can put in a session have no SEC entry, so they credit no secondaries: Goblet squat, Dumbbell bench press, Inverted row, Pike push-up, Cable pushdown, Weighted dips, Glute bridge, Incline push-ups, Lean-away lateral raise, Seated dumbbell overhead press, Backpack curl, Bench dips, Dead bug, Dumbbell shrug, Overhead dumbbell extension, Prone T-raise, Single-leg glute bridge.",
+   "ref": "web/ossa.html:5850-5872 (SEC), 5890 (mkItem), 5346+ (MX lv), 9246-9254 (EQX), 7521-7524 (altsFor pool)"
+  },
+  {
+   "fact": "Four different secondary ratios are in use. RP: 0.4 of 1.2 (33%). Recovery load in S.log: 0.4 of 1. The 'n% of the work' chips on the session screen: 0.5. Demo/watch masks: 0.45–0.5.",
+   "ref": "web/ossa.html:7748; 5917-5921 (loadOf); 5725; web/ui/train.js:174-178 (trTargets); web/ossa.html:5025, 7579, 7657"
+  },
+  {
+   "fact": "Scores can't be faithfully recomputed from history. S.lifts keeps 20 entries per exercise and no primary muscle. S.log keeps 60 days and merges primary and secondary load into one number per muscle. S.workouts (capped at 90) has no per-exercise data. quickLog gains never reach S.lifts. Demo scores are SEED constants. The gain depends on the score at the time.",
+   "ref": "web/ossa.html:7765-7766, 3882-3886 (logLoad prune), 7770, 5721-5725, 3863"
+  },
+  {
+   "fact": "Ranks never drop. Every write to S.scores adds a positive gain; only a reset (fresh) lowers them.",
+   "ref": "web/ossa.html:5724, 5758, 7750; resets 7802, 9871-9877"
+  },
+  {
+   "fact": "How fade works today. daysSince(k) scans S.log (60 days, else 99). fadeOf(k) = 0 if new, (d − 10)/11 from 10 days, 1 at 21 days or more. stateOf is 'fading' at 7 days or more. The shader darkens faded muscles, but rank mode sets fd = 0, and the Body page always draws in rank mode. So the Ranks copy 'slowly fades on your body' is only visible in the 3D Recovery view. The 2D rank figure has no fade at all.",
+   "ref": "web/ossa.html:3874, 3881, 3901; shader 4272, 4279, 4281; web/ui/ranks.js:84-89 (rkSync home → setRank(true)), 23-28 (uiRankFig), 67"
+  },
+  {
+   "fact": "Aches today. S.flagged is an array of REGION ids, set only at the end of onboarding and never editable after. It drives whyFor ('You said your … aches'), the ache picker's preselection, and jointFlag (amber rings in the Bones layer, 'You said this area aches'). The one-tap check-in no longer records soreness (sore:[]), so jointFlag effectively reads onboarding answers only.",
+   "ref": "web/ui/onboarding.js:200-206; web/ossa.html:8281, 6168, 6190, 7408, 7415, 7451, CSS 1619; web/ui/shell.js:284"
+  },
+  {
+   "fact": "Relief routines exist. The ache picker openRelief uses ACHES (6), RELIEF and RED_FLAGS (the see-a-physio-or-GP line). JOINT_RELIEF has a 4-move routine for each of the 8 JOINTS; trJointSession builds it and trJointRelief opens it in Train, ready to start. 'Something aching?' rows on Body and Recover call openRelief().",
+   "ref": "web/ossa.html:6174-6202, 7893-7900, 7398-7407; web/ui/train.js:295-351; web/ui/shell.js:207, 237, 544, 556"
+  },
+  {
+   "fact": "A red ache glow already exists in the shader, but only in the onboarding branch: uAche[9] per region, lerped by OBS. Outside onboarding it is sent as zeros. The main muscle branch samples q = abs(vR.x), so left and right share one muscle id. vR is the rest pose, and x > 0 is the figure's right (bones 2/3/6/7/8, marked 'R').",
+   "ref": "web/ossa.html:4184, 4228-4238, 4653-4654, 4864 (Body.obAche), 4245, 3956, 4366, 4383-4390"
+  },
+  {
+   "fact": "The 3D body draws on demand. On the Body page (RDHOME) the figure is still and frames only render when something sets more = true. An animated red pulse needs its own throttled frame gate.",
+   "ref": "web/ossa.html:4699-4710, 4722 (kick)"
+  },
+  {
+   "fact": "Start-up order trap: TR is built at line 5930 (sessionForDay → mkItem, applyBalance) before the web/ui includes at 11873-11878 run. A web/ui override that reads a const declared in web/ui would hit a TDZ ReferenceError on boot. Consts in ossa.html (SEC, RANKS, fadeOf) must be edited in place.",
+   "ref": "web/ossa.html:5930, 6142 (applyBalance start-up comment), 11873-11891; docs/UI-SYSTEM.md:25"
+  },
+  {
+   "fact": "Body.glowShot(map, yaw) already renders the 3D body front or back to a PNG data URL, used by legacy Workout complete. A rank-coloured variant would let the Ranks screen use our own model instead of the 2D figure.",
+   "ref": "web/ossa.html:4905-4912, 7779"
+  }
+ ],
+ "items": [
+  {
+   "name": "Kinetic Chain RP weights (system)",
+   "today": "SEC lists secondaries without weights (ossa.html:5850-5872). finishWorkout gives every secondary a flat 0.4 against the primary's 1.2 (33%), rounded per muscle per session (7748-7750). quickLog credits the primary only (5723). 17 exercises the planner, swaps and home mode can pick have no SEC row, so they give no secondary RP. Session chips show '% of the work' at a 0.5 ratio (train.js:175), so the numbers on screen don't match the RP actually given. Per-session RP isn't stored anywhere.",
+   "changes": [
+    {
+     "file": "web/ossa.html (SEC, ~5850)",
+     "change": "Convert SEC in place to weighted rows: {\"Barbell bench press\":{front_delt:.5,triceps:.35}, \"Back squat\":{glute_max:.6,adductors:.35,erectors:.3}, \"Goblet squat\":{glute_max:.5,adductors:.3,abs:.2}, …} for all 83 names (66 existing + 17 missing). Stretches get {}. Right after it, add SEC_DEF = 1/3 and two helpers: secOf(n) = Object.keys(SEC[n]||{}), and kcOf(n,p) = [[p,1], …entries except p]. The primary is always 1. These stay above line 5930 so they exist at start-up."
+    },
+    {
+     "file": "web/ossa.html mkItem (5890), startDemo (5020)",
+     "change": "Build sec from secOf(name) instead of SEC[name] arrays. The demo mask uses each muscle's weight instead of a flat 0.5."
+    },
+    {
+     "file": "web/ossa.html finishWorkout (7748-7750, 7765, 7770)",
+     "change": "L[k] += n × 1.2 × w for each [k,w] in kcOf(it.name, it.primary). Gains come from vxCredit(L), which keeps today's curve and min-1 for the primary. Store p: it.primary on each new S.lifts entry and rp: gains on each new S.workouts entry."
+    },
+    {
+     "file": "web/ossa.html quickLog (5721-5731)",
+     "change": "Credit secondaries too: L = {primary: 4, k2: 4 × w}, then vxCredit(L). Toast becomes 'Bench press logged · Chest +3 RP, Triceps +1 RP'. A rank-up toast fires for any muscle that ranked up."
+    },
+    {
+     "file": "web/ossa.html legacy strings (5731, 7790, 7796)",
+     "change": "Say 'RP' instead of 'Muscle score', so the same number has one name everywhere."
+    },
+    {
+     "file": "web/ui/train.js trTargets (174-178)",
+     "change": "Weight the chips with kcOf, so 'Triceps 12%' matches the RP actually given."
+    },
+    {
+     "file": "web/ui/vessel.js (new) + include line at web/ossa.html:11879",
+     "change": "vxCredit(L) → {k: gain}. Optionally keeps fractional remainders in S.rpCarry (see open question). Also deletes nothing and never lowers a score."
+    },
+    {
+     "file": "docs/UI-SYSTEM.md, docs/DECISIONS.md",
+     "change": "Document the weights, the forward-only migration and the new per-workout rp record."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "M",
+   "risks": [
+    "The 83-row weight table is judgement work. It needs Andrej's review, or ranks will feel off (e.g. front delts ranking up from every press).",
+    "More muscles now earn RP each session, so there are more rank-ups. Keep the cap of 3 and show primaries first (see rank_up_notification).",
+    "Per-session rounding hides the 35%: 2 sets of bench still give triceps +1. Only a fractional carry makes the share exact over time.",
+    "loadOf (recovery load in S.log) stays at 0.4 on purpose. Changing it would move recovery windows (lastSession ≥ 1.5 sets, 3893). Flag this if someone later unifies it.",
+    "Must not override mkItem from web/ui with a web/ui const. TR is built at line 5930 before the includes (TDZ crash)."
+   ],
+   "designDeviations": [
+    "Brief's example 'bench: 100% chest, 35% triceps' kept. Bench also credits front delts (50%), as SEC already lists them.",
+    "Existing users' scores are not recomputed. Weights apply from the next logged set (recompute isn't possible from what's stored; see keyFacts)."
+   ],
+   "showAtEnd": "A 390×844 screenshot of Workout complete on a test profile (chest 43, front delts 40, triceps 30) after 4×8 Barbell bench press at 60 kg: Chest +3, Front delts +2, Triceps +1 RP (today's code gives +3/+1/+1). Next to it, the session screen's muscle chips showing the same shares. Plus a one-page table of all 83 exercises and their weights for Andrej to mark up.",
+   "stateChanges": [
+    "SEC row shape: Array<muscleKey> becomes {[muscleKey]: number 0–1}, covering all 83 exercise names. The primary is implied (weight 1).",
+    "S.workouts[i].rp: {[muscleKey]: int}, new entries only (gives '+3 RP this session' history and future recompute).",
+    "S.lifts[name][i].p: primary muscleKey, new entries only.",
+    "Optional S.rpCarry: {[muscleKey]: float 0–1} fractional remainder (only if approved).",
+    "S.scores unchanged: {[muscleKey]: int 0–100}. No migration; existing values kept."
+   ],
+   "dependsOn": [
+    "Phase 0 tokens only for screenshots; the logic can be built in parallel."
+   ],
+   "newFiles": [
+    "web/ui/vessel.js"
+   ]
+  },
+  {
+   "name": "Neglect fade with pause (system)",
+   "today": "fadeOf(k) greys a muscle from 10 days off, fully by 21 (ossa.html:3881), using daysSince over S.log's 60-day window (3874). The shader darkens faded muscles (4281) but zeroes the fade in rank mode (4279). The Body page always draws ranks (ranks.js:87-89) and the 2D figure has no fade (ranks.js:23-28), so the Ranks screen's 'slowly fades on your body' isn't visible on Body. Nothing can pause it. stateOf 'fading' (7 days or more, 3901) drives neglect whispers and nudges (4953, 5159, 7836). Dares pick untouched muscles at 21 days or more (ranks.js:241-246). Ranks never drop (additive writes only).",
+   "changes": [
+    {
+     "file": "web/ossa.html (3881)",
+     "change": "Change `const fadeOf=k=>…` to `function fadeOf(k){…}` (same body) so web/ui can override it. A const can't be redeclared."
+    },
+    {
+     "file": "web/ui/vessel.js",
+     "change": "Add vxIdle(k) = daysSince(k) minus the paused days. Paused days are the union of S.vul spans covering k (and S.fadePause if approved), clipped to after the last training day. fadeOf(k) is the same curve on vxIdle. Override stateOf so a flagged muscle is never 'fading', which also silences its neglect whispers. Wrap wkInfo so a flagged muscle reads 'Flagged · its fade is paused' instead of 'Neglected · not trained for N days'. Every override that can run at start-up gets a try/catch, like applyBalance (6142)."
+    },
+    {
+     "file": "web/ossa.html shader (4279)",
+     "change": "In rank mode keep the fade as desaturation and dimming of the rank colour (heat = mix(heat, grey, fd × .75); lvl × (1 − .5 × fd)) instead of fd = 0. A neglected muscle visibly fades but its rank colour stays readable."
+    },
+    {
+     "file": "web/ui/ranks.js",
+     "change": "uiRankFig: give each part an opacity from its muscles' fade (--f), plus a .vul class for flagged parts. rkWeak and dareMuscle skip flagged muscles."
+    },
+    {
+     "file": "web/ossa.html sendScores (4585-4590)",
+     "change": "No change needed: it already sends fadeOf per muscle. The new fadeOf is picked up automatically."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "M",
+   "risks": [
+    "Showing fade in rank colours changes the look of the Body page: a long-idle user sees a greyer body. This is a product call (open question).",
+    "daysSince returns 99 beyond S.log's 60 days, so pause accounting can't see further back. Harmless, because fade is full at 21 days.",
+    "stateOf and fadeOf run at start-up and inside the Body closure. An exception there would blank the body, hence the guards."
+   ],
+   "designDeviations": [
+    "Fade is visual only: the rank never drops (DECISIONS 2026-10-15). The design's 'rank-fade countdown' is worded as 'fade' and never as losing rank.",
+    "The design's 'Character appearance will freeze' applies only to the flagged muscles (or to everything if Andrej wants the global switch)."
+   ],
+   "showAtEnd": "Two 390×844 Body page screenshots of a test profile whose quads were last trained 15 days ago. In the first the quads are visibly greyed in their rank colour. In the second the left knee is flagged: the quads keep their colour and the knee glows red. Plus the Ranks list showing a 'Fading · 15 days' tag and a 'Paused' tag.",
+   "stateChanges": [
+    "Reads S.vul (defined in injury_mapping). No new state unless the global pause is approved.",
+    "Optional S.fadePause: Array<{at:'YYYY-MM-DD', off:null|'YYYY-MM-DD'}> for a design-style 'Pause all fading' switch."
+   ],
+   "dependsOn": [
+    "injury_mapping's S.vul model (build them together)",
+    "Phase 0 rank colours in the shader's rkC (ossa.html:4188)"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "injury_mapping",
+   "today": "No way to flag a muscle or joint after onboarding. S.flagged is onboarding-only regions (ossa.html:8281) and means 'train the weak links behind it', not 'rest it'. The ache picker (openRelief, 6188-6202) picks a spot and builds a routine but saves nothing. Joints have 4-move routines (JOINT_RELIEF, trJointRelief in train.js:295-351). A red ache glow exists only in the onboarding shader branch (4237-4238). The Bones layer marks onboarding aches with amber rings that are drawn once (7415).",
+   "changes": [
+    {
+     "file": "web/ui/vessel.js",
+     "change": "Flag model: S.vul plus helpers. vxFlag(t,id,side) sets at = today. vxClear(f) sets off = today and keeps the entry until it stops affecting any fade (pruned 60 days after off). vxActive() lists live flags. vxMusclesOf(f) gives the muscle for a muscle flag, or JOINTS[j].m for a joint flag. vxIsVul(k) tells whether a muscle is covered."
+    },
+    {
+     "file": "web/ossa.html JOINTS (7398-7406)",
+     "change": "Add m:[…] in place to each joint: these are the muscles whose fade pauses. neck [traps]; shoulder [front_delt, side_delt, rear_delt]; elbow [biceps, triceps, forearms]; wrist [forearms]; lowback [erectors]; hip [glute_max, glute_med, adductors]; knee [quads, hamstrings]; ankle [gastrocnemius, soleus, tibialis]."
+    },
+    {
+     "file": "web/ossa.html shader + Body (FS ~4175-4316, ulocs 4541, sendScores 4585, draw 4647-4654, frame 4699-4710, Body API ~4898)",
+     "change": "Four shader additions. (1) uVul[N]: 0 off, 1 both sides, 2 right (x > 0), 3 left; a red #FF3B30 pulse over the muscle, using uSysB.w as the clock. (2) uVJ[6]: joint glows, xyz rest position from RIG (plus w radius). Neck and lower back use an xy distance so they show from front and back. (3) uVulK: injury-map mode that ghosts unflagged muscles like uIso. (4) A ~20 fps frame gate while flags exist and the body is on screen. Static red under reduced motion. Body.vulFocus(on) toggles uVulK."
+    },
+    {
+     "file": "web/ui/injury.js + web/ui/injury.css (new; includes at ossa.html:11879 and 3354)",
+     "change": "vxOpenMap() opens a full-screen overlay over the 3D body (setTab('body'), setLayer('muscle'), Body.frameBox to fit the figure above the list, Body.vulFocus(true)); class 'panel u-own' so closePanels (ranks.js:100) closes it. Contents: a close button; title; a callout tied to the newest flag; 'Flagged (n)' with 'Fade paused' on the right; a row per flag ('Left knee · Flagged 2 days ago · Flagged' in red). Tapping a row offers Relief routine, Better now and Show me. '+ Flag a sore spot' opens a picker: Joints / Muscles by region, then Left / Right / Both; tapping a muscle on the body also works (Body.pickAt). The bone CTA 'Relief routine · <newest flag>' opens trJointRelief(j) for a joint. For a muscle it opens the routine of a joint whose m includes it, else a mobility session from MX[k].stretch and MX[k].mob. RED_FLAGS (6182) sits under the CTA. Empty state explains what a flag does. 2D fallback: uiRankFig with red parts."
+    },
+    {
+     "file": "web/ui/shell.js (207/237, 544/556; renderRecover)",
+     "change": "With flags, the Body and Recover rows read 'Sore spots · 2 flagged' and open vxOpenMap; without, they stay 'Something aching?'. Recover gets a small card for flags older than 7 days: 'Left knee, flagged 9 days ago. Better?' with Better / Still sore. Better clears the flag."
+    },
+    {
+     "file": "web/ossa.html renderJoint (7448-7457), bonesBuild/drawBones (7412-7442), renderSheet head (5657-5660), openRelief (6194-6197)",
+     "change": "Joint sheet: a 'Flag it' toggle (side comes from BN.J[i][1]). drawBones toggles a red .vul class every frame instead of only at build time. Muscle sheet: a 'Flag as sore' chip. Ache picker result: a 'Flag it on my body' toggle, so both paths write S.vul."
+    },
+    {
+     "file": "web/ui/shell.js uiFocusCardHTML (406-412)",
+     "change": "A flagged muscle reads 'Flagged · fade paused' instead of 'Ready to train'."
+    },
+    {
+     "file": "web/ui/train.js (whyFor wrapper 353-356, trPlanRowHTML 186)",
+     "change": "Plan rows whose primary is flagged get a 'Flagged' tag and the why line 'You flagged your left knee. Go easy, or swap it.'"
+    },
+    {
+     "file": "web/ui/tokens.css (Phase 0)",
+     "change": "Add --alert (#FF3B30, brief's pulse red) if Andrej adopts it, replacing --danger for flags."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "L",
+   "risks": [
+    "Left/right relies on x > 0 being the figure's right (comment at ossa.html:4366). Verify on screen before shipping sides.",
+    "A continuous 20 fps redraw on the Body page while anything is flagged costs battery. The alternative is a static tint there, with the pulse only in the map and 3D view.",
+    "The overlay must leave the canvas visible: the frame loop stops drawing on 'tabbed' pages (4700). Open it from TAB body.",
+    "Two ache concepts now exist: S.flagged ('train it') and S.vul ('rest it, don't fade'). Keep the copy distinct and don't silently merge them.",
+    "Shader FS is shared with Phase 0 (rkC colours) and Phase 3 (focus aura). Serialize edits to avoid conflicts.",
+    "Wording risk: nothing may suggest Ossa detected an injury. Only 'you flagged'."
+   ],
+   "designDeviations": [
+    "'SYSTEM ALERT' → eyebrow '2 flagged'; 'Injury Mapping' → 'Sore spots' (pending decision).",
+    "Callout 'ALERT / High Risk Zone / Lower back compromised.' → 'Flagged · Lower back / You flagged this today. It won't fade while it heals.'",
+    "'FLAGGED AREAS (2) · ALL TIMERS PAUSED' → 'Flagged (2) · Fade paused'.",
+    "'Left Knee / Meniscus stress detected / VULNERABLE' → 'Left knee / Flagged 2 days ago / Flagged'. 'Lower Back / L4/L5 Overload flare' → 'Lower back / Flagged today'.",
+    "'Pause Neglect … Character appearance will freeze.' and 'SYSTEMS HALTED: DAY 2 OF RECOVERY' are only built if the global switch is approved, as 'Pause all fading: nothing on your body fades while this is on. Ranks never drop either way.' and 'Paused for 2 days'.",
+    "'Find Physio Routine' → 'Relief routine · Left knee' (it's our own routine, not a physio's), plus the existing see-a-physio-or-GP line (RED_FLAGS).",
+    "Wireframe anatomical render → our own 3D body with unflagged muscles ghosted and flagged areas pulsing red."
+   ],
+   "showAtEnd": "A 390×844 screenshot of the map with left knee and lower back flagged, next to injury_mapping.png. A ~10 s screen recording of the red pulse (and a still of the reduced-motion version). A short flow recording: Recover › Sore spots › + Flag left knee › it pulses on the Body page › Relief routine opens the knee routine in Train › Better now clears it.",
+   "stateChanges": [
+    "S.vul: Array<{id: muscleKey|jointKey, t: 'm'|'j', side: 'l'|'r'|null, at: 'YYYY-MM-DD', off: null|'YYYY-MM-DD'}>. Active when off is null. Cleared entries are kept until 60 days after off for fade accounting.",
+    "JOINTS[j].m: muscleKey[] (new field, edited in place).",
+    "S.flagged unchanged (onboarding regions, used for plan focus)."
+   ],
+   "dependsOn": [
+    "Neglect fade with pause (vxIdle)",
+    "Phase 0 tokens (--alert, glass panel)",
+    "JOINT_RELIEF / trJointRelief (already in train.js)"
+   ],
+   "newFiles": [
+    "web/ui/injury.js",
+    "web/ui/injury.css"
+   ]
+  },
+  {
+   "name": "muscle_ranks_detail",
+   "today": "openRanks / #ranksP (ranks.js:46-74, ranks.css:15-45) already has every block in the PNG, with the design's own wording. Hex badge with the level (rkBadge), 'Overall', the rank, a bar, '43 RP' and '4 to Strong II'. Front and Back cards (2D uiRankFig). The legend. The same explainer sentence. 'Weakest first / Progress' rows with a lime 'Weak link'. Extras not in the design: a 'Not trained yet · n' list and 'See your ranks in 3D'. No fade or flag state is shown.",
+   "changes": [
+    {
+     "file": "web/ossa.html Body object (next to glowShot, 4905)",
+     "change": "Add rankShot(yaw): rkOn = 1, demo/iso/selection off, draw, toDataURL, restore. It returns our own model in rank colours (including fade and red flags) as a PNG."
+    },
+    {
+     "file": "web/ui/ranks.js openRanks",
+     "change": "Front and Back cards use Body.rankShot(0 / π) when Body.kind is 'gl'; uiRankFig stays as the fallback. Each row gets a state tag: 'Fading · N days' when vxIdle ≥ 10, or a red dot with 'Paused' when flagged. The explainer adds 'The muscles that help get a share.' and 'A muscle you flag doesn't fade while it heals.' The overall line wording follows the decision on '43 RP'."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Restyle to Phase 0 tokens: Inter 900 title, round glass close, 128 px hex with a centred level numeral, 1 px-line cards, a single-row legend, row tags (.rk-tag.fade, .rk-tag.vul)."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "M",
+   "risks": [
+    "rankShot draws on the shared canvas while the panel is open. Two draws plus toDataURL take maybe 100 ms on older iPhones; cache per open.",
+    "'43 RP' for an average can mislead ('4 to Strong II' means raising the average by 4)."
+   ],
+   "designDeviations": [
+    "The anatomical illustration is replaced by snapshots of our own 3D body in rank colours (ground rule 1). Phones without 3D get the 2D figure.",
+    "'Not trained yet' and 'See your ranks in 3D' are kept (real features not in the mock-up).",
+    "Fade and Flagged tags are added to rows."
+   ],
+   "showAtEnd": "Two 390×844 screenshots on the demo profile (top of the screen, then scrolled to the list), each next to muscle_ranks_detail.png.",
+   "stateChanges": [
+    "None (reads S.scores, S.vul, vxIdle)."
+   ],
+   "dependsOn": [
+    "Phase 0 tokens (rank colours incl. shader rkC, Inter, hex)",
+    "Neglect fade with pause",
+    "injury_mapping (flag tags)"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "rank_up_notification",
+   "today": "rkCelebrate (ranks.js:113-151, ranks.css:53-95) already matches the PNG's content. Eyebrow 'Rank up · 1 of 2'. A hex with level and tier. Tier line. '<Muscle> ranked up' or 'is <Tier>'. 'from → to'. A bar with '+3 RP' and '6 to Forged I'. Best set, Est. 1-rep max (Epley) and +RP this session. Next / Continue, and 'See all your ranks'. It adds rotating rings, rays, embers and confetti. At most 3 rank-ups, sorted by highest rank, so a secondary can push out what you actually trained. Best set may come from an exercise where the muscle was only a helper. Overall rank-ups (R.o0 to R.o1) are never shown.",
+   "changes": [
+    {
+     "file": "web/ui/ranks.js rkCelebrate / rkBestSet",
+     "change": "Sort order: new tier first, then muscles that were a primary this session, then by gain. rkBestSet prefers exercises where the muscle was primary and returns the exercise name, so the tile reads 'Best set · Hip thrust'. Holds and bodyweight show reps or '–'. '+n RP' in lime. 'n TO FORGED I' in mono uppercase. Remove the two ring <i> elements. When rankIx(R.o1) > rankIx(R.o0), add a final 'Overall · Strong II' story segment (if approved)."
+    },
+    {
+     "file": "web/ui/ranks.css, web/ui/fx.css",
+     "change": "Inter 900 italic tier line with tight tracking. Diagonal light streaks (.fx-streak, transform/opacity only, off under reduced motion) instead of the circular rings. Bordered stat tiles. Bone Next button."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "S",
+   "risks": [
+    "Kinetic Chain makes rank-ups more frequent. Without the new sort, the story could show front delts instead of the chest you trained."
+   ],
+   "designDeviations": [
+    "Story segments are kept when there's more than one rank-up (the design shows only '1 of 2').",
+    "For a rank-up earned as a helper muscle, the best-set tile names the exercise, so the numbers stay true."
+   ],
+   "showAtEnd": "A 390×844 screenshot of Glutes Strong II → Strong III after a hip thrust session (100×11, 137 kg, +3 RP, 6 to Forged I), next to rank_up_notification.png. Plus a short recording of a two-rank-up story.",
+   "stateChanges": [
+    "None (reads TR.result.ranks, gains, logs, o0, o1)."
+   ],
+   "dependsOn": [
+    "Phase 0 tokens",
+    "Kinetic Chain RP weights (changes which muscles rank up)"
+   ],
+   "newFiles": []
+  }
+ ],
+ "openQuestions": [
+  {
+   "question": "How should secondary muscles be weighted?",
+   "why": "This sets how fast every helper muscle ranks up. Today every helper gets a flat 33%.",
+   "options": [
+    "Hand-set weights per exercise (e.g. bench: front delts 50%, triceps 35%), with Andrej reviewing an 83-row table",
+    "One flat 35% for every helper, as in the brief's example"
+   ],
+   "recommendation": "Hand-set weights in the 20–60% range, delivered as a table for Andrej to mark up before it ships."
+  },
+  {
+   "question": "Should fractions of RP carry over between sessions?",
+   "why": "Today each session's gain is rounded, so a 35% share shows up as +1 whether you did 2 sets or 5. A carry makes the percentages true over time.",
+   "options": [
+    "Carry remainders in S.rpCarry",
+    "Keep rounding per session"
+   ],
+   "recommendation": "Carry remainders. Scores stay whole numbers on screen."
+  },
+  {
+   "question": "Existing users: apply the new weights only from now on, or try to recompute past scores?",
+   "why": "An exact recompute isn't possible from what's stored (20 sessions per exercise, 60 days of load, no primary muscle saved). Ranks never drop, so a recompute could only add points.",
+   "options": [
+    "Forward only",
+    "A one-off top-up estimated from S.lifts"
+   ],
+   "recommendation": "Forward only. Start saving per-session RP and primaries now so it's possible later."
+  },
+  {
+   "question": "The overall '43 RP' is an average of all muscles, not a total. How should it be labelled, and should an overall rank-up be celebrated?",
+   "why": "'4 to Strong II' means raising the average by 4, which can read like 4 more points from one session.",
+   "options": [
+    "Keep '43 RP'",
+    "'43 RP average'",
+    "Show only the rank and the bar"
+   ],
+   "recommendation": "Say '43 RP average' and add an overall rank-up as the last story segment."
+  },
+  {
+   "question": "Should neglect fade show on the Body page, where muscles are coloured by rank?",
+   "why": "Today the shader turns fade off in rank colours, so the Ranks screen's promise ('slowly fades on your body') only shows in the 3D Recovery view.",
+   "options": [
+    "Yes, as a desaturated rank colour",
+    "No, fade only in the Recovery view"
+   ],
+   "recommendation": "Yes, desaturated so the rank colour stays readable."
+  },
+  {
+   "question": "What should the injury screen and the flagged state be called?",
+   "why": "Ground rule 3 rules out 'SYSTEM ALERT' and 'compromised'. 'Vulnerable' and 'Injury' sound clinical, and the app only knows what you told it.",
+   "options": [
+    "'Sore spots' / 'Flagged'",
+    "'Injury map' / 'Vulnerable'",
+    "'Aches' / 'Resting'"
+   ],
+   "recommendation": "'Sore spots' for the screen, 'Flagged' for the state, which matches the app's existing 'aches' wording."
+  },
+  {
+   "question": "Keep the design's global 'Pause Neglect' switch, which stops fading for every muscle?",
+   "why": "The brief pauses only flagged muscles. The design also has an everything-pause, useful for illness or holidays.",
+   "options": [
+    "Per-flag pause only",
+    "Per-flag plus a global 'Pause all fading' switch"
+   ],
+   "recommendation": "Per-flag only for now. The global switch is cheap to add later (S.fadePause)."
+  },
+  {
+   "question": "Should flagging something change your plan?",
+   "why": "Today a flag would only glow red and pause fade. A flagged knee could still get squats.",
+   "options": [
+    "Tag only: 'You flagged your left knee. Go easy, or swap it.'",
+    "Tag plus one set fewer",
+    "Drop exercises whose main muscle is flagged"
+   ],
+   "recommendation": "Tag only, plus no dares or neglect nudges for flagged muscles."
+  },
+  {
+   "question": "Should the red pulse animate on the Body page?",
+   "why": "An animated pulse means redrawing the 3D body about 20 times a second while anything is flagged, which costs battery.",
+   "options": [
+    "Animate everywhere",
+    "Static red on the Body page, pulse on the Sore spots screen and the 3D view"
+   ],
+   "recommendation": "Static on the Body page, pulse elsewhere. Static everywhere under reduced motion."
+  },
+  {
+   "question": "Should flags have a side (left or right)?",
+   "why": "The design says 'Left knee'. The shader treats both sides as one muscle, so left/right needs extra shader work that has to be checked on screen.",
+   "options": [
+    "Left / Right / Both for paired joints and muscles",
+    "Both sides only"
+   ],
+   "recommendation": "Support sides. Fall back to both sides if the check on screen fails."
+  },
+  {
+   "question": "Should the aches people pick in onboarding become flags?",
+   "why": "Onboarding aches mean 'train the weak links behind this'. Flags mean 'go easy, don't fade'. Turning one into the other would pause fade and glow red for good.",
+   "options": [
+    "Keep them separate",
+    "Convert them to flags",
+    "Offer 'Flag it' on the Sore spots screen for aches named in onboarding"
+   ],
+   "recommendation": "Keep them separate and offer the one-tap 'Flag it'."
+  }
+ ],
+ "orderNotes": "1. Phase 0 (Look) comes first for anything visual. It sets the rank colours in tokens.css and in the shader's hard-coded rkC (web/ossa.html:4188), plus Inter, the hexagon and glass panels. Kinetic Chain and fade are mostly logic and can start alongside it.\n2. Inside Phase 1, build in this order:\n   - (a) Kinetic Chain weights and vxCredit. SEC is edited in place in ossa.html, because TR is built at line 5930, before the web/ui includes.\n   - (b) The fade-and-pause engine (vxIdle, the fadeOf conversion, the stateOf override). (b) and (c) share the S.vul model, so design them together.\n   - (c) Injury Mapping: shader uniforms, overlay, entry points.\n   - (d) The Ranks screen restyle, which needs (b), (c) and Body.rankShot.\n   - (e) The rank-up restyle, after (a), because Kinetic Chain changes which muscles rank up.\n3. Shader edits share one fragment-shader string in web/ossa.html with Phase 0 (rkC) and Phase 3 (focus aura). Do them one area at a time.\n4. Later phases depend on this one:\n   - Phase 2 connectivity_map reads the SEC weights.\n   - Phase 2 exercise_discovery needs vxIdle/stateOf for 'neglected', and should skip flagged muscles.\n   - Phase 4 recovery_nudge can use the new S.workouts[i].rp to know which muscles were just trained.\n   - Phase 5 Prestige and Ideal Self read S.scores, toNext and rankFrac, which this phase leaves unchanged.\n5. Nothing here touches App.js, native/ or app.json. It's all web, so no EAS build is needed.\n6. Log the decisions in docs/DECISIONS.md before building: weights, forward-only migration, fade in rank view, flag naming and the global pause."
+}

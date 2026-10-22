@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dare_generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --background: #000000;
+            --card-bg: #121212;
+            --accent-cyan: #00E5FF;
+            --accent-lime: #D4FF00;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-h-screen;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: #000000;
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .glass-panel {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .label-sm-caps {
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col text-white">
+        <!-- #background_001 -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://media.screensdesign.com/gasset/2d4482ee238b4f289b7338b0f60502d9_screen_image_storm_dare_bg_73f09820a6.png" data-media-ref="generated:138028" alt="Dramatic outdoor scene of a dark stormy sky with heavy rain, stylized with a neon blue lightning bolt icon centered, minimalist and high-contrast, for a mobile app background card" class="w-full h-full object-cover opacity-80">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        </div>
+
+        <!-- #header_002 -->
+        <header class="relative flex-shrink-0 px-6 pt-12 pb-4 z-20 flex justify-between items-center">
+            <button class="w-10 h-10 glass-panel rounded-full flex items-center justify-center active:scale-95">
+                <iconify-icon icon="solar:alt-arrow-left-linear" class="text-xl"></iconify-icon>
+            </button>
+            <div class="bg-white/10 px-4 py-1.5 rounded-full flex items-center gap-2 border border-white/10">
+                <iconify-icon icon="solar:map-point-bold" class="text-xs text-[var(--accent-cyan)]"></iconify-icon>
+                <span class="text-[10px] font-bold uppercase">London, UK • 8°C</span>
+            </div>
+            <div class="w-10"></div>
+        </header>
+        <!-- /#header_002 -->
+
+        <!-- #scroll-content_003 -->
+        <div class="relative flex-1 overflow-y-auto px-6 z-10">
+            <div class="mt-40 mb-8">
+                <div class="label-sm-caps text-[var(--accent-cyan)] mb-2">WEATHER-TRIGGERED EVENT</div>
+                <h1 class="text-5xl font-black tracking-tighter leading-none mb-4">STORM<br/>RESISTANCE</h1>
+                <p class="text-sm text-gray-300 max-w-[280px] leading-relaxed">
+                    Environment conditions: <span class="text-white font-bold">Severe</span>. Level up your grit by exposing your character to the elements.
+                </p>
+            </div>
+
+            <!-- #dare-card_004 -->
+            <div class="glass-panel rounded-3xl p-6 mb-20">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="label-sm-caps text-gray-400">OBJECTIVES</div>
+                    <div class="text-xs font-black text-[var(--accent-lime)]">+50 GRIT</div>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-6 h-6 rounded border-2 border-white/20 flex-shrink-0 mt-0.5"></div>
+                        <div>
+                            <div class="text-sm font-bold">5-Min Cold Walk</div>
+                            <p class="text-xs text-gray-500">No heavy outer layers. Let the skin sense the storm.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-6 h-6 rounded border-2 border-white/20 flex-shrink-0 mt-0.5"></div>
+                        <div>
+                            <div class="text-sm font-bold">Stoic Stance</div>
+                            <p class="text-xs text-gray-500">1-min deep breathing in rain.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-6 h-6 rounded border-2 border-[var(--accent-lime)] bg-[var(--accent-lime)]/10 flex-shrink-0 mt-0.5 flex items-center justify-center">
+                             <iconify-icon icon="solar:check-read-bold" class="text-[var(--accent-lime)] text-sm"></iconify-icon>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold line-through text-gray-500">Locate Storm Center</div>
+                            <p class="text-xs text-gray-600">Verification complete.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#dare-card_004 -->
+        </div>
+        <!-- /#scroll-content_003 -->
+
+        <!-- #footer_005 -->
+        <footer class="relative flex-shrink-0 p-6 pb-12 z-20">
+            <button class="w-full h-16 bg-white text-black rounded-3xl font-black text-xl active:scale-95 transition-transform shadow-2xl">
+                Accept Dare
+            </button>
+        </footer>
+        <!-- /#footer_005 -->
+    </div>
+</body>
+</html>

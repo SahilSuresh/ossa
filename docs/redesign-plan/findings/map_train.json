@@ -1,0 +1,508 @@
+{
+ "key": "train",
+ "title": "Phase 2 Train: discovery, kinetic chain map, workout, rep density",
+ "area": "Train (Phase 2): exercise_discovery, connectivity_map (Kinetic Chain), workout_tracker, rep_density_history",
+ "keyFacts": [
+  {
+   "fact": "MUSCLES[k].ex gives each of the 23 muscles exactly 3 [name, dose] pairs. That is 69 entries and 66 distinct names: Dips, Push-up plus and Romanian deadlift each appear twice.",
+   "ref": "web/ossa.html:3569-3662"
+  },
+  {
+   "fact": "MX is a per-muscle guide, not an exercise table. Its fields are act (an animation key), life, bones, team (synergist keys with no weights), nerve, strong, weak, fact, lv (3 gym progression levels as [name,dose], picked by pickEx), cues, mistakes, stretch [[name,dose,how]], mob [name,dose], rest and sign.",
+   "ref": "web/ossa.html:5346-5554; pickEx 9274"
+  },
+  {
+   "fact": "EQX gives each muscle a [dumbbells-at-home, bodyweight] pair (35 distinct names). Home vs gym is only implied by which table a name sits in, plus BW_EX and the kit regex in trSessionFor. No exercise carries an equipment tag.",
+   "ref": "web/ossa.html:9246-9255, 5966, 11851-11860; web/ui/train.js:159-170"
+  },
+  {
+   "fact": "Distinct exercises: 83 training names (MUSCLES.ex ∪ MX.lv ∪ EQX), plus 22 stretches and 21 mobility drills, for 124 distinct (2 overlap). Training moves by RDT_GROUPS: Chest 11, Back 14, Shoulders 16, Arms 13, Legs 20, Glutes 8, Core 10 (mobility: 6/8/5/6/11/4/5). erectors sits in both Back and Core. Eight names are listed under two muscles: Dips, Push-up plus, Landmine press, Prone Y-raise, Band pull-apart, Inverted row, Romanian deadlift and Single-leg RDL. These counts come from evaluating the tables read-only.",
+   "ref": "tables above; RDT_GROUPS web/ossa.html:11364-11372"
+  },
+  {
+   "fact": "SEC maps a name to an array of secondary muscle keys, with no weights. Its 66 keys are exactly the MUSCLES.ex names (13 have none). The 17 MX.lv/EQX names have no SEC entry, so mkItem gives them sec:[]: Incline push-ups, Dumbbell bench press, Weighted dips, Seated dumbbell overhead press, Lean-away lateral raise, Cable pushdown, Glute bridge, Goblet squat, Pike push-up, Prone T-raise, Backpack curl, Overhead dumbbell extension, Bench dips, Dead bug, Dumbbell shrug, Inverted row, Single-leg glute bridge.",
+   "ref": "web/ossa.html:5850-5872; mkItem 5890"
+  },
+  {
+   "fact": "Secondary weighting is flat and inconsistent today:\n- loadOf counts secondaries at 0.4 of the primary.\n- finishWorkout RP load uses n×1.2 for the primary and n×0.4 for each secondary.\n- quickLog has its own rule: round(4×(1−s/125)) plus 0.4.\n- The session chips (trTargets) use 0.5.\n- The body glow uses .45.\nThe Kinetic chain percentages need Phase 1 to make these one table.",
+   "ref": "web/ossa.html:5917-5920, 7748, 5723-5725, 7579, 7657; web/ui/train.js:175"
+  },
+  {
+   "fact": "RP rule: gain = min(100−s, max(load≥1?1:0, round(load×(1−s/125)))). rkGainPer estimates 3 sets at about +3 to +4 for low scores. '+45 RP potential' is about 10× anything the rules produce.",
+   "ref": "web/ossa.html:7750; web/ui/ranks.js:17-18"
+  },
+  {
+   "fact": "No exercise has a classification field. Only rough guesses exist:\n- COMPOUND regex, used only for rep ranges in doseFor.\n- HOLD regex.\n- BW_EX and LOADABLE_BW sets.\n- moveFor(name), which maps a name to an animation move and misfires: Incline dumbbell press→'still', Pike push-up→press_chest, Wall-sit calf raise→squat.\n- PUSH/PULL, which are muscle lists, not exercise tags.\n- it.mob flags on session items.\nThere is no joint-action, angle or zone data. 'Incline' only exists inside names.",
+   "ref": "web/ossa.html:9256, 9281-9285, 9257, 5966-5967, 4469-4499, 6134"
+  },
+  {
+   "fact": "Neglect rules:\n- stateOf says 'fading' at daysSince≥7 (not new).\n- The visual fade (fadeOf) only starts at 10 days and is full at 21.\n- Existing copy: 'Neglected · not trained for N days'.\n- The whisper already offers 'Add to today' for the most-neglected muscle. It does S.extra[today].push(k), and sessionForDay1 then adds MUSCLES[k].ex[0] to today's session.\n- Dares use ≥21 days.",
+   "ref": "web/ossa.html:3901, 3881, 5326, 5158-5160, 5218-5219, 5897-5902; web/ui/ranks.js:241-246"
+  },
+  {
+   "fact": "A logged session in S.workouts is only {d,title,mins,sets,vol}, capped at 90. It stores no exercises or muscles. The demo leaves workouts:[] while S.lifts is seeded.",
+   "ref": "web/ossa.html:7770, 3862-3864"
+  },
+  {
+   "fact": "A lift entry is S.lifts[name] = [{d, sets:[...], rir?}], capped at 20 per name. Each set's shape depends on the kind: load {kg,r}; bodyweight {kg:0 or added,r}; time {s}; carry {kg}; tick {}. rir comes from the effort check. S.log is [{d, m:{muscle:load}, h:{muscle:ts}}], kept for 60 days. No muscles are stored on lift entries.",
+   "ref": "web/ossa.html:7730, 7765-7766, 3882-3886; web/ui/workout.js:115, 175-176"
+  },
+  {
+   "fact": "There is no workout-history list. S.workouts is only read for counts, the streak, week dots and 'Done' lines.",
+   "ref": "web/ossa.html:7534, 7541, 7550, 9644; web/ui/shell.js:581; web/ui/ranks.js:158"
+  },
+  {
+   "fact": "REGIONS maps 9 regions to muscles and has no sub-zones (decided 2026-10-04). The 3D mask is per muscle: startDemo, demoMask and glowShot are all indexed by GLORDER. So 'upper chest' cannot be lit on the model without a shader change, even though pec_major is built from 2 parts.",
+   "ref": "web/ossa.html:3507-3553, 4891-4912, 3692-3693; docs/DECISIONS.md:19-21"
+  },
+  {
+   "fact": "Body.glowShot(map,yaw) renders our own body, lit by a {muscle:intensity} map, to a PNG. Workout complete already uses it. Panels are opaque, so the live 3D body cannot show behind one.",
+   "ref": "web/ossa.html:4905-4912, 7779, 933; web/ui/base.css:130"
+  },
+  {
+   "fact": "The Insights panel (openInsights) shows the primary plus 3 secondary chips, without percentages. trPrimaryOf only searches MUSCLES.ex, so an MX.lv or EQX name opened without an item shows no muscles.",
+   "ref": "web/ui/train.js:118-154, 72, 132-133"
+  },
+  {
+   "fact": "The Train hub list has three rows: Muscle ranks, Build my plan and Train something else. Ways to add an exercise already exist: Edit's 'Add an exercise' by group, the whisper's 'Add to today', and the dare's 'Start now' (a one-exercise session).",
+   "ref": "web/ui/shell.js:603-607; web/ossa.html:11444-11445, 11476, 5218; web/ui/ranks.js:298"
+  },
+  {
+   "fact": "Any panel with class 'panel u-own' is closed on a tab tap by the closePanels wrapper. All panels share z-index 7 and stack in DOM order.",
+   "ref": "web/ui/ranks.js:100; web/ui/shell.js:72; web/ossa.html:933"
+  },
+  {
+   "fact": "floatHTML today:\n- A glass bar: back, timer at fs-4 in mono, Finish (already lime-filled: .u-btn.small.lime) and a progress bar.\n- The exercise strip.\n- #tfDot sits before the chips, and drawTrainLeader uses it.\n- The name at fs-5.\n- A target pill, Watch and Insights.\n- The nudge, then the set table.\n- Steppers that do not show the value.\n- 'Log set n', and an Up next button that reorders.",
+   "ref": "web/ui/workout.js:44-77, 40-43, 52, 83-87; web/ossa.html:7635-7650; web/ui/base.css:28"
+  },
+  {
+   "fact": "Share cards are out by decision. But an image-share pipeline already works with no new build: psShare uses navigator.share, then the native share:image bridge, then the #share overlay as a fallback.",
+   "ref": "docs/DECISIONS.md:31-33, 137; web/ossa.html:7295-7301, 3492-3495; App.js:121"
+  },
+  {
+   "fact": "A new web/ui file needs an include marker in web/ossa.html. The lint fails on raw colours or px font sizes anywhere in web/ui outside tokens.css.",
+   "ref": "web/ossa.html:3345-3353, 11873-11878; scripts/check-tokens.js:11-25"
+  }
+ ],
+ "items": [
+  {
+   "name": "exercise_data (system: tags, kinetic labels, zones)",
+   "today": "There is no exercise table. Names only live in MUSCLES[k].ex (web/ossa.html:3569-3662), MX[k].lv/stretch/mob (5346-5554) and EQX (9246-9255). Secondaries are in SEC (5850-5872), which covers 66 of the 83 training names. Type, movement pattern and equipment are only guessed by regexes: COMPOUND 9256, HOLD 9257, BW_EX 5966, moveFor 4469-4499.",
+   "changes": [
+    {
+     "file": "web/ui/exdata.js",
+     "change": "New file, data plus a few helpers.\n- EXI[name]={k,t,kit,p} for all 124 movements.\n- KC_JOB: one plain 'job in a lift' line per muscle (23), written from MUSCLES[k].what, e.g. triceps 'Straightens the elbow'.\n- KC_JOB_EX: about 10 per-lift overrides, e.g. RDL: forearms 'Holds the bar', erectors 'Keeps your back flat'.\n- ZONES and EXZONE: pec_major upper/middle/lower, triceps long head/other, biceps long head/other, hamstrings hinge/curl.\n- Helpers: exAll(kit); exInfo(name); exPrimary(name) (EXI.k, then MUSCLES.ex, then MX.lv, then EQX); exSearch(q), reusing norm() (web/ossa.html:5769) and drawResults' exact/startsWith/includes scoring over names, primary muscle names and MUSCLES aliases (5770-5787)."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Add `/*@include ui/exdata.js*/` after line 11878 (after train.js). This is the only edit to ossa.html."
+    },
+    {
+     "file": "web/ui/train.js",
+     "change": "trPrimaryOf (line 72) calls exPrimary, so Insights finds a primary for MX.lv/EQX names such as Goblet squat."
+    },
+    {
+     "file": "scripts/check-exdata.js",
+     "change": "New check, run by hand. It reads only and prints any name in MUSCLES.ex, MX.lv, EQX, stretch or mob that lacks an EXI tag or a Phase 1 secondary-weight row."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "M",
+   "risks": [
+    "Some tags are judgement calls: Pallof press, Farmer's carry, Push-up plus, Rack pull, Dead hang (a stretch and a lift). Andrej should skim them.",
+    "8 names are listed under two muscles, so each needs one canonical primary. That can differ from the primary inside a session (RDL is under erectors in the plan, but discovery would file it under hamstrings).",
+    "Exercise names are the join key for S.lifts, S.swaps, S.myDay and S.dayOrder. Tags must match the strings exactly, and no name may be renamed.",
+    "Leave the COMPOUND regex as it is, so doseFor's rep ranges don't shift for existing plans."
+   ],
+   "designDeviations": [
+    "Nothing visible on its own. This is the data the three new screens read. The pattern tag (p) is also what Phase 5 Specialization (30-day volume by movement type) needs."
+   ],
+   "showAtEnd": "One rendered table of all 124 movements: group, type, home/gym, pattern, primary, and secondaries with %. The 6 or so judgement calls are highlighted for a yes/no.",
+   "dependsOn": [
+    "Phase 1 kinetic weights table (it must also cover the 17 names SEC lacks)"
+   ],
+   "newFiles": [
+    "web/ui/exdata.js",
+    "scripts/check-exdata.js"
+   ],
+   "stateChanges": [
+    "No S.* changes. New const tables:\n- EXI[name]={k:'hamstrings', t:'compound'|'isolation'|'mobility', kit:'gym'|'db'|'bw', p:'push'|'pull'|'hinge'|'squat'|'lunge'|'carry'|'core'|'calf'|null}\n- KC_JOB[muscle]=string\n- KC_JOB_EX[name]={muscle:string}\n- ZONES[muscle]={zoneId:label}\n- EXZONE[name]={muscle:zoneId}"
+   ]
+  },
+  {
+   "name": "workout_tracker",
+   "today": "web/ui/workout.js floatHTML (44-77) draws the workout over the 3D body:\n- A glass bar: back, timer at fs-4 in mono, 'Exercise n of N · sets', Finish (.u-btn.small.lime, already lime-filled, base.css:28), and a 3px progress bar.\n- The exercise strip (wkStripHTML 83-87).\n- #tfDot sits before the chips (52); the primary chip has lime text.\n- The name at fs-5, 64% wide (workout.css:20, 25).\n- A target pill, Watch and Insights (62).\n- The nudge with a star that is only lime when it means 'go up'.\n- The set table (wkTableHTML 24-38).\n- Steppers with only − label + and no value (40-43).\n- A bone 'Log set n' button and an Up next button that opens the reorder sheet.\nThe brief says it's 'already close'.",
+   "changes": [
+    {
+     "file": "web/ui/workout.css",
+     "change": "Top bar (.wk-bar 8-17): drop the glass box (no fill, border or blur) and keep a soft top scrim for legibility. The timer (12) moves to --fs-6, heavy display weight. The 'EXERCISE 1 OF 3 · 1/9 SETS' label (13) goes uppercase and letter-spaced. The back button (10) becomes a surface-2 rounded square like the design."
+    },
+    {
+     "file": "web/ui/workout.css",
+     "change": "Progress: move .wk-pbar (16-17) to a full-width hairline under the strip. That is the design's divider, so the progress line is kept."
+    },
+    {
+     "file": "web/ui/train.css",
+     "change": "Strip (.wk-sx 166-175): the current pill gets a lime outline with the name and the '1/3' count in lime. Its number disc is already lime (172). The other pills stay grey. Re-measure the top offsets (164, 176 and workout.css:20) for the taller bar."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "Muscle chips (52): move #tfDot inside the first chip and give every chip the same style (no lime text on the primary). Order secondaries by Phase 1 weight. In .wk-chip (workout.css 21-24): uppercase, letter-spaced, --r-sm."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "Redefine drawTrainLeader (last declaration wins; original at web/ossa.html:7635-7650). It routes the hairline from dot.parentNode, which would become the first chip, so it should start from the .wk-chips box instead."
+    },
+    {
+     "file": "web/ui/workout.css",
+     "change": "Exercise name (.tf-name 25): --fs-6, heaviest weight after Phase 0, tighter leading. Keep the width cap so the lit muscle and the hairline stay visible."
+    },
+    {
+     "file": "web/ui/workout.css",
+     "change": "Target, Watch and Insights (.tf-meta em/.tf-watch 26-29; train.css 177-178): same-height rounded rectangles (--r-sm, min-height --tap) in the body font at 600, with the Insights icon in lime."
+    },
+    {
+     "file": "web/ui/workout.css",
+     "change": "Nudge (.wk-nudge 33-35): --r-card and --fs-3, with a filled lime star. Keep an outline star when the note isn't a progression."
+    },
+    {
+     "file": "web/ui/workout.css",
+     "change": "Set table (36-55): rows become bordered cards. Done rows show the lime tick. The current row gets a lime border at 30% with boxed inputs (already 53-55). Upcoming rows are dimmed."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "Steppers: wkStepsHTML (40-43) shows the current value big with KG or REPS under it, between round grey − and + buttons (workout.css 56-60). Keep it in sync from TR.cur in the existing #train click and change listeners (109-119). wireActive's per-button onclick (web/ossa.html:7712-7714) runs first, so TR.cur is already updated. plates() works the same way."
+    },
+    {
+     "file": "web/ui/workout.css",
+     "change": "Log set button (.tf-cta 61): bone, taller and rounder, with heavy text. Add a token if 56px (--btn-h) isn't enough. The copy 'Log set 2' already matches (workout.js:74)."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "Up next (75; css 62-66): three columns, with 'UP NEXT' on the left, the name in the centre and the dose on the right. It stays a button that opens the reorder sheet (rdtOpenQueue, web/ossa.html:11522)."
+    },
+    {
+     "file": "web/ui/train.css",
+     "change": "Short-phone block (210-227): keep the name at --fs-5 and keep hiding the strip, the extra chips and the nudge."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Phase 0 delivers the new lime, black and Inter. Finish turns #D4FF00 from the token alone."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "M",
+   "risks": [
+    "A bigger name can cover the lit muscle or push the hairline off screen. drawTrainLeader places its turn to the right of the widest text (kx=max(…,tr+16,best.x)).",
+    "Inter (Phase 0) changes text metrics. Long names like 'Single-leg Romanian deadlift' at 44px wrap to 3 lines. Check at 375×667.",
+    "Every set kind must still fit: load, bodyweight with or without added kg, time, carry and tick (wkCols 13-20). So must the rest card, the effort check (wkEffHTML 101-108) and plates per side.",
+    "The #tfDot id must stay, because drawTrainLeader looks it up by id.",
+    "The lint fails if any raw colour or px font size slips into web/ui."
+   ],
+   "designDeviations": [
+    "The magenta wireframe body becomes our 3D body with today's muscle lit and the hairline to it (rule 1).",
+    "Things the design doesn't show stay: the progress line (moved to the divider), plates per side, the effort check, the bone rest card, reordering from Up next, and the short-phone layout.",
+    "The exercise name keeps a width cap instead of running full width at about 56px, so the lit muscle stays visible."
+   ],
+   "showAtEnd": "A 390×844 screenshot of our workout (demo data: Romanian deadlift, set 2 of 3, previous 80 kg × 8) next to workout_tracker.png. Plus a rest-card screenshot, an effort-check screenshot and a 375×667 screenshot. Plus a 10-second recording of logging a set: the stepper value changes, the row flashes and the tick pops.",
+   "dependsOn": [
+    "Phase 0 tokens (palette, Inter)",
+    "Phase 1 kinetic weights (chip order only; optional)"
+   ],
+   "newFiles": [],
+   "stateChanges": [
+    "None"
+   ]
+  },
+  {
+   "name": "connectivity_map (Kinetic Chain)",
+   "today": "SEC lists secondaries with no weights (web/ossa.html:5850-5872). The Insights panel shows primary plus secondary chips with no % (web/ui/train.js:132-133). RP and loads use flat 0.4/0.5/.45 weights (7748, 5917-5920, train.js:175, 7579, 7657). There is no joint-action or 'job' data. Body.glowShot can render our body lit per muscle (4905-4912).",
+   "changes": [
+    {
+     "file": "web/ui/discover.js",
+     "change": "openKinetic(name, primary?) builds panel #kcP, following trInsPanel (train.js:118-124) with class 'panel u-own'. It re-appends to #app on open so it stacks above Insights and Discovery. Contents:\n- Hero <img> from Body.glowShot({[prim]:1, ...phase1Weights}, face>1.57?π:0), cropped with CSS to the primary's height (MCEN[prim]).\n- Fallback heatSVG(I,[prim],h) (web/ossa.html:5878) when Body.kind!=='gl'.\n- A 'Primary' chip in the muscle's rank colour with MUSCLES[k].name, Latin small, and rankOf.\n- One row per secondary: name, KC_JOB (or KC_JOB_EX) label, % weight, a bar in its rank colour, and '+N RP' for the lift's usual sets from the Phase 1 RP helper.\n- Note: 'How this lift splits rank points. Game rules, not a measurement.'\n- Bone CTA 'Related lifts' (openDiscover({group})) and a secondary 'Your history' (openInsights(name, mkItem(name,dose,prim)))."
+    },
+    {
+     "file": "web/ui/discover.css",
+     "change": "Kinetic chain styles from tokens: hero crop, chip, rows, bars."
+    },
+    {
+     "file": "web/ui/train.js",
+     "change": "openInsights (132-133): the chip row becomes a 'What it works ›' button that calls openKinetic. trTargets (175) uses the Phase 1 weights instead of 0.5."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "Tapping the muscle chips (52) calls openKinetic(it.name, it.primary). The panel opens over the workout and the timer keeps running."
+    },
+    {
+     "file": "web/ui/train.js",
+     "change": "Optional: redefine planGlow and trainGlow (web/ossa.html:7576-7588, 7652-7659) so secondaries glow at their weights instead of .45. No edit in ossa.html."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Add include markers for discover.css (after 3353) and discover.js (after exdata.js). Only if the CSS crop looks soft: give Body.glowShot (4905) an optional camera argument {zoom,py}."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "M",
+   "risks": [
+    "Phase 1 has to key weights by exercise with a canonical primary. Otherwise the 8 dual-listed lifts show different % depending on where they were opened.",
+    "Mobility moves have no weights. Show 'Mobility · no rank points' instead of an empty list. Stretches inside a normal session do earn load today (web/ossa.html:7745-7748, BUG-05).",
+    "glowShot draws synchronously and can come back blank if the WebGL context was lost. The 2D heatSVG fallback covers that.",
+    "Panels stack by DOM order (z-index 7). Discovery → Kinetic chain → Insights must each bring their panel to the front."
+   ],
+   "designDeviations": [
+    "The static anatomy render becomes our own 3D body via glowShot: primary at full, secondaries dimmer in proportion.",
+    "'Pectoralis Major' becomes 'Pec major' (MUSCLES name), with the Latin small.",
+    "Technical labels like 'ELBOW EXTENSION' become plain jobs like 'Straightens the elbow' from the new KC_JOB table, because no joint-action data exists.",
+    "The % values are Phase 1 game weights. The EMG note is dropped, since Ossa has no EMG data.",
+    "The cyan badge and bolt icons switch to rank colours and lime from the tokens.",
+    "The share button is dropped for now (open question).",
+    "'VIEW RELATED LIFTS' becomes 'Related lifts', opening Discovery filtered to the primary's group. 'Your history' is added, going to Insights.",
+    "Each row adds real '+N RP for 3 sets' numbers."
+   ],
+   "showAtEnd": "A 390×844 screenshot of Kinetic chain for Barbell bench press next to connectivity_map.png, plus one for Romanian deadlift (back view). Plus a consistency proof: log 3 sets of bench in demo data and show that Workout complete's '+N RP' per muscle equals what the Kinetic chain rows promised.",
+   "dependsOn": [
+    "Phase 1 kinetic weights and a single RP helper",
+    "exercise_data (KC_JOB, EXI.k)",
+    "Phase 0 tokens"
+   ],
+   "newFiles": [
+    "web/ui/discover.js",
+    "web/ui/discover.css"
+   ],
+   "stateChanges": [
+    "None. It reads the Phase 1 weights table, e.g. SECW[name]={muscle:0..1}."
+   ]
+  },
+  {
+   "name": "exercise_discovery",
+   "today": "There is no exercise library screen. The nearest things:\n- RDT_GROUPS (web/ossa.html:11364-11372), used by 'Train something else' and Edit's 'Add an exercise' (11444-11445).\n- altsFor (7521-7524).\n- The muscle search panel (5770-5813), which only finds muscles.\nNeglected muscles only surface through the whisper's 'Add to today' (5158-5160, 5218), the Sunday review (9661) and dares (ranks.js:241-246).",
+   "changes": [
+    {
+     "file": "web/ui/discover.js",
+     "change": "openDiscover(opts) builds panel #discP (class 'panel u-own', so tab taps close it, ranks.js:100). Contents:\n- Header: back, title and a Home/Gym switch (S.trainKit via rdtMode 11851, wired like shell.js:619).\n- Search via exSearch, as you type.\n- Type chips All / Compound / Isolation / Mobility from EXI.t.\n- 'Muscle groups': a grid of RDT_GROUPS cards with real counts (Chest 11, Back 14…) in each group's rank colour (rkAvg, ranks.js:15).\n- 'All movements': rows with a rank square, the name, 'Chest · Compound' and a chevron, each opening openKinetic(name, EXI.k).\nUI state is transient: DISC={q,t,g}."
+    },
+    {
+     "file": "web/ui/discover.js",
+     "change": "'Recommended' is discNeglected():\n- GLORDER muscles where stateOf(k)==='fading' (daysSince≥7, not new; web/ossa.html:3901), excluding any muscle Phase 1 marks vulnerable or paused.\n- Sorted by daysSince descending, then score ascending (the same order as the whisper, 5159). Top 2.\n- The lift is MUSCLES[k].ex[0] at the gym, or rdtEx(k,rdtA()) at home (11853).\n- Each card says 'Neglected · Lower back · 23 days' and '+N RP · {toNext(s).name} in {rkSessionsToTier(s)} sessions' (Phase 1 RP helper; ranks.js:18).\n- If nothing is neglected, show the weak link instead (rkWeak, ranks.js:33)."
+    },
+    {
+     "file": "web/ui/discover.js",
+     "change": "If Andrej approves, the '+' on a recommended card runs the same three lines as whAct 'add' (web/ossa.html:5218): S.extra[today].push(k), then save. It toasts 'Added Romanian deadlift to today' and opens today's session screen (TR.custom=false; TR.day=todayIdx; TR.hub=false; setMode('train')). There is no '+' on the movement detail."
+    },
+    {
+     "file": "web/ui/discover.css",
+     "change": "New, tokens only: search field, chips, recommended card with the danger accent edge, 2-column group grid, list rows."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "rdTrainHub (603-607): a new list row 'Exercises · 83 moves by muscle' that calls openDiscover()."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Include markers only (shared with Kinetic chain)."
+    },
+    {
+     "file": "docs/DECISIONS.md",
+     "change": "Log the decisions: the '+' behaviour, the tags, 'Neglected' meaning stateOf 'fading', and the screen name."
+    },
+    {
+     "file": "docs/UI-SYSTEM.md",
+     "change": "Add the new files to the file map and the Train section."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "L",
+   "risks": [
+    "'+' contradicts DECISIONS 2026-10-04 ('no add to workout from the detail screen') unless Andrej OKs it. It does reuse an existing path (S.extra), not a new logging path.",
+    "The RP estimate must call the same function as finishWorkout. There are three formulas today (web/ossa.html:7750, 5723; ranks.js:17).",
+    "'Neglected' starts at 7 days but the body only fades from 10 (3901 vs 3881). Phase 1 may change this, so read stateOf rather than hard-coding 7.",
+    "In the demo, Pec minor shows 'Neglected · over 60 days' (BUGS-09) and will top Recommended. Fix the seed or accept it.",
+    "S.extra only holds muscle keys and always adds ex[0], so the recommended lift must be ex[0] (or its home swap via rdtKit) to stay truthful.",
+    "Panel stacking order (see Kinetic chain).",
+    "Home mode cuts the counts. The group cards must count with the same kit filter as the list."
+   ],
+   "designDeviations": [
+    "'+45 RP Potential' becomes a real estimate from the RP rule (about +3 to +5 a session), e.g. '+4 RP · Stable I in 2 sessions'.",
+    "'LOW VITALITY' becomes 'Not trained in a week or more'. 'Neglected · Lower back' stays (existing copy, wkInfo 5326) with the day count added.",
+    "'Conventional Deadlift' doesn't exist in our library. The lower back's first lift is Romanian deadlift.",
+    "Counts are ours: Chest 11 (not 12), Legs 20 (not 24), and 7 groups, not 2.",
+    "The cyan and gold Solar icons become rank colours on the group cards and a primary-muscle rank square on each row. No exercise images (no demos, DECISIONS 2026-10-04).",
+    "The funnel button becomes the Home/Gym switch, the only other real filter.",
+    "Title 'DISCOVERY' becomes a plain name (ask). The panel covers the tab bar, as Insights and Ranks do."
+   ],
+   "showAtEnd": "A 390×844 screenshot of the Exercises screen (demo data, Recommended showing real fading muscles) next to exercise_discovery.png, plus a 375×667 screenshot. Plus a 20-second recording: search 'row', tap Compound, tap Chest, open Barbell bench press (Kinetic chain), go back, tap '+' on a recommended lift, and today's session shows it.",
+   "dependsOn": [
+    "exercise_data (EXI tags, exSearch)",
+    "connectivity_map (it is the movement detail)",
+    "Phase 1 RP helper and vulnerable/paused flag",
+    "Phase 0 tokens"
+   ],
+   "newFiles": [
+    "web/ui/discover.js",
+    "web/ui/discover.css"
+   ],
+   "stateChanges": [
+    "No new S fields.",
+    "S.extra {[dkey]: muscleKey[]} is reused unchanged by '+'.",
+    "S.trainKit 'gym'|'home' is reused by the switch.",
+    "The transient DISC={q:string, t:'all'|'compound'|'isolation'|'mobility', g:groupId|null} is not saved."
+   ]
+  },
+  {
+   "name": "rep_density_history",
+   "today": "Nothing like it exists:\n- S.workouts entries are {d,title,mins,sets,vol} with no exercises (web/ossa.html:7770), and the demo has none (3863-3864).\n- S.lifts holds per-exercise sets by date (7765) but no muscles.\n- REGIONS has no sub-zones (3507-3553), and the 3D mask is per muscle (4891-4912).\n- Workout complete already lights the body by session load with glowShot (7779; workout.js:161-166).\n- There is no screen that lists past sessions.",
+   "changes": [
+    {
+     "file": "web/ui/density.js",
+     "change": "Capture: wrap finishWorkout (web/ossa.html:7743), the same way train.js:353-356 wraps functions. After the original runs, if S.workouts grew, set last.ex from TR.session.items, TR.doneSets and TR.logs, set last.t=TR.t0, then save(). If Phase 1 is editing finishWorkout anyway, put this there instead. Ship it as early as possible so real history builds up."
+    },
+    {
+     "file": "web/ui/density.js",
+     "change": "densSessions(): S.workouts newest first. Entries without ex (older ones and the demo) are rebuilt from S.lifts by date, using exPrimary."
+    },
+    {
+     "file": "web/ui/density.js",
+     "change": "densReport(session) works out:\n- Sets per muscle: primary counts 1, secondaries at the Phase 1 weights.\n- A region→muscle split via REGIONS.\n- A zone split via EXZONE.\n- Total reps and kg.\n- 'How it felt' from rir, worded like WK_EFF (workout.js:98).\nThe baseline is the same split over the 28 days before the session."
+    },
+    {
+     "file": "web/ui/density.js",
+     "change": "openDensity(i) builds panel #denP:\n- Eyebrow 'Wed 15 Oct · Push' (trWday, train.js:38).\n- Title 'Where your sets went'.\n- Hero: glowShot of norm01(loadOf(items)) (web/ossa.html:5917-5922).\n- Chip 'Most work: Chest · 12 sets'.\n- One card per worked muscle. With zones: 'Upper chest · 4 of 7 sets · incline work', with a bar. Without zones: the muscle split, e.g. front/side/rear delts.\n- Facts: reps, kg lifted, how it felt.\n- A segmented switch 'This session / Your last 4 weeks'."
+    },
+    {
+     "file": "web/ui/density.css",
+     "change": "New, tokens only."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "drawDoneFloat (139-153): a row 'Where your sets went ›' that calls openDensity(0)."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "rdTrainHub: a 'Past sessions' section (the last 5) after trLiftsHTML (602), each opening openDensity(i). This is the 'workout history' the brief means."
+    },
+    {
+     "file": "web/ui/train.js",
+     "change": "Optional: openInsights' recent-session rows (145) open that day's report."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Include markers for density.css and density.js."
+    }
+   ],
+   "needsNativeBuild": false,
+   "effort": "L",
+   "risks": [
+    "Older sessions and the demo are rebuilt from S.lifts by date. Two sessions on one day merge. S.lifts keeps 20 entries per lift (7766) and S.workouts keeps 90 (7770). A 4-week baseline fits within both.",
+    "Zone wording must say 'emphasis from the exercises you chose', never 'measured'. Incline push-ups (hands raised) lean on the lower chest, the opposite of what the word suggests, so zones come from the explicit table, not a regex on 'incline'.",
+    "Many sessions (core, calves, mobility) have no zone data. Show the muscle split instead. Mobility sessions log no load (7745, 7768).",
+    "The wrapper must run after the original and only touch the entry that call created.",
+    "If WebGL is lost, glowShot fails. Fall back to heatSVG."
+   ],
+   "designDeviations": [
+    "The chest close-up with heat blobs becomes our 3D body lit by this session's load, plus zone bars. The model can't light sub-zones.",
+    "'HIGH DENSITY ZONE' becomes 'Most work: Chest · 12 sets'.",
+    "'Inner Chest Bias 8.2 / Mechanical tension focus' and 'Lower Fiber Priority 9.4 / Eccentric load density' become set shares, e.g. 'Upper chest · 4 of 7 sets · incline work'. 'Inner chest' is dropped because no exercise choice reliably targets it.",
+    "'ROM Efficiency 92%' and 'Neuromuscular Optimal' are dropped. Logged facts replace them: reps, kg, and 'Felt: just right' from the effort check.",
+    "'Compare to baseline' becomes 'Your last 4 weeks': the same split over the 28 days before.",
+    "Share is dropped (open question). 'Density Report' becomes 'Where your sets went', with the date and day as the eyebrow. The orange and red become token colours, because red means injury in the brief."
+   ],
+   "showAtEnd": "A 390×844 screenshot of the report for a seeded push session (Barbell bench press, Incline dumbbell press, Dips) next to rep_density_history.png, in both switch states. A recording of Workout complete → 'Where your sets went'. A list of every zone sentence for Andrej to approve.",
+   "dependsOn": [
+    "exercise_data (EXZONE, exPrimary)",
+    "Phase 1 kinetic weights",
+    "Phase 0 tokens"
+   ],
+   "newFiles": [
+    "web/ui/density.js",
+    "web/ui/density.css"
+   ],
+   "stateChanges": [
+    "S.workouts[i].ex?: Array<{n:string (exercise name, the S.lifts key), k:string (primary muscle as trained), s:number (sets done), r?:number (total reps), kg?:number (kg×reps)}>. New optional field, written from now on.",
+    "S.workouts[i].t?: number (start ms, TR.t0), to tell two sessions on the same day apart.",
+    "Older entries fall back to S.lifts grouped by d."
+   ]
+  }
+ ],
+ "openQuestions": [
+  {
+   "question": "What should '+' on a recommended lift do?",
+   "why": "DECISIONS 2026-10-04 cut 'add to workout' from the detail screen. But the whisper already has 'Add to today' for neglected muscles (web/ossa.html:5218), so this would reuse that path rather than add a new one.",
+   "options": [
+    "Add to today (S.extra, the same as the whisper)",
+    "Open that muscle's session ready to start, like 'Train this muscle'",
+    "No button"
+   ],
+   "recommendation": "Add to today, only on Recommended cards, with no add on the movement detail. Log it in DECISIONS."
+  },
+  {
+   "question": "Should the Kinetic chain and Rep density screens have share buttons?",
+   "why": "Share cards are out by decision (2026-10-04, 2026-10-15). The brief adds a shareable trading card in Phase 5. An image-share path already works without a build (psShare, web/ossa.html:7295-7301).",
+   "options": [
+    "Drop them now",
+    "Share via the existing psShare pipeline",
+    "Decide with the trading card in Phase 5"
+   ],
+   "recommendation": "Drop them now. Decide once, for every screen, with the trading card."
+  },
+  {
+   "question": "Can I add a type tag (Compound / Isolation / Mobility) to all 124 movements for the filter chips?",
+   "why": "No classification data exists. Today's COMPOUND regex misfires on Pallof press, Rack pull and Farmer's carry, and it also sets rep ranges.",
+   "options": [
+    "Explicit tags; I write them and you skim about 6 judgement calls",
+    "Derive from the regex",
+    "Show only All and Mobility"
+   ],
+   "recommendation": "Explicit tags in a new data file. The same table can carry movement patterns for Phase 5 Specialization."
+  },
+  {
+   "question": "Which zones should Rep density talk about?",
+   "why": "There is no zone data. Every claim must be 'emphasis from the exercises you chose', and only well-accepted ones are safe.",
+   "options": [
+    "Chest upper/middle/lower, triceps long head, biceps long head, hamstrings hinge vs curl, plus the muscle split for every region",
+    "Muscle split only (front/side/rear delts and so on)",
+    "A wider zone list"
+   ],
+   "recommendation": "The small zone set plus the muscle split. You approve every sentence."
+  },
+  {
+   "question": "Plain jobs or technical joint actions on Kinetic chain rows?",
+   "why": "House copy is short and plain. The design uses terms like 'Elbow extension' and 'Scapular protraction'.",
+   "options": [
+    "Plain: 'Straightens the elbow'",
+    "Technical: 'Elbow extension'",
+    "Both, with the technical term small"
+   ],
+   "recommendation": "Plain."
+  },
+  {
+   "question": "What should the new screens be called?",
+   "why": "The design says 'Discovery' and 'Density Report'. 'Density' can read like a measurement.",
+   "options": [
+    "'Exercises', 'Kinetic chain', 'Where your sets went'",
+    "Keep the design's names"
+   ],
+   "recommendation": "'Exercises', 'Kinetic chain' (a game name, as in the brief), and 'Where your sets went'."
+  },
+  {
+   "question": "How big should the exercise name be in the workout?",
+   "why": "The design's name is about 56px and full width. Ours has to leave room for the lit muscle and the hairline to it.",
+   "options": [
+    "44px (--fs-6) with a width cap",
+    "Full design size, and drop the hairline"
+   ],
+   "recommendation": "44px with a width cap. 28px on short phones."
+  },
+  {
+   "question": "Should muscles you flag as vulnerable (Phase 1 Injury Mapping) appear in Recommended lifts?",
+   "why": "Their fade pauses, and suggesting you load them would be wrong.",
+   "options": [
+    "Hide them",
+    "Show them with 'Paused · you flagged it'"
+   ],
+   "recommendation": "Hide them."
+  }
+ ],
+ "orderNotes": "Phase 2 comes after Phase 0 (tokens, Inter, glass) and needs three things from Phase 1:\n- a single kinetic weights table (SECW[name]={muscle:0..1}, covering all 83 training names including the 17 SEC lacks, with a canonical primary for the 8 names listed under two muscles);\n- one RP helper that finishWorkout, quickLog and the screens all call;\n- a vulnerable/paused flag on muscles.\n\nOrder inside Phase 2:\n- 2a: Workout tracker restyle. Only needs Phase 0, so it can start first.\n- 2b: exercise_data tags. Can be written alongside Phase 1.\n- 2c: Kinetic chain. Needs Phase 1 weights.\n- 2d: Exercise discovery. Uses the tags and opens Kinetic chain as its detail.\n- 2e: Rep density.\n\nShip the S.workouts[i].ex capture early, ideally inside Phase 1's finishWorkout edit, so real history builds up before 2e. It also helps Phase 4's recovery nudge ('muscles you just trained').\n\nCoordinate with the Body/ranks owner on the brief's 'kinetic chain on the muscle screen': the muscle sheet's exercise rows (web/ossa.html:5694) should open openKinetic.\n\nEverything here is web-only (web/ui plus include markers in web/ossa.html). None of it needs a new EAS build.\n\nShow each step in the preview at 390×844 and 375×667 before moving on. Run check-tokens.js before each show."
+}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clan_vessel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --background: #000000;
+            --card-bg: #121212;
+            --accent-lime: #D4FF00;
+            --accent-cyan: #00E5FF;
+            --accent-gold: #FFD700;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-h-screen;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: #000000;
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .label-sm-caps {
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col text-white">
+        <!-- #header_001 -->
+        <header class="flex-shrink-0 px-6 pt-12 pb-4 z-20 flex justify-between items-center">
+            <div>
+                <div class="label-sm-caps text-gray-500">COMMUNAL ENTITY</div>
+                <h1 class="text-2xl font-black tracking-tight">The Clan Vessel</h1>
+            </div>
+            <div class="flex items-center gap-2 glass-panel px-3 py-1.5 rounded-full">
+                <iconify-icon icon="solar:users-group-rounded-bold" class="text-sm text-[var(--accent-lime)]"></iconify-icon>
+                <span class="text-[10px] font-bold uppercase">6 Members</span>
+            </div>
+        </header>
+        <!-- /#header_001 -->
+
+        <!-- #scroll-content_002 -->
+        <div class="flex-1 overflow-y-auto px-6">
+            <!-- #communal-visual_003 -->
+            <div class="relative py-4 flex flex-col items-center mb-8">
+                <img src="https://media.screensdesign.com/gasset/013c211e14a24c1da4cc6f36fdcdbfea_screen_image_clan_vessel_visual_5d51b71fdc.png" data-media-ref="generated:138029" alt="A massive, glowing 3D anatomical character made of multi-colored energy fragments (cyan, lime, gold, white), representing a shared 'Clan Vessel', floating in a dark digital void, epic scale, high-tech interface aesthetic" class="w-full aspect-square object-contain animate-pulse" data-image-aspect="1:1" data-image-background="transparent">
+                
+                <!-- #vessel-progress_004 -->
+                <div class="w-full mt-4">
+                    <div class="flex justify-between items-end mb-2">
+                        <div>
+                             <div class="text-xs font-black text-gray-400">VESSEL LEVEL</div>
+                             <div class="text-4xl font-black">08</div>
+                        </div>
+                        <div class="text-right text-[10px] font-bold text-gray-500 pb-1">
+                            82,400 / 100,000 VOL
+                        </div>
+                    </div>
+                    <div class="w-full h-3 bg-white/10 rounded-full overflow-hidden p-0.5 border border-white/5">
+                        <div class="h-full bg-gradient-to-r from-[var(--accent-cyan)] via-[var(--accent-lime)] to-[var(--accent-gold)] rounded-full w-[82%]"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- /#communal-visual_003 -->
+
+            <!-- #contributions-list_005 -->
+            <div class="space-y-4 pb-12">
+                <div class="label-sm-caps text-gray-500">CLAN CONTRIBUTIONS • THIS WEEK</div>
+                
+                <!-- #contrib-row-1_006 -->
+                <div class="glass-panel rounded-2xl p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-[var(--accent-gold)]/20 border border-[var(--accent-gold)]/40 flex items-center justify-center font-black text-[var(--accent-gold)] text-xs">
+                            JA
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold">James Aris</div>
+                            <div class="text-[10px] text-gray-500">+12,400 VOL • LEG PRESS</div>
+                        </div>
+                    </div>
+                    <div class="text-[10px] font-black text-[var(--accent-gold)]">MVP</div>
+                </div>
+                <!-- /#contrib-row-1_006 -->
+
+                <!-- #contrib-row-2_007 -->
+                <div class="glass-panel rounded-2xl p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center font-black text-white text-xs">
+                            SR
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold">Sarah Reed</div>
+                            <div class="text-[10px] text-gray-500">+8,200 VOL • BOX BREATHING</div>
+                        </div>
+                    </div>
+                    <iconify-icon icon="solar:bolt-bold" class="text-gray-600"></iconify-icon>
+                </div>
+                <!-- /#contrib-row-2_007 -->
+
+                <!-- #contrib-row-3_008 -->
+                <div class="glass-panel rounded-2xl p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center font-black text-white text-xs">
+                            MK
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold">Marcus K.</div>
+                            <div class="text-[10px] text-gray-500">+5,100 VOL • STOIC FOCUS</div>
+                        </div>
+                    </div>
+                    <iconify-icon icon="solar:bolt-bold" class="text-gray-600"></iconify-icon>
+                </div>
+                <!-- /#contrib-row-3_008 -->
+            </div>
+            <!-- /#contributions-list_005 -->
+        </div>
+        <!-- /#scroll-content_002 -->
+
+        <!-- #footer_009 -->
+        <footer class="flex-shrink-0 bg-black/80 backdrop-blur-xl border-t border-white/5 pb-8 pt-4 px-6">
+            <div class="flex justify-between items-center">
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:accessibility-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Body</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:dumbbell-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Train</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:wind-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Breathe</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 relative">
+                    <div class="absolute -top-1 right-0 w-1.5 h-1.5 bg-[var(--accent-lime)] rounded-full"></div>
+                    <iconify-icon icon="solar:users-group-rounded-bold" class="text-2xl text-[var(--accent-lime)]"></iconify-icon>
+                    <span class="text-[10px] font-bold text-[var(--accent-lime)]">Clan</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:book-bookmark-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Learn</span>
+                </div>
+            </div>
+        </footer>
+        <!-- /#footer_009 -->
+    </div>
+</body>
+</html>

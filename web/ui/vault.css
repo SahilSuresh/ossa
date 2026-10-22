@@ -1,0 +1,102 @@
+/* =========================================================
+   VAULT (Ossa 2.0 Phase 5): Your look (view "look" in #evV) and the paywall's row of three new materials.
+   See vault.js. Tokens only (web/ui/tokens.css). "Vault" is only the eyebrow over the swatches.
+   ========================================================= */
+
+/* a material as a swatch: a lit sphere in its own colours (the fallback of the paywall circles and the preview chip
+   when there's no still) */
+.vt-mi,.vt-pw-c,.vt-pv-c{display:block;border-radius:50%;background:radial-gradient(circle at 34% 30%,color-mix(in srgb,var(--text-1) 70%,transparent) 0 6%,transparent 26%),var(--mat-carbon,var(--surface-3))}
+.vt-mi[data-m="obsidian"],.vt-pw-c[data-vt="obsidian"],.vt-pv-c[data-vt="obsidian"]{background:radial-gradient(circle at 34% 30%,color-mix(in srgb,var(--text-1) 75%,transparent) 0 5%,transparent 22%),
+  radial-gradient(circle at 50% 50%,var(--mat-obsidian,var(--bg)) 58%,color-mix(in srgb,var(--mat-obsidian-rim,var(--glow)) 70%,var(--mat-obsidian,var(--bg))) 100%)}
+.vt-mi[data-m="chrome"],.vt-pw-c[data-vt="chrome"],.vt-pv-c[data-vt="chrome"]{background:radial-gradient(circle at 34% 30%,var(--text-1) 0 8%,transparent 30%),
+  linear-gradient(180deg,var(--mat-chrome,var(--text-2)) 0 46%,var(--surface-3) 50%,color-mix(in srgb,var(--mat-chrome,var(--text-2)) 60%,var(--bg)) 100%)}
+.vt-mi[data-m="carbon"],.vt-pw-c[data-vt="carbon"],.vt-pv-c[data-vt="carbon"]{background:radial-gradient(circle at 34% 30%,color-mix(in srgb,var(--text-1) 45%,transparent) 0 6%,transparent 28%),
+  repeating-linear-gradient(45deg,var(--mat-carbon,var(--surface-3)) 0 3px,var(--mat-carbon-hi,var(--line-3)) 3px 4px,var(--mat-carbon,var(--surface-3)) 4px 7px),
+  var(--mat-carbon,var(--surface-3))}
+
+/* ---------- the paywall: eyebrow, three small stills of the material alone, one line (in-app only) ---------- */
+.vt-pw{display:grid;gap:var(--sp-2)}
+.vt-pw-eye{color:var(--glow)}
+.vt-pw-row{display:flex;gap:var(--sp-5)}
+.vt-pw-m{margin:0;display:grid;justify-items:center;gap:var(--sp-1)}
+.vt-pw-c,.vt-pv-c{position:relative;width:56px;height:56px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line-2)}
+.vt-pw-c img,.vt-pv-c img{display:block;width:100%;height:100%;object-fit:cover}
+.vt-pw-m.on .vt-pw-c{box-shadow:0 0 0 2px var(--glow)}
+.vt-pw-m figcaption{font-size:var(--fs-1);font-weight:600;color:var(--text-2)}
+.vt-pw-m.on figcaption{color:var(--text-1)}
+.vt-pw-p{margin:0;font-size:var(--fs-1);color:var(--text-2)}
+
+/* ---------- Your look ---------- */
+.vt-look{flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-3)}
+/* the still takes the height the rows leave (at least the brief's clamp), so a tall phone shows a bigger body */
+.vt-still{position:relative;flex:1 1 0;display:grid;place-items:center;min-height:clamp(220px,34dvh,320px);overflow:hidden;
+  border-radius:var(--r-card-lg);background:var(--surface-1);border:1px solid var(--line)}
+.vt-img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain}
+.vt-fig{position:absolute;inset:var(--sp-3) 0}
+.vt-fig .rk-fig{position:absolute;inset:0;margin:auto;width:auto;height:100%;max-width:100%}
+/* Your look's preview: the material alone in a chip over the still's top-left corner (the body is centred) */
+.vt-pv-c{position:absolute;z-index:1;top:var(--sp-3);left:var(--sp-3);box-shadow:0 0 0 1px var(--line-2)}
+.vt-lock{position:absolute;z-index:1;left:50%;bottom:var(--sp-3);transform:translateX(-50%);display:inline-flex;align-items:center;gap:var(--sp-2);max-width:calc(100% - var(--sp-5));
+  padding:var(--sp-1) var(--sp-3);border-radius:var(--r-pill);background:var(--glass-strong);border:1px solid var(--glass-line);
+  font-size:var(--fs-1);font-weight:800;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt-lock svg{flex:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* the four earned finishes, 2×2 */
+.vt-fins{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2)}
+.vt-fin{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:6px;min-height:72px;padding:var(--sp-2);text-align:left;
+  border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1);transition:border-color var(--dur-1),transform var(--dur-1) var(--ease)}
+.vt-fin:active{transform:scale(.98)}
+.vt-fin.on{border-color:var(--glow);box-shadow:inset 0 0 0 1px var(--glow)}
+.vt-fin.lk{background:var(--surface-1)}
+.vt-fin.lk .vt-sw{opacity:.35}
+.vt-fin.lk b{color:var(--text-2)}
+.vt-sw{display:block;width:28px;height:28px;border-radius:50%;background:var(--c,var(--text-2));box-shadow:0 0 10px color-mix(in srgb,var(--c,var(--text-2)) 45%,transparent)}
+.vt-fin span{min-width:0}
+.vt-fin b{display:block;font-size:var(--fs-2);font-weight:800;letter-spacing:-.01em;line-height:1.25;overflow:hidden;text-overflow:ellipsis}
+.vt-fin small{display:block;margin-top:2px;font-size:var(--fs-1);line-height:1.3;color:var(--text-2)}
+.vt-fin.on small{color:var(--glow)}
+
+/* the three new materials (eyebrow "Vault") */
+.vt-vault{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);min-height:56px;padding:var(--sp-1) var(--sp-2) var(--sp-1) var(--sp-4);
+  border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line-2)}
+.vt-vl{display:grid;justify-items:start;gap:2px;min-width:0}
+.vt-vl .u-eyebrow{color:var(--glow)}
+.vt-vl small{font-size:var(--fs-1);color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+/* beats .u-btn.small (40 px) whatever the order: a 44 px tap target */
+.vt-vl .u-btn.vt-get{min-height:var(--tap);padding:0 var(--sp-3)}
+/* a sub-line that may take two lines on a narrow phone, breaking only before its last part */
+.vt-vl small.vt-wrap{white-space:normal;overflow:visible;line-height:1.3}
+.vt-nw{white-space:nowrap}
+.vt-sws{display:flex;gap:var(--sp-1)}
+.vt-m{display:grid;place-items:center;width:var(--tap);height:var(--tap);border-radius:50%;border:2px solid transparent;transition:border-color var(--dur-1),transform var(--dur-1) var(--ease)}
+.vt-m:active{transform:scale(.94)}
+.vt-m .vt-mi{width:34px;height:34px;box-shadow:inset 0 0 0 1px var(--line-2)}
+.vt-m.on{border-color:var(--glow)}
+.vt-vault.off{opacity:.45}
+.vt-vault.off .vt-vl .u-eyebrow{color:var(--text-2)}
+
+/* prestige materials on or off */
+.vt-pz{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);width:100%;min-height:var(--tap);padding:var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-4);
+  text-align:left;border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1)}
+/* the sub-line goes under the title when the two don't fit on one line ("Earn one with a prestige lap" at 375 px) */
+.vt-pz>span:first-child{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--sp-2);row-gap:0;min-width:0}
+.vt-pz b{flex:none;font-size:var(--fs-2);font-weight:800}
+.vt-pz small{font-size:var(--fs-1);color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vt-pz .u-chev{width:16px;height:16px;fill:none;stroke:var(--text-3);stroke-width:1.8}
+.vt-tg{position:relative;flex:none;width:44px;height:26px;border-radius:var(--r-pill);background:var(--surface-3);border:1px solid var(--line-2);transition:background var(--dur-2)}
+.vt-tg i{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--text-2);transition:transform var(--dur-2)}
+.vt-tg.on{background:var(--glow)}
+.vt-tg.on i{transform:translateX(18px);background:var(--on-accent)}
+
+@media (max-height:700px){
+  .vt-pw{grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--sp-4)}
+  .vt-pw-row{gap:var(--sp-3)}
+  .vt-pw-c,.vt-pv-c{width:44px;height:44px}
+  .vt-pw-m figcaption,.vt-pw-p{display:none}
+  .vt-still{min-height:170px}
+  .vt-fin{min-height:60px;padding:var(--sp-1) var(--sp-2)}
+  .vt-look{gap:var(--sp-2)}
+}
+@media (prefers-reduced-motion:reduce){
+  .vt-fin,.vt-m,.vt-tg,.vt-tg i{transition:none}
+}

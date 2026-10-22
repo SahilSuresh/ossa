@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --primary: #D4FF00;
+            --cyan: #00E5FF;
+            --background: #000000;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: white;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: var(--background);
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .label-sm-caps {
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col">
+        <!-- #header_001 -->
+        <header class="flex-shrink-0 px-6 pt-12 pb-4 z-20 flex items-center justify-between">
+            <button class="w-10 h-10 glass-panel rounded-full flex items-center justify-center active:scale-95 transition-transform">
+                <iconify-icon icon="solar:alt-arrow-left-linear" class="text-xl"></iconify-icon>
+            </button>
+            <h1 class="text-lg font-black tracking-tight uppercase">Kinetic Chain</h1>
+            <button class="w-10 h-10 glass-panel rounded-full flex items-center justify-center active:scale-95 transition-transform">
+                <iconify-icon icon="solar:share-bold" class="text-xl"></iconify-icon>
+            </button>
+        </header>
+
+        <!-- #scroll-content_002 -->
+        <div class="flex-1 overflow-y-auto px-6 pb-12 no-scrollbar">
+            <!-- #main-visual_003 -->
+            <div class="relative w-full aspect-square flex items-center justify-center mb-8 bg-black/40 rounded-[40px] border border-white/5 overflow-hidden">
+                <img src="https://media.screensdesign.com/gasset/98d07f953b3740938f8f7ee86443db39_screen_image_connectivity_map_visual_2fc521c513.png" data-media-ref="generated:138043" alt="A 3D anatomical model of a chest and shoulders with glowing energy lines connecting to secondary muscles in the arms and back, visualizing kinetic chains, high-tech medical UI style, dark background" class="w-full h-full object-contain p-4">
+                
+                <!-- #overlay-tags_004 -->
+                <div class="absolute top-6 left-6 flex items-center gap-2">
+                    <div class="bg-[var(--cyan)] text-black px-3 py-1 rounded-lg font-black text-[10px] uppercase tracking-tighter">Primary</div>
+                    <span class="text-sm font-bold">Pectoralis Major</span>
+                </div>
+            </div>
+
+            <!-- #chain-details_005 -->
+            <div class="mb-8">
+                <h2 class="label-sm-caps text-gray-500 mb-4 px-2">Secondary Recruitment</h2>
+                <div class="flex flex-col gap-px bg-white/5 rounded-2xl overflow-hidden border border-white/5">
+                    <!-- #muscle-item-1_006 -->
+                    <div class="bg-black p-5 flex items-center justify-between border-b border-white/5">
+                        <div class="flex items-center gap-4">
+                            <div class="w-1.5 h-6 bg-[var(--cyan)]/30 rounded-full"></div>
+                            <div>
+                                <div class="text-sm font-bold">Triceps Brachii</div>
+                                <div class="text-[10px] font-bold text-gray-500 uppercase">Elbow Extension</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="text-lg font-black text-[var(--cyan)]">35%</span>
+                            <iconify-icon icon="solar:bolt-bold" class="text-[var(--cyan)]"></iconify-icon>
+                        </div>
+                    </div>
+                    <!-- #muscle-item-2_007 -->
+                    <div class="bg-black p-5 flex items-center justify-between border-b border-white/5">
+                        <div class="flex items-center gap-4">
+                            <div class="w-1.5 h-6 bg-[var(--cyan)]/20 rounded-full"></div>
+                            <div>
+                                <div class="text-sm font-bold">Anterior Deltoid</div>
+                                <div class="text-[10px] font-bold text-gray-500 uppercase">Shoulder Flexion</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="text-lg font-black text-gray-300">22%</span>
+                            <iconify-icon icon="solar:bolt-bold" class="text-gray-600"></iconify-icon>
+                        </div>
+                    </div>
+                    <!-- #muscle-item-3_008 -->
+                    <div class="bg-black p-5 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-1.5 h-6 bg-[var(--cyan)]/10 rounded-full"></div>
+                            <div>
+                                <div class="text-sm font-bold">Serratus Anterior</div>
+                                <div class="text-[10px] font-bold text-gray-500 uppercase">Scapular Protraction</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="text-lg font-black text-gray-500">12%</span>
+                            <iconify-icon icon="solar:bolt-bold" class="text-gray-800"></iconify-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- #technical-note_009 -->
+            <div class="glass-panel rounded-2xl p-4 flex gap-3">
+                <iconify-icon icon="solar:info-circle-bold" class="text-[var(--cyan)] text-xl mt-0.5"></iconify-icon>
+                <p class="text-xs text-gray-400 leading-relaxed font-medium">
+                    Data based on electromyography (EMG) profiles for Compound Horizontal Press movements. Individual variation may occur based on grip width and elbow flare.
+                </p>
+            </div>
+        </div>
+
+        <!-- #footer_010 -->
+        <footer class="flex-shrink-0 p-6 pb-12">
+            <button class="w-full h-16 bg-white text-black rounded-3xl font-black text-xl active:scale-95 transition-transform">
+                VIEW RELATED LIFTS
+            </button>
+        </footer>
+    </div>
+</body>
+</html>

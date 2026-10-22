@@ -1,0 +1,69 @@
+/* HEX CONSTELLATION tab bar (hexnav.js). The bar keeps --navH; the hexes and the fade rise above it. */
+.u-nav.hx{overflow:visible;background:none;border-top:0;-webkit-backdrop-filter:none;backdrop-filter:none}
+.u-nav.hx::before{content:"";position:absolute;left:0;right:0;top:-22px;bottom:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 0,var(--bg) 60%)}
+.hx-sky{position:absolute;left:0;top:-40px;z-index:-1;pointer-events:none;overflow:visible}
+.hx-dust circle{fill:var(--text-3)}
+.hx-lines line{stroke:var(--line-2);stroke-width:1;stroke-dasharray:2 5}
+.hx-lines line.near{stroke:var(--glow-soft);stroke-opacity:.5;stroke-width:1.2}
+.hx-star{stroke:var(--glow);stroke-width:2.4;stroke-linecap:round;opacity:0}
+.hx-head{fill:var(--text-1);opacity:0}
+.u-nav.hx button{justify-content:flex-start;padding-top:6px;gap:0;transform:translateY(var(--hy,0));transition:transform var(--dur-2) var(--ease)}
+.u-nav.hx .u-nav-ic{width:48px;height:54px;transition:transform var(--dur-2) var(--ease)}
+.u-nav.hx .u-nav-ic>svg:not(.hx-hex){position:relative;z-index:1;width:22px;height:22px;color:var(--text-2)}
+.hx-hex{position:absolute;inset:0;width:48px!important;height:54px!important;overflow:visible}
+.hx-b{fill:var(--surface-2);stroke:var(--line-2);stroke-width:1.5}
+.hx-r{fill:none;stroke:var(--glow);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:0 100;transition:stroke-dasharray .7s var(--ease)}
+.hx-f{fill:var(--glow);opacity:0;transition:opacity var(--dur-2)}
+.u-nav.hx .u-nav-l{opacity:0;margin-top:-2px;font-size:var(--fs-1);font-weight:800;color:var(--text-1);transform:translateY(4px);transition:opacity var(--dur-2),transform var(--dur-2)}
+.hx-st{opacity:0;font-size:var(--fs-1);font-weight:700;letter-spacing:.08em;color:var(--glow);font-variant-numeric:tabular-nums;line-height:1.1;transition:opacity var(--dur-2)}
+.u-nav.hx button.on .u-nav-ic{transform:translateY(-8px) scale(1.1)}
+.u-nav.hx button.on .hx-b{stroke:var(--glow)}
+.u-nav.hx button.on .hx-f{opacity:1}
+.u-nav.hx button.on .u-nav-ic>svg:not(.hx-hex){color:var(--on-accent)}
+.u-nav.hx button.on .u-nav-ic>svg:not(.hx-hex) .k{stroke:var(--glow)}
+.u-nav.hx button.on .u-nav-ic>svg:not(.hx-hex) circle.k{fill:var(--glow)}
+.u-nav.hx button.on .hx-hex{filter:drop-shadow(0 0 10px var(--glow-a))}
+.u-nav.hx button.on .u-nav-l{opacity:1;transform:none;margin-top:-10px}
+.u-nav.hx button.on .hx-st{opacity:1}
+.u-nav.hx button[data-u="breathe"] .hx-r{stroke:var(--cyan)}
+.u-nav.hx button[data-u="recover"] .hx-r{stroke:var(--recover)}
+.u-nav.hx .u-nav-ic::after{top:2px!important;right:2px!important;z-index:2}
+.u-nav.hx button:active .u-nav-ic{transform:scale(.92)}
+@media (prefers-reduced-motion:reduce){ .u-nav.hx button,.u-nav.hx .u-nav-ic,.hx-r{transition:none} }
+/* room for the risen hexes: the bar is 12px taller than the plain one, so nothing sits under them */
+.app.hxon{--navH:76px}
+.u-nav.hx button.on .u-nav-l{margin-top:-8px}
+/* ---------- the tucked bar (navmin): a slim strip, the full bar slides up on the arrow ---------- */
+.app.hxon.navmin{--navH:40px}
+.app.navmin .u-nav.hx{height:calc(76px + var(--sab));transform:translateY(calc(100% + 24px));transition:transform var(--dur-3) var(--ease)}
+.app.navmin.navopen .u-nav.hx{transform:none}
+.hx-mini{position:absolute;left:0;right:0;bottom:0;z-index:5;display:flex;justify-content:center;padding:0 0 var(--sab);pointer-events:none;background:linear-gradient(180deg,transparent,var(--bg) 60%)}
+.app:not(.navmin) .hx-mini,.app.navopen .hx-mini,.app.onboarding .hx-mini,.app.tactive .hx-mini,.app.tdone .hx-mini{display:none}
+.hx-mini-b{pointer-events:auto;display:flex;align-items:center;gap:var(--sp-2);height:40px;padding:0 var(--sp-3);background:none;border:0;color:var(--text-1)}
+.hx-pips{display:flex;gap:5px}
+.hx-pips i{width:7px;height:8px;clip-path:var(--hex);background:var(--line-3);transition:background var(--dur-2),transform var(--dur-2)}
+.hx-pips i.on{background:var(--glow);transform:scale(1.35)}
+.hx-mini-b b{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.hx-up{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--surface-3);border:1px solid var(--line-2)}
+.hx-up svg{width:12px;height:12px;fill:none;stroke:var(--text-1);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* ---------- the pill (navpill): five icons, one tap each; the tab you're on shows its name in lime ---------- */
+.app.hxon.navpill{--navH:56px}
+.app.navpill .u-nav.hx{left:0;right:0;bottom:calc(var(--sab) + 6px);margin:0 auto;width:max-content;max-width:calc(100% - 2 * var(--gutter));height:48px;padding:2px;display:flex;align-items:center;gap:0;overflow:visible;border-radius:var(--r-pill);background:var(--glass-strong);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur));box-shadow:0 8px 24px var(--bg)}
+.app.navpill .u-nav.hx::before,.app.navpill .hx-sky,.app.navpill .hx-hex,.app.navpill .hx-st,.app.navpill .hx-mini{display:none}
+.app.navpill .u-nav.hx button{position:relative;z-index:1;flex:none;flex-direction:row;align-items:center;justify-content:center;gap:6px;height:44px;min-height:44px;min-width:48px;padding:0 12px;transform:none;border-radius:var(--r-pill);color:var(--text-2)}
+.app.navpill .u-nav.hx .u-nav-ic,.app.navpill .u-nav.hx button.on .u-nav-ic{width:24px;height:24px;transform:none}
+.app.navpill .u-nav.hx button:active .u-nav-ic{transform:scale(.9)}
+.app.navpill .u-nav.hx .u-nav-ic>svg:not(.hx-hex){width:22px;height:22px;color:inherit}
+.app.navpill .u-nav.hx .u-nav-ic>svg:not(.hx-hex) .k{stroke:var(--bg)}
+.app.navpill .u-nav.hx .u-nav-ic>svg:not(.hx-hex) circle.k{fill:var(--bg)}
+.app.navpill .u-nav.hx .u-nav-l,.app.navpill .u-nav.hx button.on .u-nav-l{display:block;max-width:0;margin:0;opacity:0;overflow:hidden;white-space:nowrap;transform:none;font-size:var(--fs-2);font-weight:800;color:var(--glow);transition:max-width .3s var(--ease),opacity .2s}
+.app.navpill .u-nav.hx button.on{color:var(--glow)}
+.app.navpill .u-nav.hx button.on .u-nav-l{max-width:96px;opacity:1}
+.app.navpill .u-nav.hx button.on .u-nav-ic>svg:not(.hx-hex){color:var(--glow)}
+.app.navpill .u-nav.hx .u-nav-ic::after{top:-2px!important;right:-4px!important}
+.app.navpill .u-nav.hx button.on .u-nav-ic::after{display:none}
+.np-glide{position:absolute;left:0;top:2px;z-index:0;width:48px;height:44px;border-radius:var(--r-pill);background:var(--glow-a);box-shadow:inset 0 0 0 1px var(--glow-a);opacity:0;pointer-events:none;transition:transform .38s var(--ease),width .38s var(--ease),opacity .2s}
+.np-glide.np-now{transition:none}
+.app:not(.navpill) .np-glide{display:none}
+@media (prefers-reduced-motion:reduce){ .np-glide,.app.navpill .u-nav.hx .u-nav-l{transition:none} }

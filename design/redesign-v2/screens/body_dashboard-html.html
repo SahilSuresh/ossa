@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        :root {
+            --background: #000000;
+            --primary: #D4FF00;
+            --unbreakable: #00E5FF;
+            --forged: #FFD700;
+            --strong: #FFFFFF;
+            --stable: #C5A059;
+            --fragile: #4A4A4A;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: #000000;
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .label-sm-caps {
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col text-white">
+        <!-- #header_001 -->
+        <header class="flex-shrink-0 px-6 pt-12 pb-4 z-20">
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="label-sm-caps text-gray-500 mb-1">THU 15 OCT</div>
+                    <h1 class="text-4xl font-bold tracking-tight">Your body</h1>
+                </div>
+                <div class="flex gap-3">
+                    <!-- #streak-chip_002 -->
+                    <div class="flex items-center gap-1 bg-[#1a1a1a] px-3 py-1.5 rounded-full">
+                        <iconify-icon icon="solar:fire-bold" class="text-[var(--primary)]"></iconify-icon>
+                        <span class="font-bold text-sm">1</span>
+                    </div>
+                    <!-- /#streak-chip_002 -->
+                    <!-- #profile-btn_003 -->
+                    <div class="w-10 h-10 bg-[#1a1a1a] rounded-full flex items-center justify-center border border-white/10">
+                        <iconify-icon icon="solar:user-circle-bold" class="text-2xl"></iconify-icon>
+                    </div>
+                    <!-- /#profile-btn_003 -->
+                </div>
+            </div>
+        </header>
+        <!-- /#header_001 -->
+
+        <!-- #scroll-content_004 -->
+        <div class="flex-1 overflow-y-auto relative">
+            <!-- #status-legend_005 -->
+            <div class="absolute top-4 left-6 z-10 glass-panel p-3 rounded-xl flex flex-col gap-2">
+                <div class="flex items-center gap-2 text-[10px] font-semibold">
+                    <div class="w-2 h-2 rounded-full bg-[var(--unbreakable)]"></div>
+                    <span class="text-gray-400">Unbreakable</span>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] font-semibold">
+                    <div class="w-2 h-2 rounded-full bg-[var(--forged)]"></div>
+                    <span class="text-gray-400">Forged</span>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] font-semibold">
+                    <div class="w-2 h-2 rounded-full bg-[var(--strong)]"></div>
+                    <span class="text-gray-400">Strong</span>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] font-semibold">
+                    <div class="w-2 h-2 rounded-full bg-[var(--stable)]"></div>
+                    <span class="text-gray-400">Stable</span>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] font-semibold">
+                    <div class="w-2 h-2 rounded-full bg-[var(--fragile)]"></div>
+                    <span class="text-gray-400">Fragile</span>
+                </div>
+            </div>
+            <!-- /#status-legend_005 -->
+
+            <!-- #view-toggle_006 -->
+            <div class="absolute top-4 right-6 z-10 flex bg-[#1a1a1a] p-1 rounded-lg border border-white/5">
+                <button class="px-4 py-1.5 bg-[#333] rounded-md text-xs font-bold">Front</button>
+                <button class="px-4 py-1.5 text-gray-500 text-xs font-bold">Back</button>
+            </div>
+            <!-- /#view-toggle_006 -->
+
+            <!-- #main-body-visual_007 -->
+            <div class="relative w-full aspect-[3/4] flex items-center justify-center mt-12">
+                <img src="https://media.screensdesign.com/gasset/873d7932d5374c728b63ec63f54f9980_screen_image_body_model_dashboard_9d4472358e.png" data-media-ref="generated:138023" alt="Highly detailed 3D male anatomical model, front view, black mesh material with neon color-coded muscle groups including gold chest, white abs, and bronze legs, dramatic studio lighting, 8k resolution" class="w-[85%] h-auto object-contain" data-image-aspect="2:3" data-image-background="transparent">
+                
+                <!-- #weak-link-callout_008 -->
+                <div class="absolute left-[40px] top-[65%] flex items-center gap-0">
+                    <div class="bg-[var(--primary)] text-black px-3 py-1 rounded-lg font-black text-[12px] uppercase tracking-tighter">
+                        Weak link
+                    </div>
+                    <div class="w-24 h-[1px] bg-[var(--primary)] relative">
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[var(--primary)] ring-4 ring-[var(--primary)]/20"></div>
+                    </div>
+                </div>
+                <!-- /#weak-link-callout_008 -->
+
+                <!-- #model-controls_009 -->
+                <div class="absolute bottom-8 right-6">
+                    <button class="w-10 h-10 glass-panel rounded-xl flex items-center justify-center">
+                        <iconify-icon icon="solar:box-bold" class="text-xl"></iconify-icon>
+                    </button>
+                </div>
+                <!-- /#model-controls_009 -->
+            </div>
+            <!-- /#main-body-visual_007 -->
+
+            <!-- #weak-link-card_010 -->
+            <div class="px-6 mb-8">
+                <div class="glass-panel rounded-2xl p-4 flex items-center justify-between border-l-4 border-l-[var(--stable)]">
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-lg bg-[var(--stable)] opacity-80"></div>
+                        <div>
+                            <div class="text-base font-bold">Shins · Stable I</div>
+                            <div class="text-xs text-gray-500 font-medium">6 sessions to Strong.</div>
+                        </div>
+                    </div>
+                    <iconify-icon icon="solar:alt-arrow-right-linear" class="text-gray-500"></iconify-icon>
+                </div>
+            </div>
+            <!-- /#weak-link-card_010 -->
+
+            <!-- #session-summary_011 -->
+            <div class="px-6 pb-12">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="label-sm-caps text-gray-500">TODAY</div>
+                    <div class="flex items-center gap-1 text-gray-500">
+                        <span class="text-[10px] font-bold">This week</span>
+                        <iconify-icon icon="solar:alt-arrow-right-linear" class="text-xs"></iconify-icon>
+                    </div>
+                </div>
+                
+                <!-- #rest-day-card_012 -->
+                <div class="bg-[#F9F6F0] text-black rounded-[32px] p-8 min-h-[160px] flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <div class="label-sm-caps opacity-60 font-bold">REST DAY · THU, 15 OCT</div>
+                        <div class="w-12 h-12 bg-black/5 rounded-full flex items-center justify-center">
+                            <iconify-icon icon="solar:moon-bold" class="text-2xl"></iconify-icon>
+                        </div>
+                    </div>
+                    <div class="text-3xl font-black tracking-tight leading-none">
+                        RECHARGE YOUR<br/>CHARACTER.
+                    </div>
+                </div>
+                <!-- /#rest-day-card_012 -->
+            </div>
+            <!-- /#session-summary_011 -->
+        </div>
+        <!-- /#scroll-content_004 -->
+
+        <!-- #footer_013 -->
+        <footer class="flex-shrink-0 bg-black/80 backdrop-blur-xl border-t border-white/5 pb-8 pt-4 px-6">
+            <div class="flex justify-between items-center">
+                <div class="flex flex-col items-center gap-1 relative">
+                    <div class="absolute -top-1 right-0 w-1.5 h-1.5 bg-[var(--primary)] rounded-full"></div>
+                    <iconify-icon icon="solar:accessibility-bold" class="text-2xl text-white"></iconify-icon>
+                    <span class="text-[10px] font-bold text-white">Body</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:dumbbell-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Train</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:wind-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Breathe</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:moon-sleep-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Recover</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:book-bookmark-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Learn</span>
+                </div>
+            </div>
+        </footer>
+        <!-- /#footer_013 -->
+    </div>
+</body>
+</html>

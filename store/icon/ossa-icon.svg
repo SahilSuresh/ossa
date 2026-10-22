@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="512" cy="470" r="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#161617"/><stop offset="1" stop-color="#000"/>
+    </radialGradient>
+    <linearGradient id="stone" x1="0" y1="202" x2="0" y2="822" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#77746F"/><stop offset=".45" stop-color="#4A4845"/><stop offset="1" stop-color="#2E2D2B"/>
+    </linearGradient>
+    <filter id="bloom" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1424" height="1424"><feGaussianBlur stdDeviation="32"/></filter>
+    <filter id="tip" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1424" height="1424"><feGaussianBlur stdDeviation="26"/></filter>
+    <filter id="spill" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1424" height="1424"><feGaussianBlur stdDeviation="22"/></filter>
+    <filter id="soft" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1424" height="1424"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="core" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1424" height="1424"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="drop" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1424" height="1424"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="grain" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1424" height="1424">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="11"/><feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <clipPath id="cL"><polygon points="512,183.4 526.8,287.3 537.8,391.2 523.1,499.3 528.6,609.5 506.5,724 512,840.6 226.1,676.3 226.1,347.7"/></clipPath>
+    <clipPath id="cR"><polygon points="512,183.4 797.9,347.7 797.9,676.3 512,840.6 506.5,724 528.6,609.5 523.1,499.3 537.8,391.2 526.8,287.3"/></clipPath>
+    <clipPath id="sL"><polygon points="478,-50 478,183.4 492.8,287.3 503.8,391.2 489.1,499.3 494.6,609.5 472.5,724 478,840.6 478,1100 -50,1100 -50,-50"/></clipPath>
+    <clipPath id="sR"><polygon points="546,-50 546,174.4 560.8,278.3 571.8,382.2 557.1,490.3 562.6,600.5 540.5,715 546,831.6 546,1100 1100,1100 1100,-50"/></clipPath>
+    <clipPath id="gp"><polygon points="546,174.4 560.8,278.3 571.8,382.2 557.1,490.3 562.6,600.5 540.5,715 546,831.6 478,840.6 472.5,724 494.6,609.5 489.1,499.3 503.8,391.2 492.8,287.3 478,183.4"/></clipPath>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+    <!-- shadow and slab thickness, each slab cut along its own half's edge -->
+    <polygon points="478,209.4 492.8,313.3 503.8,417.2 489.1,525.3 494.6,635.5 472.5,750 478,866.6 192.1,702.3 192.1,373.7" fill="#000" opacity=".8" filter="url(#drop)"/>
+    <polygon points="546,200.4 831.9,364.7 831.9,693.3 546,857.6 540.5,741 562.6,626.5 557.1,516.3 571.8,408.2 560.8,304.3" fill="#000" opacity=".8" filter="url(#drop)"/>
+    <g clip-path="url(#sL)"><polygon points="478,201.4 492.8,305.3 503.8,409.2 489.1,517.3 494.6,627.5 472.5,742 478,858.6 192.1,694.3 192.1,365.7" fill="#18181A"/></g>
+    <g clip-path="url(#sR)"><polygon points="546,192.4 831.9,356.7 831.9,685.3 546,849.6 540.5,733 562.6,618.5 557.1,508.3 571.8,400.2 560.8,296.3" fill="#18181A"/></g>
+    <!-- the light coming out: bloom along the split and past both points -->
+    <path d="M512 178.9 L526.8 282.8 L537.8 386.7 L523.1 494.8 L528.6 605 L506.5 719.5 L512 836.1" fill="none" stroke="#D4FF00" stroke-width="150" stroke-linecap="round" stroke-linejoin="round" opacity=".5" filter="url(#bloom)"/>
+    <ellipse cx="512" cy="182.9" rx="48" ry="62" fill="#D4FF00" opacity=".5" filter="url(#tip)"/>
+    <ellipse cx="512" cy="840.1" rx="50" ry="66" fill="#D4FF00" opacity=".5" filter="url(#tip)"/>
+    <!-- inside the gap: deep lime at the walls, the lit body, a pale core -->
+    <polygon points="546,174.4 560.8,278.3 571.8,382.2 557.1,490.3 562.6,600.5 540.5,715 546,831.6 478,840.6 472.5,724 494.6,609.5 489.1,499.3 503.8,391.2 492.8,287.3 478,183.4" fill="#8FB000"/>
+    <g clip-path="url(#gp)">
+      <path d="M512 178.9 L526.8 282.8 L537.8 386.7 L523.1 494.8 L528.6 605 L506.5 719.5 L512 836.1" fill="none" stroke="#D4FF00" stroke-width="50" stroke-linejoin="round" filter="url(#soft)"/>
+      <path d="M512 178.9 L526.8 282.8 L537.8 386.7 L523.1 494.8 L528.6 605 L506.5 719.5 L512 836.1" fill="none" stroke="#F6FFD0" stroke-width="28" stroke-linejoin="round" filter="url(#core)"/>
+    </g>
+    <path d="M512 164.9 L526.8 282.8 L537.8 386.7 L523.1 494.8 L528.6 605 L506.5 719.5 L512 850.1" fill="none" stroke="#F6FFD0" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" opacity=".55" filter="url(#core)"/>
+    <!-- the two stone halves -->
+    <g transform="translate(-34 0)">
+      <polygon points="512,183.4 526.8,287.3 537.8,391.2 523.1,499.3 528.6,609.5 506.5,724 512,840.6 226.1,676.3 226.1,347.7" fill="url(#stone)"/>
+      <g clip-path="url(#cL)">
+        <polygon points="226.1,347.7 512,183.4 473.3,467.5 226.1,589.4" fill="rgba(255,255,255,.03)"/><polygon points="226.1,589.4 473.3,467.5 512,840.6 226.1,676.3" fill="rgba(0,0,0,.04)"/><polygon points="512,183.4 797.9,347.7 797.9,499.3 570.1,451.6" fill="rgba(255,255,255,.02)"/><polygon points="570.1,451.6 797.9,499.3 797.9,676.3 512,840.6" fill="rgba(0,0,0,.04)"/>
+        <rect x="34" y="0" width="1024" height="1024" filter="url(#grain)" opacity=".07"/>
+        <polygon points="512,183.4 797.9,347.7 757.9,370.8 512,229.5" fill="rgba(163,160,154,.42)"/><polygon points="797.9,347.7 797.9,676.3 757.9,653.2 757.9,370.8" fill="rgba(0,0,0,.30)"/><polygon points="797.9,676.3 512,840.6 512,794.5 757.9,653.2" fill="rgba(24,24,26,.78)"/><polygon points="512,840.6 226.1,676.3 266.1,653.2 512,794.5" fill="rgba(24,24,26,.70)"/><polygon points="226.1,676.3 226.1,347.7 266.1,370.8 266.1,653.2" fill="rgba(163,160,154,.16)"/><polygon points="226.1,347.7 512,183.4 512,229.5 266.1,370.8" fill="rgba(163,160,154,.80)"/>
+        <!-- lime spill on the face, gone within ~60 px of the split -->
+        <path d="M512 183.4 L526.8 287.3 L537.8 391.2 L523.1 499.3 L528.6 609.5 L506.5 724 L512 840.6" fill="none" stroke="#D4FF00" stroke-width="40" stroke-linejoin="round" opacity=".40" filter="url(#spill)"/>
+        <!-- the cut face: the stone's thickness, dark, lit by the light from the split -->
+        <path d="M512 183.4 L526.8 287.3 L537.8 391.2 L523.1 499.3 L528.6 609.5 L506.5 724 L512 840.6" fill="none" stroke="#2B2A27" stroke-width="26" stroke-linejoin="round"/>
+        <path d="M512 183.4 L526.8 287.3 L537.8 391.2 L523.1 499.3 L528.6 609.5 L506.5 724 L512 840.6" fill="none" stroke="#D4FF00" stroke-width="22" stroke-linejoin="round" opacity=".5" filter="url(#soft)"/>
+        <path d="M512 183.4 L526.8 287.3 L537.8 391.2 L523.1 499.3 L528.6 609.5 L506.5 724 L512 840.6" fill="none" stroke="#D4FF00" stroke-width="13" stroke-linejoin="round" opacity=".65" filter="url(#soft)"/>
+      </g>
+    </g>
+    <g transform="translate(34 -9)">
+      <polygon points="512,183.4 797.9,347.7 797.9,676.3 512,840.6 506.5,724 528.6,609.5 523.1,499.3 537.8,391.2 526.8,287.3" fill="url(#stone)"/>
+      <g clip-path="url(#cR)">
+        <polygon points="226.1,347.7 512,183.4 473.3,467.5 226.1,589.4" fill="rgba(255,255,255,.03)"/><polygon points="226.1,589.4 473.3,467.5 512,840.6 226.1,676.3" fill="rgba(0,0,0,.04)"/><polygon points="512,183.4 797.9,347.7 797.9,499.3 570.1,451.6" fill="rgba(255,255,255,.02)"/><polygon points="570.1,451.6 797.9,499.3 797.9,676.3 512,840.6" fill="rgba(0,0,0,.04)"/>
+        <rect x="-34" y="9" width="1024" height="1024" filter="url(#grain)" opacity=".07"/>
+        <polygon points="512,183.4 797.9,347.7 757.9,370.8 512,229.5" fill="rgba(163,160,154,.42)"/><polygon points="797.9,347.7 797.9,676.3 757.9,653.2 757.9,370.8" fill="rgba(0,0,0,.30)"/><polygon points="797.9,676.3 512,840.6 512,794.5 757.9,653.2" fill="rgba(24,24,26,.78)"/><polygon points="512,840.6 226.1,676.3 266.1,653.2 512,794.5" fill="rgba(24,24,26,.70)"/><polygon points="226.1,676.3 226.1,347.7 266.1,370.8 266.1,653.2" fill="rgba(163,160,154,.16)"/><polygon points="226.1,347.7 512,183.4 512,229.5 266.1,370.8" fill="rgba(163,160,154,.80)"/>
+        <!-- lime spill on the face, gone within ~60 px of the split -->
+        <path d="M512 183.4 L526.8 287.3 L537.8 391.2 L523.1 499.3 L528.6 609.5 L506.5 724 L512 840.6" fill="none" stroke="#D4FF00" stroke-width="40" stroke-linejoin="round" opacity=".40" filter="url(#spill)"/>
+        <!-- the cut face: the stone's thickness, dark, lit by the light from the split -->
+        <path d="M512 183.4 L526.8 287.3 L537.8 391.2 L523.1 499.3 L528.6 609.5 L506.5 724 L512 840.6" fill="none" stroke="#2B2A27" stroke-width="26" stroke-linejoin="round"/>
+        <path d="M512 183.4 L526.8 287.3 L537.8 391.2 L523.1 499.3 L528.6 609.5 L506.5 724 L512 840.6" fill="none" stroke="#D4FF00" stroke-width="22" stroke-linejoin="round" opacity=".5" filter="url(#soft)"/>
+        <path d="M512 183.4 L526.8 287.3 L537.8 391.2 L523.1 499.3 L528.6 609.5 L506.5 724 L512 840.6" fill="none" stroke="#D4FF00" stroke-width="13" stroke-linejoin="round" opacity=".65" filter="url(#soft)"/>
+      </g>
+    </g>
+</svg>

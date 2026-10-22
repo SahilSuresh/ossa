@@ -1,0 +1,48 @@
+/* =========================================================
+   MOTION — see fx.js for where each of these comes from.
+   Only transform and opacity move. Everything stops for reduced motion.
+   ========================================================= */
+.fx-cf{position:absolute;inset:0;width:100%;height:100%;z-index:40;pointer-events:none}
+
+/* light rays turning slowly behind a badge, in the badge's colour */
+.fx-rays{position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--c) 34%,transparent) 0deg 7deg,transparent 7deg 30deg);
+  -webkit-mask:radial-gradient(circle,var(--bg) 22%,transparent 68%);mask:radial-gradient(circle,var(--bg) 22%,transparent 68%);
+  opacity:0;animation:fxRaysIn .9s var(--ease) .25s forwards,fxSpin 26s linear infinite}
+.fx-glow{position:absolute;left:50%;top:50%;width:260px;height:260px;margin:-130px 0 0 -130px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,color-mix(in srgb,var(--c) 42%,transparent) 0%,transparent 66%);opacity:0;animation:fxGlow 1.1s var(--ease) .15s forwards}
+@keyframes fxRaysIn{to{opacity:1}}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+@keyframes fxGlow{0%{opacity:0;transform:scale(.4)}45%{opacity:1;transform:scale(1.15)}100%{opacity:.7;transform:scale(1)}}
+
+/* embers rising around a badge */
+.fx-embers{position:absolute;left:-30px;right:-30px;top:-10px;bottom:-30px;pointer-events:none;overflow:visible}
+.fx-em{position:absolute;left:var(--x);bottom:0;width:4px;height:4px;border-radius:50%;background:var(--c);
+  box-shadow:0 0 8px var(--c);opacity:0;animation:fxEmber var(--t) ease-out var(--d) infinite}
+@keyframes fxEmber{0%{opacity:0;transform:translate(0,0) scale(var(--z))}15%{opacity:.95}100%{opacity:0;transform:translate(var(--w),-190px) scale(calc(var(--z) * .4))}}
+
+/* a ring that bursts outwards once */
+.fx-burst{position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--glow);pointer-events:none;opacity:0}
+.fx-burst.go{animation:fxBurst .7s var(--ease) forwards}
+@keyframes fxBurst{0%{opacity:.9;transform:scale(.7)}100%{opacity:0;transform:scale(1.9)}}
+
+/* pops and arrivals */
+@keyframes fxPop{0%{transform:scale(.6)}55%{transform:scale(1.18)}100%{transform:none}}
+@keyframes fxUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fxIn{from{opacity:0}to{opacity:1}}
+.fx-pop{animation:fxPop .42s var(--ease)}
+
+/* a sheen that crosses the main button now and then */
+.fx-shine{position:relative;overflow:hidden;isolation:isolate}
+.fx-shine::after{content:"";position:absolute;top:-20%;bottom:-20%;left:-60%;width:45%;pointer-events:none;z-index:1;
+  background:linear-gradient(100deg,transparent 0%,color-mix(in srgb,var(--text-1) 70%,transparent) 50%,transparent 100%);opacity:.55;
+  transform:translateX(0) skewX(-18deg);animation:fxShine 3.8s var(--ease) 1.2s infinite}
+@keyframes fxShine{0%{transform:translateX(0) skewX(-18deg)}38%,100%{transform:translateX(420%) skewX(-18deg)}}
+
+/* the tab you just picked */
+.u-nav button.on .u-nav-ic{animation:fxPop .38s var(--ease)}
+
+@media (prefers-reduced-motion:reduce){
+  .fx-rays,.fx-glow,.fx-em,.fx-burst.go,.fx-pop,.fx-shine::after,.u-nav button.on .u-nav-ic{animation:none!important}
+  .fx-rays{opacity:1}.fx-glow{opacity:.7}.fx-em,.fx-shine::after{display:none}
+}

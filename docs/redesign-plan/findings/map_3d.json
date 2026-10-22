@@ -1,0 +1,621 @@
+{
+ "key": "3d",
+ "title": "3D body: what effects our own model can take",
+ "area": "3D body engine: what the Body API is today, and whether each design effect can be done on our own model (paths relative to C:\\Ossa\\ossa-expo)",
+ "keyFacts": [
+  {
+   "fact": "The renderer is raw WebGL2 with no library. makeGLBody creates one context (antialias:false, alpha:false, preserveDrawingBuffer:false, powerPreference high-performance). If WebGL2 is missing, or ANY program fails to compile or link, it returns null and the app quietly falls back to the flat 2D SVG body. So one GLSL error on an iPhone would remove the 3D character.",
+   "ref": "web/ossa.html:4503-4514, 4507; Body=glBody||makeSVGBody() at 11883-11884; makeSVGBody 4929"
+  },
+  {
+   "fact": "There are four programs. prM (VS+FS) draws the body. prH (VS+HULL_FS) draws an inverted-hull outline. prB (BG_VS+BG_FS) is a fullscreen background: scenes, floor dial ring, aura blobs and onboarding tissue. prO (BG_VS+ORG_FS) ray-marches the organs for Core/X-ray. Each frame draws BG, then the hull mesh, then organs (X-ray only), then the main mesh: 3 draws normally, 4 in Core.",
+   "ref": "web/ossa.html:4513 (programs), draw() 4630-4658"
+  },
+  {
+   "fact": "MESH_M and MESH_F contain only lo, hi, nv, ni, pos, nrm and idx. pos is base64 Uint16x3 quantised into the lo..hi box (the VS rebuilds it as r=uLo+aPos*(uHi-uLo)). nrm is base64 Int8x3, normalised. idx is base64 Uint32. Male: 37,318 verts and 223,953 indices (74,651 triangles). Female: 37,298 and 223,884. There are no UVs, tangents, muscle ids, bones, skin weights, morph targets or pose data in the mesh. The bytes upload to GPU buffers as they are (dec + bufferData), with no float conversion.",
+   "ref": "web/ossa.html:3502/3503 field offsets (lo,hi,nv,ni,pos@~92,nrm@~298k,idx@~448k); loadFigure 4521-4533; VS 3945"
+  },
+  {
+   "fact": "Muscle identity is not stored anywhere; the fragment shader computes it. For every body pixel, FS loops over all NP=37 PARTS ellipsoids (an SDF in rest-pose space, x mirrored with abs()) and takes the nearest part's muscle (23 muscles in GLORDER). The second-nearest part draws the seams. The parts arrive through a UBO named Parts. Picking reuses the same loop: it writes id+1 into red on a 1x1 scissor and calls readPixels.",
+   "ref": "PARTS_M 3671, PARTS_F 3710, partData 3757, UBO 4515-4516, FS loop 4245-4250, pick 4784-4791"
+  },
+  {
+   "fact": "Left and right: muscle ids are mirrored (abs(vR.x)), so nothing is per-side today, but sign(vR.x) is available in FS. At yaw 0 the camera sits on +z with screen-right = +x (cam(), rt=cross(fw,up)), and front muscles have +z (pec_major z=+0.057). So +x is the figure's ANATOMICAL LEFT, yet RIG and boneMats call +x 'R'. I derived this from the maths; it is unconfirmed on screen.",
+   "ref": "cam 4600-4604; PARTS_M pec_major 3692; RIG comment 4359, boneMats comment 4413"
+  },
+  {
+   "fact": "A procedural skeleton already exists. RIG holds joint landmarks per figure. skinWeights computes 2-bone linear-blend weights per vertex in JS (distance to bone segments) when a figure loads, cached per figure. boneMats turns a pose (Euler angles per joint, root translation, shrug, forearm twist) into 13 mat4s, and the VS blends uB[13]. MOVES drive exercise demos: squat reaches about 1.9 rad of knee bend, and leg_ext is already a chair-seated pose (root -0.28 m, thighs -1.45 rad, shins 1.5 rad).",
+   "ref": "RIG 4360-4363, skinWeights 4368-4397, boneMats 4414-4436, VS skinning 3946-3947, MOVES 4442-4468 + rd_* 10428-10437"
+  },
+  {
+   "fact": "A pose can be applied two ways. startDemo also switches FS to the ICE 'demo' colouring (uDemoOn), which overrides rank colours. Body.live(pose,amount) eases into a pose and keeps normal colouring. figLive() calls Body.live every 5 minutes with a posture slump pose, so it would overwrite any other live pose.",
+   "ref": "startDemo 4894, demo colouring 4295-4301, live 4873 + frame 4693-4698, figLive 6727-6735"
+  },
+  {
+   "fact": "Rank colours are hard-coded in GLSL (rkC) and kept in step with --rk-0..5 in tokens.css by hand. Rank mode is uRk, set by Body.setRank. The Body page always has rank mode on.",
+   "ref": "FS rkC 4188; tokens.css 46-51; setRank 4898; ranks.js rkSync line 89; shell.js uiHomeFigure 369"
+  },
+  {
+   "fact": "Neglect fade: fadeOf is 0 until 10 idle days and 1 at 21 days. It is sent as uFd and FS darkens the muscle to 38%. But in rank mode FS sets fd=0, so the Body page and the 3D Rank view never show fading today. Only the 3D Recovery view does, which contradicts the 'fades on your body' copy. fadeOf and wkOf are const arrows, so web/ui cannot redefine them.",
+   "ref": "fadeOf 3881, wkOf 3880, sendScores 4585-4590, FS 4279 (fd=0 in rank mode), 4281; ranks.js rk-how copy in openRanks"
+  },
+  {
+   "fact": "How the Body page frames the figure: rdHomeOn sets window.RDHOME and the homefig class, and tweens the camera. rdHeroBox returns the hero box. frameTo fits the figure into that box by moving the projection centre and scale (C.cx, C.cy, C.h, used by the custom VS projection), not by moving the camera. rdScroll translates #stage with the page and sets homeoff (stage hidden) when you scroll away or a .panel opens. On the Body page there is no idle loop (br=0, sway and scene skipped), so the GPU idles until something changes.",
+   "ref": "rdHeroBox 11016-11021, rdHomeOn 11022-11037, rdScroll 11038-11048, frameTo 4736-4755, VS projection 3949-3955, frame 4701"
+  },
+  {
+   "fact": "The frame loop is on-demand: kick() schedules requestAnimationFrame, and the loop stops when nothing eases. Elsewhere, idle sway, breathing and scenes run at about 30 fps. The canvas uses DPR up to 2 and at most 560,000 pixels, which is about 508x1100 on an iPhone 15 full screen.",
+   "ref": "kick 4722, frame 4660-4721, 30fps throttle 4708, resize cap 4730-4732"
+  },
+  {
+   "fact": "Falling stars are BG_FS scene 1 (starfall). The scenes are Void, Starfall, Aurora, Embers and Grid, default 1. They are forced off on the Body page.",
+   "ref": "BG_FS 4023-4031; SCENES 9382; uScene RDHOME?0 at 4636"
+  },
+  {
+   "fact": "FINISHES only recolour the fresnel rim (uRimC). They apply to the whole body and unlock at 0/10/25/50 sessions. Auras are three drifting screen-space gaussian blobs in BG_FS, set with Body.setAura and coloured per Home tab (RD_AURA). Neither is anchored to the head or to any muscle.",
+   "ref": "FINISHES 7392, rimColor 7396, uRimC 4647; BG aura 4097-4101; setAura 4888; RD_AURA 11052"
+  },
+  {
+   "fact": "The onboarding branch of FS already contains things the redesign needs, but only in onboarding (uIn.z>0.5): a beating heart glow inside the chest at rest-space (0.03,1.26,0.05), neural lines on the head (vn3 noise), and a per-region red 'ache' pulse (uAche[9]). The lub-dub envelope is computed in obStep, and Pulse.beat/steady drive Body.obBeat plus an audio thump plus buzz(10) at a given bpm.",
+   "ref": "FS 4202-4203, 4205-4207, 4228-4238; obStep 4625; Pulse 7921-7963"
+  },
+  {
+   "fact": "The head is easy to locate even though it isn't a muscle. FS masks it by height (y>1.555, with contour lines). headHit uses a circle around (0,1.685..1.805,-0.015). The brain hemispheres sit at (+-0.02,1.712,-0.02). The head and neck ride bone 12. headZoom zooms to 5.2 and also turns on the brain X-ray. camTo can zoom without it, and frameBox fits the figure into any screen box.",
+   "ref": "FS 4260-4262, headHit 4777-4783, brain 4337, bone 12 4382/4422, headZoom 4850, camTo 4856, frameBox 4874"
+  },
+  {
+   "fact": "Inflating along normals already works on this mesh. Breathing (uBr) pushes the chest band out along normals, and the hull pass inflates in screen space for the outline.",
+   "ref": "VS 3948, 3950"
+  },
+  {
+   "fact": "Capture already works. Body.snapshot and glowShot draw, then call cv.toDataURL in the same task, which works without preserveDrawingBuffer. glowShot is in use on Workout complete. Native sharing exists: psCard builds a 1080x1350 2D canvas and psShare sends share:image, which App.js handles, so no new build is needed to share an image.",
+   "ref": "glowShot 4905-4912, snapshot 4913-4916, used 7779; openShare 5834; psCard 7273, psShare 7300; App.js:121"
+  },
+  {
+   "fact": "Haptics: App.js turns any multi-value vibrate pattern into one notificationAsync(Success). Single values map to selection (<=6), Light (<=10) or Medium. So a lub-dub has to be two timed single calls from the web side.",
+   "ref": "App.js:24-31"
+  },
+  {
+   "fact": "The engine has no textures, no framebuffers and no webglcontextlost/restored handling anywhere. Every look is procedural.",
+   "ref": "grep texImage2D|createTexture|sampler2D|createFramebuffer|webglcontextlost in web/ossa.html and web/ui: no matches"
+  },
+  {
+   "fact": "web/ui JS is included (11873-11878) before makeGLBody() runs (11883), so a web/ui file can register things in time. But the shader sources VS, FS and BG_FS are const, so web/ui can't replace them. Effects therefore need a small hook in makeGLBody or in-place edits.",
+   "ref": "web/ossa.html 11873-11883; VS 3939, BG_FS 3964, FS 4171"
+  },
+  {
+   "fact": "Whether the 3D stage is visible depends on CSS classes: .app.tabbed #stage is hidden; homefig and the train modes show it again. frame()'s onScreen test only lists train, tactive, tplan, tdone and RDHOME. New 3D screens opened from other tabs (Focus, Recover) need their own class and onScreen entry.",
+   "ref": "web/ossa.html CSS 1109, 1733, 1900, 1938, 2386-2387; onScreen 4700"
+  },
+  {
+   "fact": "Joints are an SVG overlay, the Bones layer, projected from RIG, with 14 joint instances. jointFlag maps a joint to regions through JOINTS[j].reg and S.flagged. S.flagged holds region ids from onboarding aches, with no side and no date.",
+   "ref": "JOINTS 7398-7407, jointFlag 7408, bonesBuild 7409-7417, drawBones 7419+, S.flagged set 8281"
+  },
+  {
+   "fact": "assets/pose is MediaPipe Pose Landmarker (pose_landmarker_full.task 9.4 MB plus the vision wasm and bundle), loaded by native/pose.js and used only by the posture scan to find 33 landmarks in photos. It is not a character rig or mesh.",
+   "ref": "assets/pose listing; native/pose.js:8-11; PS_FILES 6743; PoseLandmarker 6790-6795"
+  },
+  {
+   "fact": "Uniform load: FS declares 12 per-muscle or per-region float arrays (uS, uRS, uPulse, uWk, uRWk, uFd, uNew, uRFd, uRc, uRRc, uDemo, uAche). That is about 206 vec4 rows if each element takes a row; the iOS limit is unconfirmed. New per-muscle data should go into one packed vec4 array. The Parts UBO is 185 vec4.",
+   "ref": "FS 4175-4184"
+  }
+ ],
+ "items": [
+  {
+   "name": "Body FX foundation (system: hooks, packed uniforms, palette uniforms, animation scheduler, safety)",
+   "today": "Every effect is hard-wired into the const shader strings and makeGLBody (web/ossa.html:3939-4918). Rank colours are duplicated by hand in rkC (4188) and tokens.css. When nothing changes, no frames render (kick 4722). A shader compile error drops the app to the 2D body (4514). There is no context-loss handling. New screens can't show the 3D stage from other tabs (CSS 1109, onScreen 4700).",
+   "changes": [
+    {
+     "file": "web/ossa.html",
+     "change": "makeGLBody: add a small, generic extension point. Before compiling, inject GLSL chunks from window.BODY_FX into marked places in VS, FS (declarations, end of rank branch, final colour) and BG_FS. Add one packed uniform uFx[N] vec4 per muscle (x = vulnerable left, y = vulnerable right, z = material id, w = inflate), uJnt[14] vec4 (joint centre in rest space plus amount, side carried by the sign of x), uRkC[6] vec3 and uFxT (time). Add them to the UM and UH ulocs lists (4541-4542) and set them in draw() (4647-4655)."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "FS rkC (4188): read uRkC[] instead of literals. JS fills it from getComputedStyle --rk-0..5, so the 3D colours always match tokens.css."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Compile safety: if the FX-injected programs fail (4510-4514), log getShaderInfoLog and rebuild with the plain shaders instead of returning null, so a bad effect can never remove the 3D body. Add webglcontextlost (preventDefault) and webglcontextrestored handlers that rebuild buffers and programs via loadFigure()."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "frame() (4660-4721): ask BODY_FX.busy() and set more=true while an effect animates, reusing the 30 fps throttle (4708). Draw nothing new while document.hidden or homeoff. Add the new stage class to the onScreen test (4700). draw(): optional extra passes from BODY_FX (an additive full-screen FX overlay after the body; the ghost mesh pass for Ideal Self)."
+    },
+    {
+     "file": "web/ui/body-fx.js (new)",
+     "change": "The effect registry and every effect module (vulnerable pulse, fade look, neural aura, chest glow, heartbeat, morph, ghost, materials, card shot). Body API extensions: setVuln, setMute, setNeural, setHeart, setChest, setMorph, setGhost, setMats, cardShot, swatch. bodyStage({cls,box,cam,rank})/bodyStageEnd(): the shared helper for 3D screens (Injury, Focus Aura, Monk, Ideal Self, Bio-rhythm, Prestige, Archetype); it keeps #stage visible, calls frameBox and camTo, and restores the Body page afterwards. A ?fx= preview flag to force effect states for screenshots."
+    },
+    {
+     "file": "web/ui/body-fx.css (new) + include markers in web/ossa.html (3353, 11878)",
+     "change": "Add .app.bstage #stage{visibility:visible} (beats .app.tabbed), and include both new files after train.*."
+    }
+   ],
+   "dependsOn": [
+    "Look phase: new rank colours in web/ui/tokens.css (the 3D picks them up automatically)"
+   ],
+   "designDeviations": [],
+   "effort": "M",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web-only (WebView HTML). No App.js or native changes.",
+   "newFiles": [
+    "web/ui/body-fx.js",
+    "web/ui/body-fx.css"
+   ],
+   "risks": [
+    "Injecting GLSL as strings makes compile errors harder to trace. Mitigation: per-chunk console logs, plus the plain-shader fallback.",
+    "iOS WebGL2 (ANGLE on Metal) can be stricter than desktop Chrome. Every effect must be checked on a phone, not only in npm run preview.",
+    "Uniform limits on iOS are unconfirmed. Keep new per-muscle data in the single packed uFx[23] array.",
+    "This changes the core engine, so check that today's screens (Body page, 3D view, Train, onboarding, Mind) look identical with all effects off."
+   ],
+   "showAtEnd": "Two 390x844 screenshots of today's Body page, before and after the foundation, to show nothing changed visually. One screenshot with ?fx=test showing a single muscle tinted through the new hook. A note of the frame rate on a phone with an effect animating.",
+   "stateChanges": [
+    "No saved state. Body-internal uniforms: uFx[23] vec4 {x: vuln left 0..1, y: vuln right 0..1, z: material id, w: inflate metres}; uJnt[14] vec4 {xyz: rest-space centre (x sign = side), w: amount}; uRkC[6] vec3; uFxT float"
+   ]
+  },
+  {
+   "name": "body_dashboard (rank palette and look on our model)",
+   "today": "The Body page already has your 3D body coloured by rank: legend, Front/Back, Weak link label and leader, 3D button, focus card (shell.js 340-460; rdHeroBox/rdHomeOn in web/ossa.html 11016-11037). The shader's rank colours are today's tokens (rkC 4188 = --rk-1..5 #5E6460, #B5804F, #C7CDD4, #E9B949, #8EE4F1). Seams and fibres are drawn by bl/fib (FS 4282-4290).",
+   "changes": [
+    {
+     "file": "web/ossa.html",
+     "change": "FS rank branch (4279-4290): take rank colours from uRkC (foundation). Make the rank-coloured seams and edges a little stronger (bl/edge terms) to get closer to the design's glowing muscle outlines. Keep the fibre lines."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "(Owned by the Look phase.) --rk-1..5 become #4A4A4A, #C5A059, #FFFFFF, #FFD700, #00E5FF. The 3D follows through uRkC."
+    }
+   ],
+   "dependsOn": [
+    "Body FX foundation",
+    "Look phase tokens"
+   ],
+   "designDeviations": [
+    "The design's fine wire-mesh skin and realistic face become our body as it is: the neutral head with contour lines, plus fibre lines (ground rule 1).",
+    "Strong in pure white (#FFFFFF) on our lit body may clash with the white fibre lines (HAIR colour). The shader may need a slightly lower luminance for Strong than the token."
+   ],
+   "effort": "S",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web-only.",
+   "newFiles": [],
+   "risks": [
+    "Fragile #4A4A4A and Unranked #2A302C may be hard to tell apart on the dark body.",
+    "A white Strong muscle next to a white 'selected' glow (GLOW at 4307) could confuse a tap."
+   ],
+   "showAtEnd": "390x844 screenshots of the Body page, front and back, beside design/redesign-v2/images/body_dashboard.png.",
+   "stateChanges": []
+  },
+  {
+   "name": "(a) injury_mapping: per-muscle / per-joint red pulse for vulnerable flags",
+   "today": "Aches are regions in S.flagged (set at onboarding 8281), with no side or date. jointFlag maps joints to regions (7408), and the Bones SVG gives flagged joints an 'ache' ring (7415). The only red pulse in the shader is per region and onboarding-only (uAche, FS 4228-4238). Nothing in the normal body branch shows a flag.",
+   "changes": [
+    {
+     "file": "web/ossa.html",
+     "change": "FS main branch, after rank colouring: pick the side's value, vul = vR.x>0 ? uFx[id].x : uFx[id].y (+x = anatomical left, to verify). Joints: sum a*exp(-|vR-c|^2/r^2) over uJnt[14], r about 0.055 m. Then col = mix(col, RED*(0.35+0.65*beat), w*vul*0.85) + RED*fib*vul*0.4, with beat a slow 1.6 s sine on uFxT and steady under reduced motion. Add uMute: a calm grey scan look for the Injury screen, so the red stands out (like uIso's ghost 4302-4305)."
+    },
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Body.setVuln(list) builds uFx.xy and uJnt from S.vuln, using per-figure landmarks (RIG.m/RIG.f; joint centres from bonesBuild's pos map 7438) and pulses while visible. Wrap jointFlag (a function declaration, so it can be wrapped) to read S.vuln too, so the Bones layer agrees."
+    },
+    {
+     "file": "web/ui/body-fx.js (Injury screen UI may live in a Vessel-Engine file)",
+     "change": "Joint taps on the Body page / Injury screen: hit-test the projected landmarks with Body.project (as headHit 4777 and drawBones do). Muscles keep using Body.pickAt."
+    }
+   ],
+   "dependsOn": [
+    "Body FX foundation",
+    "Vessel Engine area: S.vuln data model and the Injury Mapping screen",
+    "train.js trJointRelief for 'Find physio routine'"
+   ],
+   "designDeviations": [
+    "'SYSTEM ALERT', 'High Risk Zone: Lower back compromised', 'Meniscus stress detected', 'L4/L5 Overload flare' become only what the user told us: 'You flagged your left knee · since 14 Oct', 'Lower back · flagged'.",
+    "'ALL TIMERS PAUSED' / 'SYSTEMS HALTED: DAY 2 OF RECOVERY' become 'Fading paused while you recover · day 2'.",
+    "'Find Physio Routine' opens trJointRelief(), plus the line 'If it's sharp, swollen or not easing, see a physio or GP.'",
+    "The design's grey anatomy render becomes our body in the muted grey (uMute) look."
+   ],
+   "effort": "M",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web-only.",
+   "newFiles": [],
+   "risks": [
+    "Left/right could be inverted (+x is the anatomical left by the camera maths, but the rig calls it 'R'). Test with a deliberately one-sided flag before building UI on it.",
+    "A pulsing Body page breaks the decided 'the figure never moves on its own' feel (UI-SYSTEM.md Motion) and keeps the GPU busy. Cap at 30 fps, stop offscreen, hold a steady glow under reduced motion.",
+    "A joint glow bleeds onto the neighbouring muscle (the knee glow reaches the quads). That probably reads well, but check it.",
+    "Fallback if the pulse is too costly or busy: a steady red tint plus the existing SVG joint rings."
+   ],
+   "showAtEnd": "A 390x844 screenshot of the Injury Mapping screen with the left knee and lower back glowing red, beside injury_mapping.png. A Front and Back pair proving the LEFT knee is on the figure's left. A 5-second screen recording of the pulse.",
+   "stateChanges": [
+    "S.vuln: Array<{id:'m:<muscleKey>'|'j:<jointKey>', side:'l'|'r'|'b', from:'YYYY-MM-DD', to:null|'YYYY-MM-DD'}>. Active entries have to:null; closed ones are kept 60 days for the fade-pause maths. S.flagged (regions) stays as the onboarding seed."
+   ]
+  },
+  {
+   "name": "(b) Neglect fade with a pause for flagged muscles",
+   "today": "fadeOf (const, 3881) runs from 0 at 10 idle days to 1 at 21. stateOf calls a muscle 'fading' from 7 days (3901). The callout says 'Idle · N days' (4954). FS darkens faded muscles (4281) only outside rank mode; rank mode forces fd=0 (4279), so the Body page never shows fading.",
+   "changes": [
+    {
+     "file": "web/ossa.html",
+     "change": "fadeOf (3881): in-place edit (it is const). Effective idle days = daysSince(k) - pausedDays(k), where pausedDays is the overlap of S.vuln intervals covering k (a muscle flag, or a joint flag through JOINTS[j].reg) with the idle window. Better: turn it into a function declaration so web/ui can wrap it like other functions. stateOf (3901, a function declaration) gets the same rule through a web/ui wrapper."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "FS rank branch (4279): stop zeroing fd. Show fade as a 'dimmed rank': lvl *= 1-0.75*fd, fibres dim, plus a faint dither or static, so a faded Strong (white) can't be read as Fragile (grey). A paused muscle gets a thin steady outline (not red)."
+    },
+    {
+     "file": "web/ui/ranks.js",
+     "change": "Copy in openRanks (rk-how) and the focus card in shell.js (uiFocusCardHTML): add 'Fading paused while you recover' when paused."
+    }
+   ],
+   "dependsOn": [
+    "(a) S.vuln",
+    "Body FX foundation"
+   ],
+   "designDeviations": [
+    "The design's 'Pause Neglect: stops the rank-fade countdown for all muscles' is a global toggle. Open question: per flagged area, or global."
+   ],
+   "effort": "S",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web-only.",
+   "newFiles": [],
+   "risks": [
+    "After the update, users suddenly see muscles fading on the Body page, because today rank view hides it.",
+    "A faded colour could look like a lower rank. The dither or static is there to avoid that.",
+    "daysSince scans S.log per call for 23 muscles in sendScores. That is cheap, but don't call it per frame."
+   ],
+   "showAtEnd": "Two Body-page screenshots from seeded demo data: (1) quads untrained for 21 days, fully faded; (2) the same, but with the left knee flagged 10 days ago, so the quads' fade is frozen at its earlier level and the card reads 'Fading paused while you recover'.",
+   "stateChanges": [
+    "None beyond S.vuln. Only if the global pause is chosen: S.fadeHold = {from:'YYYY-MM-DD', to:null|'YYYY-MM-DD'}"
+   ]
+  },
+  {
+   "name": "(c) focus_aura: cyan crystalline aura around the head, growing with Neural State level",
+   "today": "The head isn't a muscle, but it is easy to locate: the FS head mask is y>1.555 (4260), headHit's centre is about (0,1.70,-0.015) (4781), the brain sits at y=1.712 (4337), and the head rides bone 12. Onboarding draws violet neural lines on the head (FS 4205-4207). The BG aura is screen-space blobs, not tied to the head (4097-4101). headZoom zooms in and also shows the brain X-ray (4850); camTo zooms without it (4856).",
+   "changes": [
+    {
+     "file": "web/ossa.html (FX hook) + web/ui/body-fx.js (chunk)",
+     "change": "FS main branch: the head surface (vR.y>1.555, rest space, so it follows any pose) gets a cyan fresnel rim plus neural lines, ported from 4205-4207 in cyan. Line density and brightness scale with uNeural.x (0..1)."
+    },
+    {
+     "file": "web/ui/body-fx.js (BG chunk)",
+     "change": "BG_FS: a halo anchored to the head. Pass the head's world position (bone 12 x rest centre, computed in JS from the bones array) and project it with the CAM_GLSL uniforms, the same maths as the VS. Shards are polar sectors with hashed lengths, using the existing vor() Voronoi (3981) for facets: count 6+2*level, length 0.06-0.16 m, slow rotation and flicker. Skip work beyond a radius, so the full-screen pass stays cheap."
+    },
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Optional FX overlay pass (additive, after the body) for a few sparks or arcs in front of the face, because the BG pass sits behind the figure. Focus screen camera: bodyStage + camTo({zoom:5.2,px:0,py:0.78,yaw:0}) with no hz (no brain X-ray), and frameBox under the header."
+    }
+   ],
+   "dependsOn": [
+    "Body FX foundation",
+    "Focus area: Neural State XP/level (S.neural)"
+   ],
+   "designDeviations": [
+    "The realistic face becomes our neutral head with contour lines (ground rule 1; our head is 'a neutral scan, not a person', FS 4259).",
+    "Behind the head, shards come from the BG pass. Only small sparks can cross in front of the face (overlay pass).",
+    "XP and level numbers ('LVL 14', '320 XP to LVL 15', '+12 XP') must come from logged focus and breathing sessions."
+   ],
+   "effort": "L",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web-only.",
+   "newFiles": [],
+   "risks": [
+    "The shards could read as a spiky blob. They need tuning on a phone at the 1.3x canvas scale.",
+    "Continuous animation on a full-screen pass costs battery: 30 fps cap, distance early-out, steady under reduced motion.",
+    "Fallback: a cyan head rim plus a soft gradient halo (today's aura blobs, re-centred on the head) whose size follows the level."
+   ],
+   "showAtEnd": "Three 390x844 screenshots of the Focus Aura head at levels 1, 7 and 14 beside focus_aura.png, plus a 5-second recording of the shimmer.",
+   "stateChanges": [
+    "Body reads only the level: uNeural vec2 {x: 0..1 level fraction, y: tier}. The S.neural shape ({xp:number, log:[{d,kind,min,xp}]}) is owned by the Focus area."
+   ]
+  },
+  {
+   "name": "(d) focus_timer_stance / monk_mode_setup: seated meditative pose with no artist rig",
+   "today": "There is no artist rig, but a procedural 13-bone rig with 2-bone linear-blend skinning exists (RIG 4360, skinWeights 4368, boneMats 4414). A chair-seated pose is already used in exercise demos (MOVES.leg_ext 4465: root -0.28, thighs -1.45, shins 1.5 rad). Squat reaches about 1.9 rad of knee bend (4454). There is no floor or cross-legged pose. Body.live keeps normal colouring (4873); startDemo recolours the body ICE (4295-4301). figLive overrides the live pose every 5 minutes (6733-6735). Breathing exists (Body.breathe 4857, uBr 3948).",
+   "changes": [
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Add MONK_SIT. Recommended default: bench or stool sit (hips about 85 degrees, knees about 90 degrees, hands resting on the thighs through ua/fa, head bowed [0.12,0,0], spine tall), built from leg_ext's angles. Apply with Body.live(MONK_SIT,1), and set Body.breathe(true, phase) from the session's breathing clock. Frame with bodyStage + frameBox + camTo, with py lowered for the seated height. Add a soft glowing plinth under the pelvis (BG or FX chunk)."
+    },
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Chest glow: port the heart glow (FS 4202-4203) into the main branch as uChest, in cyan and breath-synced. Lightning arcs go in the FX overlay (noise lines out from the sternum). The setup screen's chest ring is drawn in the FX overlay around the projected sternum."
+    },
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Wrap figLive (a function declaration) so it does nothing while Monk Mode runs. Turn off picking and tap reactions (rdPoke, uiHeroSelect) during the session, matching the design's 'Character Locked'."
+    },
+    {
+     "file": "web/ui/body-fx.js (spike only)",
+     "change": "Half-day spike: try cross-legged on the floor behind a preview flag with sliders. Thighs flex about -1.3 rad, abduct about 0.7 rad and rotate out about 0.6 rad (boneMats takes rx,ry,rz per joint); knees about 2.4 rad; shins asymmetric (thR/thL set separately); root about -0.75 m."
+    }
+   ],
+   "dependsOn": [
+    "Body FX foundation",
+    "Focus area: the Monk Mode timer and session state"
+   ],
+   "designDeviations": [
+    "Cross-legged lotus probably becomes seated on a block, unless the spike looks clean.",
+    "Glowing cyan eyes become nothing (our head has no face). A faint brow glow is possible but not recommended.",
+    "'No Notifications / Silent Notifications' becomes a prompt to turn on iOS Focus (ground rule 4).",
+    "'880 XP Aura Score' must be real Neural XP."
+   ],
+   "effort": "M",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web-only. The pose is procedural.",
+   "newFiles": [],
+   "risks": [
+    "Lotus (L-XL): at about 140 degrees, 2-bone linear-blend skinning collapses the back of the knee. The groin and glutes stretch, and the legs interpenetrate. It may need 3-bone weights or corrective bulges in the VS.",
+    "A pre-baked seated mesh is not recommended: +1.6 MB per figure (both figures add 3.2 MB to the HTML), a Blender round trip, and it must carry rest-pose coordinates, because muscle identity comes from rest space.",
+    "Bench sit: low risk. Up to about 1.9 rad of knee bend already looks acceptable in the squat demo.",
+    "Fallback: standing, head bowed, chest glow, slow breathing, camera cropped to the waist up."
+   ],
+   "showAtEnd": "Screenshots of the Monk timer with our body seated, front and three-quarter, beside focus_timer_stance.png. The setup screen with the chest ring beside monk_mode_setup.png. The lotus spike screenshots, so Andrej can choose.",
+   "stateChanges": [
+    "None in Body. Monk session state is owned by the Focus area (e.g. S.monk = {sessions:[{d, start, min, done}]})."
+   ]
+  },
+  {
+   "name": "(e) specialization_engine: Tank vs Scout morph",
+   "today": "The VS knows only position, normal and bones. Nothing per vertex says which muscle a vertex belongs to; FS works muscles out per pixel. Inflating along normals is proven by breathing (VS 3948). The hull outline pass shares the VS (prH, 4513).",
+   "changes": [
+    {
+     "file": "web/ui/body-fx.js (+ hook in loadFigure, web/ossa.html 4521-4533)",
+     "change": "Precompute per-vertex muscle weights when a figure loads, the way skinWeights does. For each vertex, measure the SDF distance to the 37 PARTS in rest space with |x|, keep the nearest two muscle ids, a smooth blend and a falloff weight w (0 for head, hands and feet). Store them as a new attribute aMw vec4 (location 4) and cache per figure. About 1.4M ellipsoid evaluations in JS, roughly 20-60 ms on a phone (estimate, unconfirmed). The alternative is doing it in the VS each frame with the Parts UBO bound."
+    },
+    {
+     "file": "web/ossa.html (VS hook)",
+     "change": "VS: in rest space, before skinning, r' = r + nr*w*mix(uInf[id2],uInf[id1],blend), where uInf comes from uFx.w. Keep vR = r so colours and picking don't change. Optionally widen the torso slightly on x for y 1.2-1.45, using smoothstep so nothing tears. Applies to both prM and prH."
+    },
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Body.setMorph({tank,scout}) maps to uInf per muscle. Tank: traps, delts, pecs, lats, quads, glutes +4 to +7 mm. Scout: calves and hamstrings lean, abs -2 to -3 mm. Scaled by the morph amount from 30-day volume."
+    }
+   ],
+   "dependsOn": [
+    "Body FX foundation",
+    "Evolve area: 30-day volume and radar (S.arch, S.workouts, S.lifts)"
+   ],
+   "designDeviations": [
+    "The two photoreal human characters in suits become our one figure, shifted subtly with Tank or Scout glow accents.",
+    "'Reduces injury risk by 15%' is dropped (health claim). '+25% Maximum Power Cap' stays as a game rule."
+   ],
+   "effort": "L",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web-only.",
+   "newFiles": [],
+   "risks": [
+    "Seams if the per-vertex amount isn't continuous. Use smooth weights, never nearest-part only.",
+    "Arm against lats self-intersection beyond about 8 mm (gap unconfirmed). Cap the inflation.",
+    "Normals don't update after inflation, so shading drifts slightly at larger amounts.",
+    "The female figure needs its own tuning.",
+    "It must read as a game build, not 'your body will look like this'.",
+    "Fallback: no geometry change. Show the archetype as glow accents (gold seams on the upper body for Tank, lime lines on the legs for Scout) beside the radar."
+   ],
+   "showAtEnd": "Side-by-side screenshots of our figure at Tank 100%, neutral and Scout 100% (front and side), beside specialization_engine.png, plus a 3-second slider recording.",
+   "stateChanges": [
+    "Body-internal: attribute aMw vec4 per vertex (id1, id2, blend, w), cached per figure. The saved S.arch = {path:'tank'|'scout'|null, since:'YYYY-MM-DD'} is owned by Evolve; the morph amount 0..1 is derived from logs, not stored."
+   ]
+  },
+  {
+   "name": "(f) ar_goal_projection: Ideal Self wireframe of the next big rank over our body",
+   "today": "The only second pass is the inverted-hull outline (HULL_FS 3958-3961, drawn 4637-4641). There is no wireframe or line geometry. WebGL lines are only 1 px wide.",
+   "changes": [
+    {
+     "file": "web/ui/body-fx.js + draw() hook (web/ossa.html 4656)",
+     "change": "New program prI: the shared VS (with (e)'s inflation set to 'next rank' amounts plus a 3-5 mm overall offset) and IDEAL_FS. IDEAL_FS draws a procedural lattice from rest-space coordinates: horizontal contours fract(vR.y*K), like the head contours at 4261-4262, plus a triplanar fract(vR.x*K)/fract(vR.z*K) grid weighted by the normal, anti-aliased with fwidth, coloured cyan to lime by fresnel. Draw it after the main mesh, additive, depthMask off, depth LEQUAL, so it hugs the body. +1 mesh draw."
+    },
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Body.setGhost({on, inflate, colour}). The match % is computed by Evolve from real scores, for example the mean over the 23 muscles of min(score,T)/T, where T is the next tier threshold."
+    }
+   ],
+   "dependsOn": [
+    "(e) per-vertex muscle weights (for per-muscle inflation)",
+    "Body FX foundation",
+    "Evolve area: match % definition"
+   ],
+   "designDeviations": [
+    "'AR Projection' / 'LIVE AR' becomes 'Your next rank' (no camera, ground rule 4).",
+    "'Crystalline Fibers: Enhanced visual density +12%' becomes a game unlock tied to a real threshold. 'Prismatic Sheen unlocks at 90% match' is fine as a game unlock.",
+    "Rejected: GL_LINES of real mesh edges (about 112k edges at 1 px is a grey haze at phone size) and barycentric wireframe (needs a de-indexed mesh, about 6x memory)."
+   ],
+   "effort": "M",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web-only.",
+   "newFiles": [],
+   "risks": [
+    "Triplanar lattice seams on limbs. Needs tuning.",
+    "Additive overdraw adds one 74.6k-triangle pass.",
+    "Inflating the ghost implies body change. Keep the wording game-like, or make the ghost re-colour only (open question).",
+    "Fallback: a ghost in the next rank's colours using the hull-style pass, with no lattice."
+   ],
+   "showAtEnd": "A 390x844 screenshot of the Ideal Self screen beside ar_goal_projection.png, with the match % and how it's worked out, plus a 4-second turntable recording.",
+   "stateChanges": [
+    "None saved. Ideal Self is derived from S.scores and RANKS."
+   ]
+  },
+  {
+   "name": "(g) prestige_system / vessel_vault: per-muscle materials (black marble + silver, chrome, obsidian, carbon fibre)",
+   "today": "FINISHES change only the fresnel rim colour for the whole body (7392, rimColor 7396, uRimC 4647). There are no textures or UVs. FS already has per-pixel muscle ids, fibre-aligned local coordinates lp (4282-4285), seams (4287-4290) and 3D value noise vn3 (OB_GLSL 3933-3937, already in FS).",
+   "changes": [
+    {
+     "file": "web/ui/body-fx.js (FS chunk in the rank branch)",
+     "change": "Branch on the material id uFx[id].z. Marble + silver: dark base, ridged fbm of vn3 on vR*20 for veins, silver seams and specular. Chrome: reflect(vd,n) into an analytic studio environment (gradient plus 2-3 light strips), with strong fresnel. Obsidian: near-black, sharp specular, faint lime Voronoi cracks. Carbon fibre: a triplanar twill on vR, with sheen along the lp fibre axis. The rank colour stays as the seam and edge glow, so rank stays readable."
+    },
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Body.setMats(map). Any number of materials can coexist in one draw: each pixel takes one branch, so cost is about the most expensive material on that pixel, with divergence only at muscle borders. Budget 4-6. Body.swatch(matId) renders an analytic sphere in that material once, via the FX pass and toDataURL, cached, for the Vault. Or show each material on our own shoulder (focusMuscle front_delt) instead of spheres."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Only if procedural chrome looks fake: add the engine's first texture (a base64 matcap PNG, about 30-60 KB) behind a sampler2D."
+    }
+   ],
+   "dependsOn": [
+    "Body FX foundation",
+    "Evolve area: prestige rules",
+    "Purchases area: Vault/Pro gating"
+   ],
+   "designDeviations": [
+    "The close-up marble render becomes our own shoulder in the procedural material (ground rule 1).",
+    "Vault spheres become our body in each material, or cached sphere swatches rendered by the same shader.",
+    "'Ad-Free Recovery' is dropped (Ossa has no ads).",
+    "'Sacrifice current rank for the divine' becomes plain copy. '1.5x RP multiplier' is fine (game rule)."
+   ],
+   "effort": "L",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web-only.",
+   "newFiles": [],
+   "risks": [
+    "High-frequency noise shimmers on the 1.3x-scaled canvas. Fade the detail out using fwidth.",
+    "Carbon-fibre triplanar seams.",
+    "fbm cost (4 octaves x 8 hashes) on big muscles. Applies only to prestiged muscles.",
+    "Prestige 'reset' conflicts with the decided 'ranks never drop' (DECISIONS 2026-10-15). A reset muscle would also draw as Unranked under its material.",
+    "Fallback: tinted rims and seams per muscle (FINISHES-style) instead of full materials."
+   ],
+   "showAtEnd": "A grid of our shoulder close-up in marble + silver, chrome, obsidian and carbon fibre beside prestige_system.png and vessel_vault.png. The Body page with one prestiged muscle among the rank colours.",
+   "stateChanges": [
+    "S.prestige = {[muscleKey]: {n:number, mat:'marble'|'chrome'|'obsidian'|'carbon', at:'YYYY-MM-DD'}}",
+    "If Vault skins cover the whole body: S.skin = 'obsidian'|'chrome'|'carbon'|null (Pro-gated). It sits alongside the existing S.finish (rim colour)."
+   ]
+  },
+  {
+   "name": "(h) bio_rhythm_sync: heartbeat glow on the chest, synced with haptics",
+   "today": "The onboarding chest heart glow and lub-dub envelope exist (FS 4202-4203, obStep 4625). Pulse.beat/steady give an audio thump plus buzz(10) at a bpm (7921-7963). The Core X-ray has an SDF heart with a beat uniform (ORG_FS 4113, 4158) and lungs. Ribs exist only as the Bones SVG overlay (drawBones, bnRib). Resting heart rate comes from Apple Health (S.health.rhr, S.bpm, 10357). App.js turns one buzz into one impact (24-31).",
+   "changes": [
+    {
+     "file": "web/ui/body-fx.js (FS chunk)",
+     "change": "Main-branch chest glow: uHeart vec2 (amount, envelope) at rest-space (0.03,1.26,0.05), radius about 0.09, coloured by recovery state (lime ready, amber recovering, from tokens)."
+    },
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Beat scheduler: rate = S.health.rhr, else S.bpm, else a calm 60. The envelope comes from the last beat time (obStep's formula). Haptics are two single calls: Pulse.buzz(14) (Medium) at lub and Pulse.buzz(8) (Light) 210 ms later. Fire them about 20 ms early to cover bridge latency. Runs only while the screen is visible."
+    },
+    {
+     "file": "web/ui/body-fx.js",
+     "change": "Bio-rhythm screen: bodyStage with the Core X-ray (Body.setXray), Body.obView('heart') camera (4870) and a lime tint uniform for the organ heart (ORG_FS 4158). Optionally the Bones rib overlay."
+    }
+   ],
+   "dependsOn": [
+    "Body FX foundation",
+    "Recover area: the recovery-state mapping"
+   ],
+   "designDeviations": [
+    "'0.8 Hz pulse frequency' becomes '58 bpm resting · Apple Health, an estimate'.",
+    "'Respiration 14 BPM' is dropped, or becomes 'Breathing pace 6 a minute' from the breathing tool's setting.",
+    "'Haptic Sync 98%' and 'STABLE VIBE' are dropped.",
+    "'Stabilize Rhythm' becomes 'Breathe with it' (opens breathing)."
+   ],
+   "effort": "M",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "The existing navigator.vibrate bridge is enough. Only custom Core Haptics patterns or Soft/Rigid styles would need an App.js change and a new EAS build (not recommended).",
+   "newFiles": [],
+   "risks": [
+    "Bridge latency (postMessage, then React Native, then expo-haptics) is unconfirmed and could be 10-40 ms.",
+    "Constant haptics drain the battery and get annoying. Run only while the screen is open, and stop after a few minutes.",
+    "Nothing is felt if the user has iOS System Haptics off.",
+    "A browser recording can't show haptics, so the sync must be checked on a phone."
+   ],
+   "showAtEnd": "A 390x844 screenshot of the bio-rhythm screen with our X-ray chest beside bio_rhythm_sync.png, plus a phone video (dev build or Expo Go, no EAS build) showing the glow and haptic beat together.",
+   "stateChanges": [
+    "None. Reads S.health.rhr and S.bpm."
+   ]
+  },
+  {
+   "name": "(i) vessel_trading_cards: render the body to an image for a shareable card",
+   "today": "Body.snapshot (4913) draws the front view at the current canvas size (at most 560k px) and calls toDataURL. glowShot is already in use on Workout complete (7779). openShare puts a snapshot in the #share overlay (5834). psCard/psShare build a 1080x1350 2D canvas and share natively via share:image (7273-7301, App.js:121).",
+   "changes": [
+    {
+     "file": "web/ui/body-fx.js (+ access to internals via the makeGLBody hook)",
+     "change": "Body.cardShot({w:900,h:1200,yaw:0,ring:false,scene:0,fx:true}): briefly enlarge the drawing buffer, frame the whole figure (as snapshot does), turn off the scene and floor dial, keep rank colours, materials and aura, draw, toDataURL in the same task, then restore with resize()."
+    },
+    {
+     "file": "web/ui (card UI, Evolve area)",
+     "change": "Compose a 1080x1350 2D canvas the way psCard does: rank, overall RP, streak, sessions, strongest muscle, rarest trophy, date, 'Made with Ossa'. Share through the existing nsend share:image or navigator.share, falling back to the #share overlay."
+    }
+   ],
+   "dependsOn": [
+    "Body FX foundation",
+    "(g) materials, so cards show them",
+    "Trophy room (rarest trophy)"
+   ],
+   "designDeviations": [
+    "'Anatomical Hero', 'Power 9800 / Defense 8400 / Speed / Stamina', 'Neon Surge: increases all stats by 20% for 3 turns' and 'Mythic Rare' become real fields only (ground rule 3).",
+    "The crossed-arms hero pose becomes standing (crossed forearms would cut into the chest with this rig).",
+    "'Captured in the ledger' becomes plain copy."
+   ],
+   "effort": "M",
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Native image sharing already exists (App.js:121).",
+   "newFiles": [],
+   "risks": [
+    "alpha:false means the figure is on black. That's fine for a dark card; use 'lighter' or 'screen' compositing on gradients.",
+    "toDataURL must stay in the same task as the draw.",
+    "A one-off memory spike when the buffer is enlarged.",
+    "Canvas text needs the embedded fonts loaded."
+   ],
+   "showAtEnd": "The exported 1080x1350 PNG beside vessel_trading_cards.png, plus a screenshot of the iOS share sheet with it.",
+   "stateChanges": [
+    "None."
+   ]
+  }
+ ],
+ "openQuestions": [
+  {
+   "question": "Monk Mode: what pose should the character take?",
+   "why": "The model has a working procedural rig. A seated-on-a-block pose is low risk (it reuses the chair pose already in the exercise demos). The design's cross-legged lotus pushes 2-bone skinning past what it handles well: knees collapse, hips stretch, legs overlap.",
+   "recommendation": "Let me spend half a day trying lotus behind a preview flag and show you screenshots. If it looks broken, ship the block sit as the default and keep standing as the fallback.",
+   "options": [
+    "Seated on a block or bench (low risk)",
+    "Cross-legged lotus as designed (high risk, try it first)",
+    "Standing, head bowed, chest glow, cropped to the waist"
+   ]
+  },
+  {
+   "question": "Can flagged muscles pulse red on the Body page itself?",
+   "why": "On 15 Oct you decided the Body page figure stays still and 'never moves on its own'. A colour pulse also keeps the GPU drawing (today the page renders nothing when idle).",
+   "recommendation": "Pulse for about 6 seconds when the page opens, then hold a steady red glow. Keep the full pulse on the Injury Mapping screen.",
+   "options": [
+    "Always pulse",
+    "Pulse briefly, then steady",
+    "Steady only on the Body page"
+   ]
+  },
+  {
+   "question": "Should neglect fading show in rank view, and should the pause cover flagged areas only or everything?",
+   "why": "Today the Body page and the 3D Rank view never show fading (the shader turns it off in rank mode), even though the copy says muscles fade. The design also has a global 'Pause Neglect' toggle.",
+   "recommendation": "Show fading in rank view as a dimmed rank with a faint texture, so it can't be mistaken for a lower rank. Pause only the flagged areas and their muscles.",
+   "options": [
+    "Pause the flagged areas only",
+    "A global pause toggle as designed",
+    "Both"
+   ]
+  },
+  {
+   "question": "Should the new rank palette be used exactly in 3D (Strong #FFFFFF, Fragile #4A4A4A)?",
+   "why": "On our lit dark body, pure white muscles compete with the white fibre lines and the selection glow, and Fragile is close to the Unranked dark grey.",
+   "recommendation": "Use the tokens, but let the shader lower Strong's brightness slightly. Then check the Body page on a phone.",
+   "options": [
+    "Use the palette exactly",
+    "Allow the shader to tune brightness"
+   ]
+  },
+  {
+   "question": "Prestige resets a muscle's rank, but you decided 'ranks never drop'. Which wins?",
+   "why": "The engine has to draw a reset muscle somehow: under its material, it would show as Unranked.",
+   "recommendation": "Keep the rank and add a prestige star count (n), with no reset.",
+   "options": [
+    "Reset to Unranked with a permanent material",
+    "Keep the rank and add a prestige level"
+   ]
+  },
+  {
+   "question": "How visible should Tank/Scout and Ideal Self be on the silhouette?",
+   "why": "Inflating along normals works, but more than about 8 mm risks the arms cutting into the torso, and an inflated 'ideal' could read as a promise about your real body.",
+   "recommendation": "Keep the shape change subtle (6 mm or less) and show most of the difference with glow and colour. Word it 'Tank build' and 'Your next rank'.",
+   "options": [
+    "Subtle shape plus colour",
+    "Exaggerated shape",
+    "Colour only"
+   ]
+  }
+ ],
+ "orderNotes": "1. Build the Body FX foundation in Phase 0, alongside the new tokens. It is web-only and invisible: hooks in makeGLBody, the packed uFx/uJnt uniforms, rank colours read from tokens.css, a 30 fps animation scheduler that stops offscreen, a plain-shader fallback so a GLSL error can't drop to the 2D body, context-loss recovery, the bodyStage helper and the ?fx= preview flag. Every later effect depends on it, and with all effects off it must look identical to today.\n2. Phase 1 (Vessel Engine): (a) the red pulse and (b) fade with pause share the S.vuln model, so do them together. Check left vs right on a phone first.\n3. Try the riskiest geometry early, during Phase 1, even though it ships later: the lotus pose (d) and the morph weights (e). The results decide the Monk Mode and Archetype designs, so Andrej should see screenshots before Phases 3 and 5 are planned in detail.\n4. Phase 3 (Focus): (c) aura, (d) Monk pose and chest glow, (h) heartbeat. They share the chest glow chunk, the FX overlay pass and the head anchor.\n5. Phase 5 (Evolve): (e) morph first, because it builds the per-vertex muscle weights that (f) Ideal Self reuses. Then (g) materials (the Vault depends on purchases gating), then (i) the trading card last, so cards show materials and trophies.\n6. Everything in this area is web-only (web/ossa.html plus new web/ui/body-fx.js and body-fx.css). No App.js, native or EAS build is needed. Before each phase is called done, check it on a real iPhone as well as in npm run preview, because iOS WebGL2 can be stricter than desktop and haptics only show on a device. Keep the main body pass to its current 3 draws plus at most 1 extra mesh pass (Ideal Self) and 1 full-screen additive FX pass. Critical files: C:\\Ossa\\ossa-expo\\web\\ossa.html (makeGLBody 4503-4918, VS/FS/BG_FS 3939-4354, fadeOf 3881, rdHeroBox/rdHomeOn 11016-11037), C:\\Ossa\\ossa-expo\\web\\ui\\shell.js (Body page hero 340-460), C:\\Ossa\\ossa-expo\\web\\ui\\ranks.js (rkSync), C:\\Ossa\\ossa-expo\\web\\ui\\tokens.css (--rk-*), C:\\Ossa\\ossa-expo\\App.js (buzz 24-31, share 121)."
+}

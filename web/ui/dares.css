@@ -1,0 +1,27 @@
+/* =========================================================
+   DARES — see dares.js. Moved out of ranks.css in Ossa 2.0 Phase 6. Tokens only.
+   Phase 6: the card matches Recover's reset card (a solid lime-tinted border, an fs-4 800 title,
+   lime first and left-aligned, "Not today" a 44 px link); the weather card adds a two-line line and
+   opens the dare page (darepage.js) from anywhere outside its buttons.
+   ========================================================= */
+/* ---------- the dare ---------- */
+.dare{border-color:color-mix(in srgb,var(--glow) 40%,var(--line))}
+.dare-top{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);min-width:0}
+.dare-eye{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--glow)}
+/* 32 px to look at, 44 px to tap */
+.dare-tone{position:relative;flex:none;min-height:32px;padding:0 10px;border-radius:var(--r-pill);font-family:var(--mono);font-size:var(--fs-1);font-weight:700;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2);border:1px solid var(--line-2)}
+.dare-tone::before{content:"";position:absolute;inset:-7px -4px}
+.dare-t{display:block;margin:var(--sp-2) 0 0;font-size:var(--fs-4);font-weight:800;line-height:1.25;letter-spacing:var(--track-tight);color:var(--text-1)}
+.dare-why{margin-top:var(--sp-1)}
+.dare-acts{display:flex;align-items:center;justify-content:flex-start;gap:var(--sp-4);margin-top:var(--sp-3)}
+.dare .dare-acts .u-btn{min-height:var(--tap);padding:0 var(--sp-5);border-radius:var(--r-sm);font-size:var(--fs-3);font-weight:800}
+.dare-acts .u-btn svg{width:16px;height:16px}
+.dare-ask{margin:var(--sp-1) 0 calc(-1 * var(--sp-2)) calc(-1 * var(--sp-1));color:var(--text-2)}
+.dare.dare-done{border-color:color-mix(in srgb,var(--glow) 38%,transparent)}
+.dare.dare-quiet{border-color:var(--line)}
+/* the weather card */
+.dare-wx{cursor:pointer}
+.dare-main{display:block;width:100%;margin:0;padding:0;border:0;background:none;text-align:left;color:inherit;font:inherit}
+.dare-main:active .dare-t{opacity:.8}
+.dare-line{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:var(--sp-1);font-size:var(--fs-2);line-height:1.4;color:var(--text-2)}
+.dare-line.dare-warn{color:var(--amber)}

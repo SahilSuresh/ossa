@@ -1,0 +1,66 @@
+/* =========================================================
+   YOUR PATH (Phase 5 "Evolve", package path): view "path" inside #evV. See path.js.
+   One screen, no scrolling: the two figures, the radar row, two perk rows, one pinned button.
+   Picture boxes have a fixed size per breakpoint (the still cache keys on it). Tokens only.
+   ========================================================= */
+.pth{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:var(--sp-2)}
+
+/* the two figures: tap one to read its perks */
+.pth-figs{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);flex:none}
+.pth-fig{display:grid;grid-template-rows:auto 28px;min-width:0;padding:0;text-align:center;color:var(--text-1);transition:opacity var(--dur-2)}
+.pth-fig.dim{opacity:.4}
+.pth-fig:active .pth-shot{transform:scale(.98)}
+.pth-shot{position:relative;display:grid;place-items:center;height:clamp(200px,30dvh,280px);overflow:hidden;
+  border-radius:var(--r-card);border:2px solid var(--line);background:var(--surface-1);transition:border-color var(--dur-2),transform var(--dur-1)}
+.pth-fig.on .pth-shot{border-color:var(--glow)}
+.pth-shot img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.pth-fig.plain .pth-shot b{font-size:var(--fs-5);font-weight:900;letter-spacing:var(--track-tight)}
+.pth-nm{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);font-size:var(--fs-3);font-weight:800;line-height:1}
+.pth-yours{font-style:normal;font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--glow);
+  padding:3px var(--sp-2);border-radius:var(--r-pill);border:1px solid color-mix(in srgb,var(--glow) 40%,transparent)}
+
+/* the radar row: tap for the numbers */
+.pth-rd{display:grid;grid-template-columns:150px minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);flex:none;width:100%;height:150px;padding:0;text-align:left;color:var(--text-1)}
+.pth-rd:active{opacity:.8}
+.pth-rd .u-chev{width:16px;height:16px;fill:none;stroke:var(--text-3);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pth-radar{width:150px;height:150px;display:block}
+.pth-grid polygon,.pth-grid line{fill:none;stroke:var(--line-2);stroke-width:.8;vector-effect:non-scaling-stroke}
+.pth-grid line.pth-nul{stroke:var(--text-3);stroke-dasharray:2 3}
+.pth-poly{fill:color-mix(in srgb,var(--glow) 20%,transparent);stroke:var(--glow);stroke-width:1.6;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.pth-dots circle{fill:var(--glow)}
+.pth-radar.few .pth-poly,.pth-radar.few .pth-dots{opacity:.35}
+.pth-rt{display:grid;gap:var(--sp-1);min-width:0}
+.pth-rt b{font-size:var(--fs-4);font-weight:800;line-height:1.15}
+.pth-rt small{font-size:var(--fs-2);color:var(--text-2);line-height:1.35}
+.pth-rt .pth-few{color:var(--text-1)}
+
+/* two perk rows for the selected path */
+.pth-perks{flex:none;display:grid;margin:0;padding:0;list-style:none}
+.pth-perk{display:grid;grid-template-columns:24px minmax(0,1fr);align-items:center;gap:var(--sp-3);min-height:var(--tap);font-size:var(--fs-2);line-height:1.3;color:var(--text-1)}
+.pth-perk + .pth-perk{border-top:1px solid var(--line)}
+.pth-perk i{display:grid;place-items:center;width:24px;height:24px;color:var(--glow)}
+.pth-perk svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.pth-br{color:var(--text-2)}
+
+/* the one button, pinned */
+.pth-go{flex:none;margin-top:auto}
+.pth-go.off{opacity:.4}
+
+/* the numbers sheet */
+.pth-sh{display:grid}
+.pth-sh-t{margin:0;font-size:var(--fs-4);font-weight:800;color:var(--text-1)}
+.pth-sh-s{margin:2px 0 var(--sp-2);font-size:var(--fs-2);color:var(--text-2)}
+.pth-sg{display:flex;align-items:baseline;justify-content:space-between;margin-top:var(--sp-3);padding-bottom:var(--sp-1);border-bottom:1px solid var(--line-2)}
+.pth-sg em{font-style:normal;font-size:var(--fs-4);font-weight:800;color:var(--glow);font-variant-numeric:tabular-nums}
+.pth-sr{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:var(--tap);border-bottom:1px solid var(--line)}
+.pth-sr b{font-size:var(--fs-2);font-weight:800;color:var(--text-1)}
+.pth-sr span{font-size:var(--fs-2);color:var(--text-2);text-align:right;font-variant-numeric:tabular-nums}
+.pth-sr.nul b{color:var(--text-3)}
+
+/* short phones: smaller pictures and radar, no bracket */
+@media (max-height:700px){
+  .pth-shot{height:clamp(160px,30dvh,220px)}
+  .pth-rd{grid-template-columns:104px minmax(0,1fr) auto;height:104px}
+  .pth-radar{width:104px;height:104px}
+  .pth-br{display:none}
+}

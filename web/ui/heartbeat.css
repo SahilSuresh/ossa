@@ -1,0 +1,131 @@
+/* =========================================================
+   HEARTBEAT (Ossa 2.0, Phase 3 "Focus"): styles for web/ui/heartbeat.js. Owner: package P4.
+   Classes .hrt-* (.hb- is taken in web/ossa.html). Tokens only (web/ui/tokens.css); lime is the
+   one Focus exception, for the heart. Included after monk.css.
+   Layout: the pill and the heart toggle sit in the screen's header row (#mind .mv-top) while #mind
+   has .hrtv; then the chest still, the reading, the waveform card, "Breathe with it" and the footnote.
+   Fits 375×667 above the tab bar (the footnote may scroll).
+   ========================================================= */
+
+/* header row: back (the dispatcher's) · pill · heart toggle */
+.mindv.hrtv .mv-title{display:none}
+.mindv.hrtv .mv-top{grid-template-columns:auto minmax(0,1fr) auto;column-gap:var(--sp-2)}
+.mindv.hrtv .mv-back{white-space:nowrap}
+.mindv:not(.hrtv) .hrt-pill,.mindv:not(.hrtv) .hrt-tgl{display:none}
+.hrt-pill{grid-row:1;grid-column:2;justify-self:center;display:inline-flex;align-items:center;gap:var(--sp-2);min-height:36px;max-width:100%;min-width:0;padding:0 var(--sp-4);overflow:hidden;
+  border-radius:var(--r-pill);background:var(--surface-2);border:1px solid var(--line);
+  font-family:var(--body);font-size:var(--fs-1);font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2);white-space:nowrap}
+.hrt-pill i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--text-3)}
+.hrt-pill span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.hrt-pill.on{color:var(--glow)}
+.hrt-pill.on i{background:var(--glow)}
+.hrt-tgl{grid-row:1;grid-column:3;justify-self:end;background:var(--surface-2);border-color:var(--line);color:var(--glow)}
+.hrt-tgl[disabled]{color:var(--text-3)}
+.hrt-tgl[aria-pressed="true"]{border-color:color-mix(in srgb,var(--glow) 45%,transparent);background:var(--glow-a)}
+.hrt-tgl[aria-pressed="true"] svg path{fill:currentColor}
+
+.hrt{display:flex;flex-direction:column;padding-bottom:var(--sp-2)}
+
+/* the chest: two stills on black, the glow one over the plain one (lighten, so black stays black) */
+.hrt-hero{position:relative;height:clamp(150px,30vh,280px);margin:0 calc(-1 * var(--sp-2))}
+.hrt-hero.dim{height:clamp(110px,18vh,160px)}   /* no rate yet: room for the count */
+.hrt-im{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:lighten;opacity:0;
+  -webkit-mask-image:linear-gradient(to bottom,var(--bg) 72%,transparent);mask-image:linear-gradient(to bottom,var(--bg) 72%,transparent)}
+.hrt-hero:not(.ready) .hrt-im{display:none}
+.hrt-hero.ready .hrt-im{opacity:1}
+.hrt-hero.ready .hrt-glow{opacity:.5;transition:opacity var(--dur-3) var(--ease)}
+.hrt-hero.ready.on .hrt-glow{opacity:.7}
+.hrt-hero.dim .hrt-glow{display:none}
+.hrt-glow.go{animation:hrtLub .6s ease-out both}
+@keyframes hrtLub{0%{opacity:.7}8%{opacity:1}30%{opacity:.75}42%{opacity:.95}100%{opacity:.7}}
+.hrt-fb{display:none}
+.hrt-hero.nogl .hrt-fb{position:absolute;inset:0;display:grid;place-items:center;color:var(--glow)}
+.hrt-hero.nogl .hrt-fb svg{width:96px;height:96px;fill:var(--glow-a);stroke:currentColor;stroke-width:1.2;stroke-linejoin:round;
+  filter:drop-shadow(0 0 22px color-mix(in srgb,var(--glow) 55%,transparent))}
+.hrt-fb.go svg{animation:hrtThump .6s ease-out both}
+@keyframes hrtThump{0%{transform:scale(1)}8%{transform:scale(1.12)}30%{transform:scale(1.02)}42%{transform:scale(1.08)}100%{transform:scale(1)}}
+.hrt-hero.nogl.dim .hrt-fb{color:var(--text-3)}
+.hrt-hero.nogl.dim .hrt-fb svg{filter:none;fill:none}
+
+/* the reading */
+.hrt-read{display:flex;flex-direction:column;align-items:center;text-align:center;margin-top:var(--sp-2)}
+.hrt-num{display:flex;align-items:baseline;gap:6px}
+.hrt-num b{font-size:var(--fs-6);color:var(--text-1)}
+.hrt-num em{font-style:normal;font-family:var(--display);font-weight:900;font-size:var(--fs-4);color:var(--glow);letter-spacing:-.02em}
+.hrt-read .u-eyebrow{margin-top:var(--sp-2)}
+.hrt-src{margin:var(--sp-1) 0 0;font-size:var(--fs-2);line-height:1.4;color:var(--text-2);text-wrap:balance}
+.hrt-again{margin-top:-6px}
+
+/* no rate yet: count it or type it */
+.hrt-ask{margin-top:var(--sp-4);padding:var(--sp-4);background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card)}
+.hrt-ask .u-small{margin:0 0 var(--sp-3)}
+.hrt-ask .u-btn.small{min-height:var(--tap)}
+.hrt-cnt{font-variant-numeric:tabular-nums}
+.hrt-in{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--sp-3);margin:var(--sp-3) 0}
+.hrt-in label{display:flex;flex-direction:column;align-items:center}
+.hrt-in input{width:100%;max-width:140px;min-height:var(--tap);padding:0 var(--sp-2);text-align:center;font-family:var(--display);font-weight:900;font-size:var(--fs-4);
+  font-variant-numeric:tabular-nums;color:var(--text-1);background:var(--surface-3);border:1px solid var(--line-2);border-radius:var(--r-sm)}
+.hrt-in small{margin-top:var(--sp-1);font-size:var(--fs-1);color:var(--text-2)}
+.hrt-in .u-icon-btn{font-size:var(--fs-4);font-weight:700}
+.hrt-hc{display:flex;margin:var(--sp-1) auto 0}
+
+/* the waveform: a lub-dub line that scrolls one beat per beat, only while it beats */
+.hrt-wave{display:block;width:100%;margin-top:var(--sp-4);padding:var(--sp-4);text-align:left;color:inherit;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card);transition:border-color var(--dur-2)}
+.hrt-wave:active{background:var(--surface-3)}
+.hrt-wave[disabled]{opacity:.55}
+.hrt-wave.on{border-color:color-mix(in srgb,var(--glow) 30%,var(--line))}
+.hrt-wh{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3)}
+.hrt-wh em{font-style:normal;font-size:var(--fs-2);font-weight:800;color:var(--text-2);white-space:nowrap}
+.hrt-wave.on .hrt-wh em{color:var(--glow)}
+.hrt-trw{display:block;height:52px;margin-top:var(--sp-3);overflow:hidden}
+.hrt-tr{display:block;width:125%;height:100%}
+.hrt-tr path{fill:none;stroke:color-mix(in srgb,var(--glow) 38%,var(--surface-2));stroke-width:2;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.hrt-wave.on .hrt-tr path{stroke:var(--glow)}
+.hrt-wave.on .hrt-tr{animation:hrtScroll var(--per,1000ms) linear infinite}
+@keyframes hrtScroll{to{transform:translateX(-20%)}}
+
+/* Breathe with it */
+.hrt-br{margin-top:var(--sp-4)}
+.hrt-xp{margin:var(--sp-2) 0 0;text-align:center;font-size:var(--fs-2);color:var(--text-2)}
+.hrt-xp:empty{display:none}
+.hrt-foot{margin-top:var(--sp-4);line-height:1.45}
+
+/* short phones: a smaller chest so the button stays above the tab bar */
+@media (max-height:700px){
+  .hrt-hero{height:clamp(130px,26vh,200px)}
+  .hrt-hero.dim{height:clamp(96px,16vh,120px)}
+  .hrt-wave{margin-top:var(--sp-3);padding:var(--sp-3) var(--sp-4)}
+  .hrt-trw{height:44px;margin-top:var(--sp-2)}
+  .hrt-br{margin-top:var(--sp-3)}
+}
+@media (prefers-reduced-motion:reduce){
+  .hrt-wave.on .hrt-tr{animation:none}
+  .hrt-glow.go,.hrt-fb.go svg{animation:none}
+  .hrt-hero.ready.on .hrt-glow{opacity:.85;transition:none}
+}
+
+/* Heartbeat on its own (Andrej, 17 Oct): no body. A big lime heart you tap, the number, one Feel it button,
+   Breathe with it under it and one line of small print. The header shows the title (and "· on") */
+.hrt-pill{background:none;border:0;font-size:var(--fs-3);letter-spacing:0;text-transform:none;color:var(--text-1)}
+.hrt-pill i{display:none}
+.hrt-pill.on{color:var(--glow)}
+.mindv.hrtv .hrt-tgl{visibility:hidden}
+.hrt-hero,.hrt-hero.dim{display:grid;place-items:center;width:clamp(150px,26vh,210px);height:auto;aspect-ratio:1;margin:var(--sp-3) auto 0;border-radius:50%;
+  background:radial-gradient(closest-side,var(--glow-a),transparent);border:0;color:var(--glow)}
+.hrt-hero .hrt-ring{position:absolute;inset:6%;border-radius:50%;border:1px solid color-mix(in srgb,var(--glow) 35%,transparent)}
+.hrt-hero.on .hrt-ring{border-color:var(--glow)}
+.hrt-hero.nogl .hrt-fb svg{width:46%;height:46%}
+.hrt-hero.dim{background:none}
+.hrt-wave{display:grid;gap:var(--sp-2);justify-items:center;padding:var(--sp-3) var(--sp-4);border-color:color-mix(in srgb,var(--glow) 40%,var(--line))}
+.hrt-trw{width:100%;height:36px;margin:0}
+.hrt-go{font-style:normal;font-size:var(--fs-3);font-weight:800;color:var(--glow)}
+.hrt-wave[disabled] .hrt-go{color:var(--text-3)}
+.hrt-br{margin-top:var(--sp-3);background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1)}
+.hrt-foot{margin-top:var(--sp-3);text-align:center}
+@media (max-height:700px){ .hrt-hero,.hrt-hero.dim{width:clamp(120px,22vh,160px)} .hrt-trw{height:28px} }
+/* adding or recounting your rate: only that on screen */
+.hrt.ask .hrt-wave,.hrt.ask .hrt-br,.hrt.ask .hrt-xp{display:none}
+.hrt.none .hrt-num,.hrt.none .hrt-read .u-eyebrow{display:none}
+.hrt.none .hrt-hero{width:clamp(96px,16vh,130px)}
+@media (max-height:700px){ .hrt-hero,.hrt-hero.dim{width:clamp(110px,18vh,140px)} }

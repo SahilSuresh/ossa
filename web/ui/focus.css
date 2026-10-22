@@ -1,0 +1,201 @@
+/* =========================================================
+   FOCUS (Ossa 2.0, Phase 3 "Focus"): styles for web/ui/focus.js (the Focus home, .fc-*), and the
+   Mind panel (#mind, .mindv) moved from violet to tokens for every Focus view: check-in, wind-down,
+   reflection, support, Learn's Mind lessons, the Breathe tool and Calm. Owner: package P5.
+   Tokens only (web/ui/tokens.css); cyan is the Focus colour. Included after heartbeat.css.
+   The legacy rules stay in ossa.html (340-466, 3092-3125); these come later and are scoped to
+   .mindv, so the panels that borrow .mv- classes (#checkP, #genP, #stdP, .td-form) are untouched.
+   ========================================================= */
+
+/* ---------- the panel: black, cyan where it was violet ---------- */
+.mindv{--mv:var(--cyan);--mv2:var(--cyan);background:var(--bg)}
+.mindv .mv-top{padding:calc(var(--sp-1) + var(--sat)) var(--gutter) var(--sp-1);background:linear-gradient(var(--bg) 70%,transparent)}
+.mindv .mv-back{display:inline-flex;align-items:center;min-height:var(--tap);padding:0 var(--sp-3) 0 0;font-family:var(--body);font-size:var(--fs-3);font-weight:600;letter-spacing:0;color:var(--text-1)}
+.mindv .mv-back:active{color:var(--text-2)}
+/* the screen's own title says where you are; "‹ Focus" says where back goes, so the bar needs no "Focus" too */
+.mindv .mv-title{visibility:hidden}
+.mindv .mv-body{padding:var(--sp-1) var(--gutter) calc(var(--sp-6) + var(--sab))}
+
+/* type */
+.mindv .mv-eye{font-family:var(--body);font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.mindv .mv-h{font-family:var(--display);font-stretch:normal;font-weight:900;font-size:var(--fs-5);line-height:1.08;letter-spacing:var(--track-tight);color:var(--text-1)}
+.mindv .mv-sub{font-size:var(--fs-2);color:var(--text-2)}
+.mindv .mv-p{font-size:var(--fs-3);color:var(--text-1)}
+.mindv .mv-note{font-size:var(--fs-1);color:var(--text-2)}
+.mindv .mv-prompt{font-stretch:normal;font-weight:800;font-size:var(--fs-4)}
+.mindv .mv-link{display:inline-flex;align-items:center;min-height:var(--tap);padding:0;font-family:var(--body);font-size:var(--fs-2);font-weight:600;letter-spacing:0;color:var(--text-1)}
+.mindv .mv-quote{font-stretch:normal;font-weight:700;font-size:var(--fs-3);line-height:1.45;color:var(--text-1)}
+
+/* the brain map (its four zone colours are the zones' own) */
+.mindv .mbrain .mb-out{fill:var(--glass);stroke:var(--text-2);stroke-opacity:.6}
+.mindv .mbrain .mb-in{stroke:var(--text-2);stroke-opacity:.3}
+.mindv .mbrain .mb-lab{fill:var(--text-1)}
+.mindv .mv-z span{font-size:var(--fs-1);color:var(--text-2)}
+.mindv .mv-z b{font-size:var(--fs-2)}
+
+/* cards, rows and buttons */
+.mindv .mv-card{border-radius:var(--r-card);border:1px solid var(--line);background:var(--surface-2)}
+.mindv .mv-card p{font-size:var(--fs-3);color:var(--text-1)}
+.mindv .mv-care{border-color:color-mix(in srgb,var(--amber) 38%,transparent);background:var(--amber-a)}
+.mindv .mv-care b{font-weight:700;color:var(--amber)}
+.mindv .mv-cta{border-radius:var(--r-card);border:1px solid color-mix(in srgb,var(--cyan) 35%,transparent);background:var(--cyan-a)}
+.mindv .mv-cta b{font-size:var(--fs-3);font-weight:700}
+.mindv .mv-cta span{font-size:var(--fs-2);color:var(--text-2)}
+.mindv .btn.primary,.mindv .mv-act .btn{background:var(--cyan);border-color:var(--cyan);color:var(--on-accent)}
+.mindv .mv-ins{border-bottom:1px solid var(--line)}
+.mindv .mv-ins p{font-size:var(--fs-2);color:var(--text-1)}
+.mindv .mv-cmp .b i{background:var(--line-3)}
+.mindv .mv-cmp small{font-size:var(--fs-1);color:var(--text-2)}
+.mindv .mv-tool{border:1px solid var(--line);background:var(--surface-2)}
+.mindv .mv-tool small{color:var(--text-2)}
+.mindv .mv-tool svg{stroke:var(--text-3)}
+.mindv .mv-tool>i,.mindv .mv-tool>i.ic-wind{background:radial-gradient(circle,var(--cyan-a),transparent 70%)}
+.mindv .mv-tool>i::after{border-color:var(--cyan)}
+.mindv .mv-tool>i.ic-focus::after{background:var(--cyan)}
+.mindv .mv-ch{border:1px solid var(--line);background:var(--surface-2)}
+.mindv .mv-ch b{font-size:var(--fs-3);font-weight:700}
+.mindv .mv-ch small{font-size:var(--fs-2);color:var(--text-2)}
+.mindv .mv-dots i{background:var(--surface-3)}
+.mindv .mv-dots i.on{background:var(--cyan);box-shadow:none}
+.mindv .mv-pill{min-height:var(--tap);padding:0 var(--sp-4);border:1px solid var(--line-3);font-size:var(--fs-2);font-weight:700;color:var(--text-1)}
+.mindv .mv-pill.done{border-color:transparent;background:var(--cyan-a);color:var(--cyan)}
+.mindv .mv-learn{margin:0 calc(-1 * var(--gutter));padding:0 var(--gutter) var(--sp-1);scroll-padding:0 var(--gutter)}
+.mindv .mv-lc{border-radius:var(--r-card);border:1px solid var(--line);background:linear-gradient(160deg,var(--cyan-a),var(--surface-2) 60%)}
+.mindv .mv-lc b{font-size:var(--fs-3);font-weight:700}
+.mindv .mv-lc small{font-size:var(--fs-2);color:var(--text-2)}
+.mindv .mv-stats span{font-size:var(--fs-1);color:var(--text-2)}
+.mindv .mv-stats b{font-stretch:normal;font-weight:900;font-size:var(--fs-5);font-variant-numeric:tabular-nums}
+.mindv .mv-foot{border-top:1px solid var(--line)}
+.mindv .mv-foot p{font-size:var(--fs-1);color:var(--text-2)}
+
+/* the check-in's old form pieces, wind-down, reflection, Learn, support, the old breath picker */
+.mindv .mv-q>span{color:var(--text-1)}
+.mindv .mv-chip{border-color:var(--line-2);color:var(--text-1)}
+.mindv .mv-chip.sel{background:var(--cyan);border-color:var(--cyan);color:var(--on-accent)}
+.mindv .mv-dot i{border-color:var(--line-3)}
+.mindv .mv-dot small{color:var(--text-2)}
+.mindv .mv-timer .t-fg{stroke:var(--cyan);filter:drop-shadow(0 0 4px var(--cyan))}
+.mindv .mv-bed span{font-size:var(--fs-2);color:var(--text-2)}
+.mindv .mv-bed button{width:var(--tap);height:var(--tap);border:1px solid var(--line-2);font-size:var(--fs-4);color:var(--text-1)}
+.mindv .mv-li{grid-template-columns:var(--tap) 1fr auto;padding-left:var(--sp-1);border:1px solid var(--line);background:var(--surface-2)}
+.mindv .mv-li small{font-size:var(--fs-1);color:var(--text-2)}
+.mindv .mv-tick{display:grid;place-items:center;width:var(--tap);height:var(--tap)}
+.mindv .mv-tick i{border-color:var(--line-3)}
+.mindv .mv-li.on .mv-tick i{background:var(--cyan);border-color:var(--cyan);box-shadow:none}
+.mindv .mv-ta{border:1px solid var(--line-2);background:var(--surface-2);font-size:var(--fs-3)}
+.mindv .mv-ta:focus{border-color:var(--cyan)}
+.mindv .mv-past{border-bottom:1px solid var(--line)}
+.mindv .mv-past small{font-size:var(--fs-1);color:var(--text-2)}
+.mindv .mv-past p{font-size:var(--fs-2);color:var(--text-1)}
+.mindv .mv-myth,.mindv .mv-try{border:1px solid var(--line);background:var(--surface-2)}
+.mindv .mv-myth b{font-size:var(--fs-1);color:var(--amber)}
+.mindv .mv-try b{font-size:var(--fs-1);color:var(--cyan)}
+.mindv .mv-myth p,.mindv .mv-try p{font-size:var(--fs-2);color:var(--text-1)}
+.mindv .mv-res{border-radius:var(--r-card);border:1px solid var(--line);background:var(--surface-2)}
+.mindv .mv-res b{font-weight:700}
+.mindv .mv-res small{font-size:var(--fs-2);color:var(--text-2)}
+.mindv .mv-pat{border:1px solid var(--line);background:var(--surface-2)}
+.mindv .mv-pat small{color:var(--text-2)}
+.mindv .mv-pat.sel{border-color:var(--cyan);background:var(--cyan-a)}
+/* the Breathe tool and Calm: the stage runs edge to edge in the new gutter */
+.mindv .br-stage{margin:0 calc(-1 * var(--gutter))}
+
+/* =========================================================
+   THE FOCUS HOME (fcHome): no header bar (you leave it by the tab bar), no animation
+   ========================================================= */
+.mindv.fh .mv-top{display:none}
+.mindv.fh .mv-body{padding:0}
+.mindv.fh .mv-body.in{animation:none}
+.fc-care{margin-bottom:var(--sp-3)}
+
+/* your Aura level: a cyan bar, the level left and what's left to the next right */
+.fc-lv{display:block;margin-top:var(--sp-1)}
+.fc-lv .u-bar{--c:var(--cyan)}
+.fc-lv .u-bar i{box-shadow:0 0 10px var(--cyan)}
+.fc-lv-l{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);margin-top:var(--sp-2);font-size:var(--fs-1);font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text-2);font-variant-numeric:tabular-nums}
+.fc-lv-l b{font-weight:800;color:var(--text-1)}
+.fc-new{margin-left:var(--sp-2);padding:2px 8px;border-radius:var(--r-xs);font-style:normal;font-weight:900;letter-spacing:.04em;color:var(--on-accent);background:var(--cyan)}
+.fc-seed{margin:var(--sp-2) 0 0;font-size:var(--fs-1);color:var(--text-2)}
+
+/* the hero: your own head and its aura (a still on black, lightened into the page), and the stage pill */
+.fc-hero{position:relative;margin:var(--sp-2) calc(-1 * var(--sp-2)) 0}
+.fc-hero-box{position:relative;height:330px;overflow:hidden}
+.fc-hero-img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:lighten;
+  -webkit-mask-image:linear-gradient(var(--bg) 80%,transparent);mask-image:linear-gradient(var(--bg) 80%,transparent)}
+.fc-hero-glow{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(closest-side at 50% 46%,transparent 56%,var(--cyan-a) 70%,transparent 86%)}
+.fc-hero-box.wait .fc-hero-glow,.fc-hero-box.flat .fc-hero-glow{opacity:1}
+.fc-pill{position:absolute;left:50%;bottom:var(--sp-2);transform:translateX(-50%);display:inline-flex;align-items:center;gap:var(--sp-2);min-height:36px;padding:0 var(--sp-4);border-radius:var(--r-pill);
+  white-space:nowrap;font-size:var(--fs-1);font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text-1);
+  background:var(--glass-strong);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(var(--glass-blur));backdrop-filter:blur(var(--glass-blur))}
+.fc-pill i{width:8px;height:8px;border-radius:50%;background:var(--text-3)}
+.fc-pill.on i{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+
+/* a Monk Mode session running (or done and not seen yet) */
+.fc-live{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);margin-top:var(--sp-4);border-color:color-mix(in srgb,var(--cyan) 40%,transparent);background:var(--cyan-a)}
+.fc-live>span{min-width:0}
+.fc-live b{display:block;font-size:var(--fs-3);font-weight:800;color:var(--text-1);font-variant-numeric:tabular-nums}
+.fc-live small{display:block;margin-top:2px;font-size:var(--fs-2);color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fc-live-dot{width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.fc-live.done{border-color:color-mix(in srgb,var(--glow) 38%,transparent);background:var(--glow-a)}
+.fc-live.done .fc-live-dot{background:var(--glow);box-shadow:none}
+
+/* grow your aura: one glass card per way, a tinted icon tile, the XP it's worth today on the right */
+.fc-rows{display:grid;gap:var(--sp-3)}
+.fc-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--sp-4);width:100%;min-height:76px;padding:var(--sp-3) var(--sp-4);text-align:left;
+  border-radius:var(--r-card);background:var(--glass);border:1px solid var(--glass-line);transition:background var(--dur-1),transform var(--dur-1) var(--ease)}
+.fc-row:active{background:var(--surface-3);transform:scale(.98)}
+.fc-row-ic{display:grid;place-items:center;width:48px;height:48px;border-radius:var(--r-sm);color:var(--c,var(--cyan));
+  background:color-mix(in srgb,var(--c,var(--cyan)) 10%,transparent);border:1px solid color-mix(in srgb,var(--c,var(--cyan)) 24%,transparent)}
+.fc-row-ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.fc-row-tx{min-width:0}
+.fc-row-tx b{display:block;font-size:var(--fs-3);font-weight:800;color:var(--text-1)}
+.fc-row-tx small{display:block;margin-top:2px;font-size:var(--fs-2);line-height:1.35;color:var(--text-2)}
+.fc-row-r{display:grid;justify-items:end;gap:var(--sp-1)}
+.fc-row-r em{font-style:normal;font-size:var(--fs-1);font-weight:900;white-space:nowrap;color:var(--cyan)}
+.fc-row-r em.cap{font-weight:700;color:var(--text-2)}
+.fc-rules{margin-bottom:var(--sp-3)}
+.fc-rules p{margin:0;font-size:var(--fs-2);line-height:1.5;color:var(--text-2)}
+.fc-rules p+p{margin-top:var(--sp-2)}
+.fc-rules b{font-weight:700;color:var(--text-1)}
+.fc-rules .fc-today{color:var(--cyan)}
+
+/* the old Mind content, quieter, under it */
+.fc-mind .mbrain{margin-top:var(--sp-1)}
+.fc-mind .mv-zones{margin-top:var(--sp-2)}
+.fc-home .mv-ins{padding:var(--sp-3) 0}
+.fc-tools .u-ic{--c:var(--cyan)}
+/* the old "one thing" button steps back: the rows above are the screen's way in */
+.fc-home .mv-act .btn{background:var(--cyan-a);border:1px solid color-mix(in srgb,var(--cyan) 35%,transparent);color:var(--cyan)}
+.fc-home .mv-foot{margin-top:var(--sp-6)}
+
+@media (max-height:700px){ .fc-hero-box{height:250px} }
+@media (prefers-reduced-motion:reduce){ .fc-row{transition:none} .fc-row:active{transform:none} }
+
+/* the orb dial (Andrej, 17 Oct): the aura orb in the middle, the four tools around it, no body picture */
+.fc-dial{position:relative;width:min(100%,360px,calc((100dvh - 290px) * .84));aspect-ratio:.84;margin:var(--sp-3) auto 0}
+.fc-ring{position:absolute;left:14%;width:72%;top:50%;aspect-ratio:1;transform:translateY(-50%);border-radius:50%;border:1px dashed var(--line-2);pointer-events:none}
+.fc-orb{position:absolute;left:50%;top:50%;width:42%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 45%,var(--cyan-a),transparent 70%);border:2px solid var(--cyan);color:var(--text-1)}
+.fc-orb-g{position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(closest-side,var(--cyan-a),transparent);opacity:calc(.4 + var(--lv) * .04);
+  animation:mmBreathe 11s ease-in-out infinite;pointer-events:none}
+.fc-orb-tx{position:relative;display:grid;justify-items:center;line-height:1.05}
+.fc-orb-tx b{font-size:var(--fs-6,var(--fs-5));font-weight:800;color:var(--cyan)}
+.fc-orb-tx small{font-size:var(--fs-1);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2)}
+.fc-sat{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px;width:104px;transform:translate(-50%,calc(-1 * var(--h)));color:var(--text-1);--h:30px}
+.fc-sat.n{left:50%;top:19.8%;transform:translate(-50%,calc(-100% + var(--h)))}.fc-sat.n b{order:-2}.fc-sat.n em{order:-1}
+.fc-sat.s{left:50%;top:80.2%}.fc-sat.e{left:86%;top:50%}.fc-sat.w{left:14%;top:50%}
+.fc-sat-o{display:grid;place-items:center;flex:none;width:calc(2 * var(--h));height:calc(2 * var(--h));border-radius:50%;background:var(--surface-2);border:1px solid var(--line-2);color:var(--c,var(--cyan))}
+.fc-sat-o svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.fc-sat b{font-size:var(--fs-2);font-weight:800;white-space:nowrap}
+.fc-sat em{font-style:normal;font-size:var(--fs-1);font-weight:800;color:var(--cyan)}
+.fc-sat:active .fc-sat-o,.fc-orb:active{filter:brightness(1.3)}
+.fc-under{display:flex;justify-content:center;gap:var(--sp-2);margin-top:var(--sp-4)}
+.fc-chip{display:inline-flex;align-items:center;gap:var(--sp-2);min-height:var(--tap);padding:0 var(--sp-4);border-radius:var(--r-pill);border:1px solid var(--line-2);background:var(--surface-2);font-size:var(--fs-2);font-weight:700;color:var(--text-1)}
+.fc-chip svg{width:18px;height:18px;fill:none;stroke:var(--cyan);stroke-width:1.6}
+@media (prefers-reduced-motion:reduce){ .fc-orb-g{animation:none} }
+@media (max-height:700px){ .fc-sat{--h:26px} .fc-under{margin-top:var(--sp-2)} }
+.fc-main{display:flex;flex-direction:column;min-height:calc(100dvh - var(--tabH) - var(--sp-6))}
+.fc-main .fc-dial{margin-top:auto;flex:none}
+.fc-main .fc-under{margin-bottom:auto;padding-bottom:var(--sp-4)}
+.fc-sat.live .fc-sat-o{border-color:var(--cyan);background:var(--cyan-a)}
+.fc-sat.live em{color:var(--text-1)}

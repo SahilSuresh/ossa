@@ -1,0 +1,498 @@
+{
+ "key": "recover",
+ "title": "Phase 4 Recover: fueling meter, recovery nudge, recover + streak restyle",
+ "area": "Recover (recovery_dashboard, fueling_meter, recovery_nudge, streak_summary). All paths are relative to C:\\Ossa\\ossa-expo",
+ "keyFacts": [
+  {
+   "fact": "The Recover tab is drawn by a single function, renderRecover. It has four parts: the header (date and \"Recover\"), the \"Recovering now\" card (counts plus up to 6 rows of name, bar and \"Ready in about N days\"), \"Today's reset\" (built with uiNextHTML, not the bone style) and \"Look after it\" (4 rows: Something aching?, 60-second desk reset, Posture scan, Wind-down). A physio/GP footer sits at the bottom. setTab('recover') calls it.",
+   "ref": "web/ui/shell.js:529-560; web/ossa.html:9408"
+  },
+  {
+   "fact": "\"Ready in about N days\" is the same everywhere. lastSession(k) finds the last log day with load ≥1.5 and uses e.h[k] as its timestamp. recWindow(load) is 48, 60 or 72 h. recoveredPct and hoursLeft divide elapsed time by that window, and stateOf calls a muscle 'recovering' below 90%. leftText words the hours, and shell.js adds 'Ready ' in front.",
+   "ref": "web/ossa.html:3891-3902; web/ui/shell.js:536"
+  },
+  {
+   "fact": "Every recovery display reads recoveredPct/hoursLeft/recOf. That covers the 3D heatmap uniform, the widget figure (figStates), adaptToday, dayState, planWhy, mobilitySession, the Train hub recovery card and the plan screen's 'Still recovering'. Changing those two functions changes all of them. One place reads recWindow directly: the 'fresh again' whisper.",
+   "ref": "web/ossa.html:4590, 5156, 6044-6056, 7536, 7547-7552, 7568, 10309; web/ui/train.js:206-218, 262-273"
+  },
+  {
+   "fact": "Today's reset uses rdTabData('recover'), which returns 'Mobility flow · N moves · M min'. Its go() runs rdPlaySession(mobilitySession(), true), which opens the Train plan and auto-starts it 420 ms later. mobilitySession picks up to 4 stretch/mobility moves for every recovering muscle.",
+   "ref": "web/ui/shell.js:540-541; web/ossa.html:11072-11074, 11082-11086, 7567-7575"
+  },
+  {
+   "fact": "The recovery_dashboard PNG is today's screen restyled. It has the same copy ('Recovering now', 'N ready · N recovering', 'Ready in about 2 days', 'Today's reset', 'N muscles recovering', 'Mobility flow', 'Look after it', 'Something aching?', '60-second desk reset'). The differences: recovering bars in #C5A059 (the brief's Stable rank colour) instead of --amber, a lime eyebrow, a white play button, tinted icon tiles, and shorter ache copy ('Tap where. Get a 5-minute routine.').",
+   "ref": "design/redesign-v2/screens/recovery_dashboard-html.html:45-146; web/ui/tokens.css:35 (--amber #FFB547)"
+  },
+  {
+   "fact": "Water is the only nutrition the app logs: S.water = {YYYY-MM-DD: glasses}, goal RD_WGOAL=8. Three separate loggers write to it: uiWaterAdd, addWater and rdWaterLog. rdMeWater shows the water level on the 3D body through Body.setHydration.",
+   "ref": "web/ossa.html:9035, 9089-9093, 11264, 11281-11290, 11826-11835; web/ui/shell.js:195, 473-476"
+  },
+  {
+   "fact": "The Fuel pillar is water against time of day (plus c.food if an old check-in has it). It is only computed once you've checked in. The one-tap check-in no longer asks about food (food:null).",
+   "ref": "web/ossa.html:9045-9053; web/ui/shell.js:282-285; docs/DECISIONS.md:129"
+  },
+  {
+   "fact": "Protein exists only as copy and manual ticks. PROTEIN='Aim for about 1.6 g of protein per kg…' is defined and never used. 'Protein at every meal' is a manual standard while water auto-ticks. There is a 'N g of protein before noon' life dare, and a 'How do you eat' diet question.",
+   "ref": "web/ossa.html:3565, 9892-9893; web/ui/ranks.js:237; web/ui/shell.js:499-500"
+  },
+  {
+   "fact": "Body weight is not stored anywhere. S.profile holds {age, activity, sleep, sleepH, diet, stress, kit, days, sit}. Apple Health reads only steps, sleep and resting HR. Onboarding allows ages 13-100.",
+   "ref": "web/ossa.html:8282; native/health.ios.js:45; app.json:13; web/ui/onboarding.js:276"
+  },
+  {
+   "fact": "A Fuel 'system' card already sits over the 3D body. openSystem('fuel') uses layer core and zooms to the gut. renderSys's fuel branch shows the water glasses, the Fuel bar and generic copy. The 3D API has focusMuscle, setSel, pulse, startDemo(mask), setAura and setHydration.",
+   "ref": "web/ossa.html:9155-9165, 9182-9187, 4884-4905"
+  },
+  {
+   "fact": "The web page builds every notification. remindPlan merges daily nudges (remindPlan0) and desk mode (deskPlan), sorts them and keeps 60. remindPlan0 returns [] when S.remind is off. nativeSync sends the list only when it has changed, debounced 1.6 s after any save().",
+   "ref": "web/ossa.html:10279-10300, 6540-6547, 10083-10092, 3868"
+  },
+  {
+   "fact": "On the native side, Reminders.schedule cancels ALL scheduled notifications and then schedules each {at,title,body,go} as a DATE trigger with data.go. It skips anything less than 30 s away and keeps at most 60. Local notifications work in Expo Go.",
+   "ref": "native/reminders.js:1-3, 46-66; App.js:96-98"
+  },
+  {
+   "fact": "Tapping a notification already opens a web page in the app. Reminders.onOpen handles both cold start (getLastNotificationResponse) and the live listener. App.js passes the tap on as {t:'open',go}, and nrecv calls nativeOpen(go) 700 ms later. nativeOpen knows review/train/score/check/desk/scan/pro and falls back to today. A new go:'reset' needs only a web change.",
+   "ref": "native/reminders.js:73-87; App.js:141-149; web/ossa.html:10100, 10106-10116"
+  },
+  {
+   "fact": "finishWorkout does not record an end time on S.workouts (only d, title, mins, sets, vol). logLoad stamps e.h[k]=Date.now() per muscle. Mobility sessions skip load but are still pushed to S.workouts. It is only called by name (endW button, setDone), so a web/ui wrapper will catch it.",
+   "ref": "web/ossa.html:7743-7775, 3882-3887, 7724, 7738"
+  },
+  {
+   "fact": "trJointSession and trJointRelief are the pattern for a short routine. They build mob:true items with a per-move 'why' (jwhy), set TR to a custom plan and call setMode('train'). planWhy shows s.relief in the recovery line. Mobility rest between sets is 30 s. MX stretches are '2 × 30 s each side' (about 2 min each). estMin for mobility is at least 3 min.",
+   "ref": "web/ui/train.js:337-356; web/ossa.html:7740, 5354, 5924-5926"
+  },
+  {
+   "fact": "openStreak already matches most of streak_summary. It has the flame you tap to light (it auto-lights after 6 s), the number rolling over, 'day streak', 'Kept today. Planned rest days never break it.', week dots (check = done, dashed = missed, 'Z' = rest), confetti, the 'Keep your body on your home screen' promo (streak, '<weak muscle> needs you', 2D rank figure) and Add widget / Not now.",
+   "ref": "web/ui/ranks.js:163-223, 182; web/ui/ranks.css:98-141"
+  },
+  {
+   "fact": "The native widget is still the old layout: Body Score plus a mint/amber body (widgetSnap v:2, OssaWidget.ios.js colours #9BFCEC/#FFB547). The streak promo previews a rank-body streak widget that doesn't exist yet. Widgets need a real build and don't run in Expo Go.",
+   "ref": "web/ossa.html:10324-10332; native/OssaWidget.ios.js:24-30; native/widget.ios.js:1; docs/DECISIONS.md:99-100"
+  },
+  {
+   "fact": "No web change reaches phones without a new binary. App.js imports the generated ossaHtml.js into the JS bundle, expo-updates isn't installed, and EAS builds embed the bundle. Web and JS-only native changes can be tried on a phone in Expo Go (npm start uses --go) without a build. Widgets, Health and new permissions can't.",
+   "ref": "App.js:7; package.json (no expo-updates; start: expo start --lan --go; expo-dev-client present)"
+  },
+  {
+   "fact": "All of ossa.html's JS is a single <script> (3501-11892). The web/ui includes come at 11873-11878 and boot runs after them, so a function declared in a web/ui file overrides the legacy one even during init. But `let TR=…sessionForDay()` runs at about 5930, before the includes. A hoisted override that touches a web/ui top-level const can hit a TDZ ReferenceError there.",
+   "ref": "web/ossa.html:3501, 5930, 11873-11892"
+  },
+  {
+   "fact": "track() promises 'never health data' and is currently off (MP_TOKEN=''). Fuel events must not carry grams or body weight.",
+   "ref": "web/ossa.html:10237-10246"
+  },
+  {
+   "fact": "The expo-notifications accent colour in app.json is still the old mint #9BFCEC. It only affects Android, because iOS uses the app icon.",
+   "ref": "app.json (plugins › expo-notifications › color)"
+  }
+ ],
+ "items": [
+  {
+   "name": "recovery_dashboard",
+   "today": "renderRecover (web/ui/shell.js:529-560) already draws the design's structure and copy: 'Recovering now' with '<ready> ready · <n> recovering' and rows of name, amber bar and 'Ready in about 2 days' (stateOf/recoveredPct/hoursLeft/leftText, ossa.html:3891-3902); 'Today's reset' (uiNextHTML, cap 'N muscles recovering', 'Mobility flow · N moves · M min', rdTabData ossa.html:11072); 'Look after it' with 4 rows; and the physio footer. Styles are in shell.css:207-217. Tapping a row opens the 3D body in recovery colours on that muscle (shell.js:554).",
+   "changes": [
+    {
+     "file": "web/ui/shell.js",
+     "change": "renderRecover: keep the data and restyle the markup in this order: header; reset card slot (recResetCardHTML() from recover.js, only while a post-workout reset is pending); Recovering now (add a small fuel tag per row such as '−6 h fuel' when fuelBoostH>0); Fuel today slot (fuelCardHTML()); Today's reset; Look after it (shorter ache copy 'Tap where. Get a 5-minute routine.', tinted icon tiles); keep the physio/GP footer. Call recWireRecover(b) for the new cards."
+    },
+    {
+     "file": "web/ui/shell.css",
+     "change": "Restyle .u-recnow/.u-recr/.u-recover .u-next to the Phase-0 tokens (glass card, 24 radius, 800-900 title, lime eyebrow on the reset card, icon tiles on rows). No raw colours (check-tokens)."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Use the Phase-0 palette. Add a separate --recovering token for the bars and the 'recovering' count (see the open question on #C5A059 vs the Stable rank colour)."
+    },
+    {
+     "file": "docs/UI-SYSTEM.md",
+     "change": "Update the Recover row in Layout and the Known gaps."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Web only (shell.js/css). It reaches phones in the next EAS binary like every web change, but needs no native work and can be checked in the browser preview and Expo Go.",
+   "effort": "S",
+   "risks": [
+    "The bar colour clash: the design's recovering colour is the brief's Stable rank colour, so recovering muscles would read as 'Stable'.",
+    "Fading (neglected) muscles still never appear on this tab (BUGS.md BUG-01). The design doesn't show them either, so behaviour is unchanged.",
+    "Adding the Fuel and reset cards pushes 'Today's reset' below the fold on a 375×667 phone. The reset card should only show for about 6 h after a workout."
+   ],
+   "designDeviations": [
+    "Recovering bars use a dedicated recovering token, not #C5A059 (that is the Stable rank colour in the brief).",
+    "Keep all four 'Look after it' rows (posture scan and wind-down sit below the fold in the PNG) and keep the 'Sharp, numb or spreading pain… See a physio or GP' footer.",
+    "Two cards the PNG doesn't have: 'After your workout · 3-minute reset' (time-limited) and 'Fuel today' (protein/carbs)."
+   ],
+   "showAtEnd": "A 390×844 screenshot of the Recover tab with demo data (4 recovering muscles) side by side with recovery_dashboard.png, plus the same screen at 375×667.",
+   "stateChanges": [
+    "None for the restyle itself (the cards it hosts add S.fuel and S.recNudge, see below)."
+   ],
+   "dependsOn": [
+    "Phase 0 Look: tokens, Inter, glass panels"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "fueling_meter (protein + carb logging and the Fuel screen)",
+   "today": "Nothing logs protein or carbs. S.water is the only nutrition log (shell.js:473-476; ossa.html:9089-9093, 11281-11290; rdMeWater 11826-11835). The Fuel pillar is water against time of day and needs a check-in (ossa.html:9045-9053). The check-in dropped food (shell.js:284). Protein appears only as the unused PROTEIN const (1.6 g/kg, ossa.html:3565), the manual 'Protein at every meal' standard (9893), the protein dare (ranks.js:237) and the diet question (shell.js:499). Body weight isn't stored (ossa.html:8282) and Health doesn't read it (native/health.ios.js:45). The existing Fuel card over the 3D body is openSystem/renderSys (ossa.html:9155-9187): water glasses plus generic copy.",
+   "changes": [
+    {
+     "file": "web/ui/recover.js",
+     "change": "New. One logger used everywhere: fuelAdd('p', grams) / fuelAdd('c', ±1) / fuelUndo(), each calling save(), Pulse.buzz and track('fuel',{k}) with no grams. Helpers: fuelDay(n), fuelTarget() = round to 5 g of 1.6×kg, clamped 60-220, or null; fuelHit(n); fuelFrac(n). Weight is asked inline the first time you log protein ('What do you weigh? Only used for your protein target. Stays on this phone.', kg stepper, Skip). It is never asked under 18 (S.profile.age<18); those users, and anyone who skips, get portion mode ('Protein at 2 of 4 meals')."
+    },
+    {
+     "file": "web/ui/recover.js",
+     "change": "fuelCardHTML()/fuelCardWire() for the Recover tab. 'Protein · 92 g of 140 g' bar with chips +15 g / +25 g / +40 g and food hints ('about a palm of chicken or fish', '3 eggs', 'a shake'). 'Carbs · 2 of 3 meals' as three tappable meal dots. Undo for 4 s (like rdwUndo). The boost line: '48 g more today and your chest is ready about 4 hours sooner.' or 'Fuelled. Chest and triceps ready 6 hours sooner.'"
+    },
+    {
+     "file": "web/ui/recover.js",
+     "change": "Fuel screen on our own 3D body. Wrap openSystem so id==='fuel' opens the muscle layer instead of the gut: setLayer('muscle'), RKV.on=false (recovery colours), Body.focusMuscle(target), Body.setSel({t:'muscle',id:target},0.6), Body.pulse(recently trained). Redefine renderSys (keeping the original for 'heart') so its fuel branch draws: eyebrow 'Fuel', title 'Fuel', a 'Recovering: Quads' chip that cycles muscles trained in the last 2 days, a Protein meter card, a Carbs meter card, the existing water glasses row, a boost card with the Log chips, a 'Game rule' note and a GP/dietitian line. Entry points: the Recover card, nodeInfo/buildNodes Fuel node, and wholeToday 'Fuel ›'."
+    },
+    {
+     "file": "web/ui/recover.js",
+     "change": "Wrap pillars(n): when fuel was logged on day n, fuel = round(100×(0.4×water/due + 0.4×protein frac + 0.2×carb meals/3)) with the existing time-of-day 'due' and stdBonus cap, then recompute score. Make it fill even without a check-in. Set STDS.find(s=>s.id==='protein').auto=()=>fuelHit(0) with s:'Ticks itself when you hit your protein'. Wrap nodeInfo('fuel') to show 'Protein 92/140 g'. Optionally auto-complete the 'protein before noon' dare from fuel timestamps."
+    },
+    {
+     "file": "web/ui/recover.css",
+     "change": "New. Fuel card, meters, chips, meal dots and the sysCard fuel layout, all from tokens."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Add --protein and --carbs (fuel family) tokens."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Only two include markers: /*@include ui/recover.css*/ after line 3353 and /*@include ui/recover.js*/ after line 11878."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "(via a wrapper in recover.js, not an edit) Settings › a 'Body weight' row to change or delete the weight (wrap phoneCard/renderYou)."
+    },
+    {
+     "file": "docs/DECISIONS.md",
+     "change": "Log the protein target model, the game rule and the 'never under 18' rule."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Weight is typed in the app, so no native work. Reading weight from Apple Health would need a HealthKit Weight permission in native/health.ios.js and an updated app.json NSHealthShareUsageDescription, which means a new build. That's deferred to the native batch, if wanted at all.",
+   "effort": "L",
+   "risks": [
+    "Health-claim risk. 1.6 g/kg is general sports-nutrition guidance, not advice for kidney disease, pregnancy, eating disorders or medical diets. Add 'If you have a kidney condition or follow a medical diet, check with your GP or a dietitian.' Never show a weight-based target to under-18s (onboarding allows 13+).",
+    "Body weight is sensitive. Keep it optional, never show it big, never trend it, no 'lose weight' wording, deletable in Settings, and never sent to track().",
+    "Logged grams are the user's estimates. Label food hints 'about', and never call the bars measurements ('synthesis', 'glycogen').",
+    "Moving openSystem('fuel') from the gut to the muscle layer drops the organ taps for Fuel. 'Gut & fuel' still exists in Learn.",
+    "On a 375×667 phone the sysCard can cover the target muscle, so keep the card compact.",
+    "Four water loggers already exist. Don't add a fifth path; route the Fuel screen's water through addWater."
+   ],
+   "designDeviations": [
+    "'Nutrition link / Fueling Meter' → eyebrow 'Fuel', title 'Fuel' ('Fueling' is US spelling; British is 'Fuelling').",
+    "The leg render with energy lines → our 3D body, camera on the target muscle in recovery colours. No energy-flow illustration (a shader effect could come later).",
+    "'Target: Quadriceps' → a 'Recovering: Quads' chip that cycles the muscles you trained in the last 2 days.",
+    "'Protein synth 92% · LOADED' → 'Protein · 92 g of 140 g' with '48 g to go' or 'Hit'.",
+    "'Glycogen 34% · LOW' → 'Carbs · 2 of 3 meals' with '1 to go'. No 'Low'.",
+    "'14g Protein required for 2h speed boost in synthesis' → '14 g more today and your quads are ready about 2 hours sooner.' with a 'Game rule' tag.",
+    "'Log intake' → protein chips (+15/+25/+40 g) and carb meal dots.",
+    "Protein in cyan clashes with the brief's cyan (mental/neural and Unbreakable), so use a fuel-family token."
+   ],
+   "showAtEnd": "390×844 screenshots: the Recover tab Fuel card empty, then after tapping +25 g twice ('50 g of 140 g', boost line updated); the Fuel screen on the 3D body (quads lit) side by side with fueling_meter.png; the weight ask and the under-18 portion mode. Plus a 20-second recording of logging protein and watching a row's '−N h fuel' tag change.",
+   "stateChanges": [
+    "S.fuel = { kg: number|null (35-200, optional), unit: 'kg'|'st', days: { 'YYYY-MM-DD': { p: number (g protein logged), c: 0..3 (meals with carbs), e: [[ms, 'p'|'c', value], ...] (for undo and the before-noon dare) } } }, pruned after 30 days",
+    "Derived, not stored: fuelTarget() = kg ? round5(clamp(1.6×kg, 60, 220)) : null (null = portion mode, target 4 protein meals); fuelFrac(n) = min(1, p/target) or meals/4; fuelHit(n)",
+    "STDS 'protein' entry gets an auto() tick (mutated at load from recover.js)"
+   ],
+   "dependsOn": [
+    "Phase 0 Look: tokens",
+    "recovery_dashboard"
+   ],
+   "newFiles": [
+    "web/ui/recover.js",
+    "web/ui/recover.css"
+   ]
+  },
+  {
+   "name": "Recovery clock: the fuel game rule (system)",
+   "today": "Recovery is a fixed window per muscle: recWindow(load) is 48, 60 or 72 h from lastSession(k).t (ossa.html:3891-3898). Nothing about sleep or food changes it. Every recovery display reads recoveredPct/hoursLeft (see keyFacts), except the 'fresh again' whisper (ossa.html:5156), which reads recWindow directly.",
+   "changes": [
+    {
+     "file": "web/ui/recover.js",
+     "change": "Game rule: each day's logged fuel cuts recovery time for muscles you trained that day or the day before. boostH(day) = 6 h × fuelFrac(day), plus 2 h if carbs were logged at 3 of 3 meals (max 8 h a day). For muscle k with s = lastSession(k): B = boostH(day of s.t) + boostH(next day) (only days up to today), so 16 h at most. Effective window W' = max(0.75 × recWindow(s.load), recWindow(s.load) − B). Redeclare function recoveredPct(k) and function hoursLeft(k) with the same bodies as ossa.html:3897-3898 but using W'. Add readyAt(k) and fuelBoostH(k) for the UI."
+    },
+    {
+     "file": "web/ui/recover.js",
+     "change": "TDZ guard. The overrides are hoisted and can run at ossa.html:5930 (let TR=…sessionForDay) before recover.js runs. Use function-scoped constants or var, and try/catch around S.fuel reads, never top-level const."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Line 5156 ('fresh again' whisper): replace ls.t+recWindow(ls.load)*3.6e6 with readyAt(k) so it agrees with the new clock. A one-line legacy edit; the alternative is wrapping the whisper function."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "Recovering now rows show '−N h fuel' when fuelBoostH(k)>0. leftText rounds to days, so the tag is what makes the boost visible."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "Pure web logic.",
+   "effort": "M",
+   "risks": [
+    "It shortens 'ready' times shown across the app (the plan adaptation in adaptToday, the Train hub, the 3D heatmap and widget colours, the daily dare's 'not recovering' filter). The 25% cap keeps the change modest. Frame it as Ossa's estimate and game rule, never as physiology ('protein speeds up muscle repair by X%').",
+    "Copy risk: 'ready sooner' must stay a game rule. Use 'Game rule:' in the Fuel screen note and avoid 'synthesis', 'repair' and percentages.",
+    "Other areas edit this same engine region (Vessel Engine neglect fade with pause, Injury Mapping pausing fade in fadeOf/stateOf at ossa.html:3874-3901). Agree one owner and keep the recovery override in a single file to avoid conflicting redeclarations.",
+    "The Focus area's haptic bio-rhythm will read the fuel-adjusted recovery automatically. Coordinate if it shows numbers."
+   ],
+   "designDeviations": [
+    "The design's '2h speed boost in synthesis' becomes an explicit, capped game rule on our own recovery clock, labelled as a game rule."
+   ],
+   "showAtEnd": "A small table printed from a throwaway node script in the scratchpad (the same method as docs/BUGS.md). It copies lastSession/recWindow/recoveredPct/hoursLeft plus the new rule and shows hours left for 48/60/72 h windows with 0%, 50% and 100% protein, with and without 3 carb meals. Plus a before/after screenshot of the Recovering now card with the '−N h fuel' tags.",
+   "stateChanges": [
+    "None new (reads S.fuel.days and S.log)."
+   ],
+   "dependsOn": [
+    "fueling_meter"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "recovery_nudge (local notification about 45 min after a workout, plus the 3-minute reset)",
+   "today": "There is no post-workout reminder. The machinery is already there and is web-driven. The page builds the whole list in remindPlan (ossa.html:10279-10300 plus deskPlan 6540-6547), and nativeSync sends it when it changes (10083-10092). Reminders.schedule cancels everything and re-schedules {at,title,body,go} DATE triggers with data.go (native/reminders.js:46-66). A tap goes Reminders.onOpen → App.js:142 → {t:'open',go} → nativeOpen(go) (ossa.html:10100, 10106-10116), cold start included. finishWorkout (7743-7775) keeps no end time on S.workouts. The routine pattern to copy is trJointSession/trJointRelief (train.js:337-351). The generic 'Mobility flow' (mobilitySession 7567) is 4 moves for everything recovering. After a workout, the Body page's Today card says 'Wind down' and opens that flow (shell.js:138-143).",
+   "changes": [
+    {
+     "file": "web/ui/recover.js",
+     "change": "Wrap finishWorkout. Capture s=TR.session before calling the original. If s.kind isn't 'mobility' or 'posture', sets>0 and resets are on (S.resetOn!==false), set S.recNudge = {d, end:now, title:s.title, ks: the top 1-3 primaries by load from TR.result.I, at:end+45 min, snooze:null, n:0, done:null, off:null}. If s.reset, set S.recNudge.done=now. Then save() and call nativeSync(false) straight away (don't rely on the 1.6 s debounce)."
+    },
+    {
+     "file": "web/ui/recover.js",
+     "change": "Wrap remindPlan. Append recNudgePlan(): when S.recNudge is today's, not done or off, and (snooze||at) is more than 60 s away, add {at, go:'reset', title:'3 minutes for your chest' (or 'chest and triceps'), body:'You trained 45 minutes ago. Two easy stretches, then you're done.'}. Keep the existing sort and the 60-item cap. This is independent of S.remind.on, because remindPlan0 returns [] when daily nudges are off."
+    },
+    {
+     "file": "web/ui/recover.js",
+     "change": "Wrap nativeOpen: go==='reset' → recResetOpen(). If the nudge is stale (more than 6 h) or done, open the Recover tab instead. Otherwise call the original."
+    },
+    {
+     "file": "web/ui/recover.js",
+     "change": "trResetSession(ks), built like trJointSession. For each muscle take MX[k].stretch[0] with dose '1 × 40 s each side' (or '1 × 40 s'), mob:true and jwhy 'Eases your chest after today's Push.'. Use at most 3 moves, trimmed until estMin ≤ 3. Return {title:'3-minute reset', note:'Easy stretches for what you just trained', kind:'mobility', reset:true, day:todayIdx, items, relief:'For the chest and triceps you trained at 18:10.'}. recResetOpen() guards TR.view==='active' the same way trJointRelief does, then sets TR to that plan and calls setMode('train')."
+    },
+    {
+     "file": "web/ui/recover.js",
+     "change": "Snooze: S.recNudge.snooze=now+15 min, n++ (at most 2), save, nativeSync, toast('I'll remind you at 18:55.'). 'Not today': S.recNudge.off=now. Wrap setDone so a reset session rests 10 s instead of the mobility 30 s (ossa.html:7740). Add recResetCardHTML() for the Recover tab, shown up to 6 h after the workout."
+    },
+    {
+     "file": "web/ui/train.js",
+     "change": "Extend the planWhy wrapper (353-356): s.reset → {tag:'Reset', cls:'ok', txt:s.relief}. In drawPlanFloat's tp-cta (214/221), add a 'Remind me in 15 min' link when TR.session.reset."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "drawDoneFloat (135-180): add one row, 'In 45 min: a 3-minute reset for your chest', with an on/off toggle. The first time, it asks for notification permission through nativeSoon(true). Skip it for mobility sessions."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "uiTodayCard (138-143): when you've trained today and a reset is pending, the bone card offers '3-minute reset' instead of 'Wind down'. This is the body_dashboard owner's card, so coordinate."
+    },
+    {
+     "file": "web/ui/recover.js",
+     "change": "Settings: wrap phoneCard/wirePhone (ossa.html:10369-10400) to add an 'After a workout · 3-minute reset reminder' row that toggles S.resetOn."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "No native change is needed. Scheduling is just one more {at,title,body,go} in the list the web already sends (reminders.js:46-66). Cancelling means dropping it from the list, since schedule() cancels everything and re-schedules. 'Remind me in 15 min' is an in-app button that re-schedules. A tap already reaches the page as {t:'open',go} (App.js:142, ossa.html:10100). Only an optional lock-screen action button (setNotificationCategoryAsync in native/reminders.js, plus App.js handling actionIdentifier) would touch native code. That would still conflict with schedule()'s cancel-all unless the web is told, so it's deferred. The web change still reaches users only in the next EAS binary (ossaHtml.js is bundled; there's no expo-updates). Expo Go can test real local notifications now.",
+   "effort": "M",
+   "risks": [
+    "If notification permission was never granted (the daily nudge was skipped in onboarding), the nudge silently won't fire. Hence the one-time ask on Workout complete.",
+    "Reminders.schedule cancels and re-schedules all notifications on every change (reminders.js:48). That's fine because the web owns the list, but anything scheduled natively outside it would be wiped.",
+    "A mobility or reset session also goes through finishWorkout and S.workouts.push (ossa.html:7770). Without the kind check it would schedule another nudge, and it already counts as a trained day for the streak (uiTrainedDays, ranks.js:157-161).",
+    "If the app is still open at +45 min, iOS shows a banner (setNotificationHandler, reminders.js:10-18). The in-app card also covers this case.",
+    "Copy must stay general: 'eases', never 'reduces soreness' or 'prevents injury'.",
+    "Testing in the browser preview can't fire notifications. Use Expo Go on the phone with a temporary 1-minute delay."
+   ],
+   "designDeviations": [
+    "'Welcome home.' (geofence) → notification title '3 minutes for your chest'; body 'You trained 45 minutes ago. Two easy stretches, then you're done.'",
+    "'SMART TRIGGER' → 'After Push · 45 min ago'.",
+    "'Post-Home Reset' → '3-minute reset'.",
+    "The video preview with a play button → our 3D body with the trained muscles lit (the Train session screen over the body); each move's Watch uses the existing demo on the model. No video.",
+    "The iOS notification bubble at the top of the mock is the system notification and isn't drawn in the app.",
+    "'Doorway Stretch · 45 sec per side / Floor Y-Press · 12 controlled reps' → moves from MX[k].stretch (e.g. 'Doorway pec stretch · 40 s each side'). No strength move in a cool-down.",
+    "Lime 'START NOW' → the screen's one main button in whatever Phase 0 decides (bone today). 'REMIND ME IN 15 MINS' → 'Remind me in 15 min', an in-app button, not a lock-screen action."
+   ],
+   "showAtEnd": "In the browser preview: finish a seeded Push workout, then show remindPlan()[0] in the console ({at:+45 min, go:'reset', title:'3 minutes for your chest'}). Call nativeOpen('reset') and screenshot the 3-minute reset screen at 390×844 next to recovery_nudge.png. Tap 'Remind me in 15 min' and show the entry move to +15 min; finish the reset and show it gone. Then a short screen recording from Andrej's phone in Expo Go (npm start) with a temporary 1-minute delay: the real notification arrives, a tap opens the reset.",
+   "stateChanges": [
+    "S.recNudge = { d: 'YYYY-MM-DD', end: ms (workout end), title: string (session title), ks: string[] (1-3 muscle keys), at: ms (end + 45 min), snooze: ms|null, n: number (snoozes used, max 2), done: ms|null, off: ms|null }",
+    "S.resetOn: true|false|undefined (undefined = not asked yet; the toggle on Workout complete and in Settings)",
+    "Session objects gain reset:true (TR.session for the 3-minute reset)"
+   ],
+   "dependsOn": [
+    "recovery_dashboard"
+   ],
+   "newFiles": [
+    "web/ui/recover.js (shared with fueling_meter)"
+   ]
+  },
+  {
+   "name": "streak_summary",
+   "today": "openStreak (web/ui/ranks.js:185-223) already has this screen's content and motion. The flame you tap to light (it auto-lights after 6 s), the number rolling over, 'day streak', 'Kept today. Planned rest days never break it.', week dots via uiWeekDotsHTML (182: check = done, dashed = missed, 'Z' = rest), confetti, the 'Keep your body on your home screen' promo (streak, '<weak muscle> needs you', 2D rank figure uiRankFig) and Add widget / Not now (Close when opened from the chip). The streak logic is uiStreak/uiStreakWeek (163-180). CSS is in ranks.css:98-141. It opens after the first workout of the day (workout.js:170-172) and from the Home chip and Train stat (shell.js:471, 616).",
+   "changes": [
+    {
+     "file": "web/ui/ranks.js",
+     "change": "openStreak: a flame badge (filled UI_FLAME inside a ring with a glow when lit), an X close button top right when opened from the chip (after=false), keeping 'Not now' after a workout. The same copy. Use the double-check icon in uiWeekDotsHTML for done days (optional)."
+    },
+    {
+     "file": "web/ui/ranks.css",
+     "change": "Restyle .sk-* to the Phase-0 tokens: uppercase tracked 'Day streak', 40 px week dots, ring and glow on the badge, square confetti in lime, white and grey via fxConfetti colours."
+    }
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "The screen is web only. The real home-screen widget it promotes is native (see the native batch item).",
+   "effort": "S",
+   "risks": [
+    "The promo shows a streak and rank-body widget that the native widget doesn't draw yet (it's still Body Score, OssaWidget.ios.js). That's a known gap (DECISIONS.md:99-100) and the promo over-promises until the native batch ships."
+   ],
+   "designDeviations": [
+    "The widget preview's figure is the design's 3D render; ours stays the 2D rank figure (uiRankFig), or later a still of our own 3D body (Body.glowShot, ossa.html:4905).",
+    "The circle badge follows the design rather than the brief's hexagons, unless Phase 0 decides on hexagons for badges."
+   ],
+   "showAtEnd": "390×844 screenshots of openStreak(true) before and after lighting the flame, and openStreak(false) with the X, side by side with streak_summary.png.",
+   "stateChanges": [
+    "None"
+   ],
+   "dependsOn": [
+    "Phase 0 Look: tokens"
+   ],
+   "newFiles": []
+  },
+  {
+   "name": "Native batch: rank-body streak widget (plus optional extras), one EAS build",
+   "today": "widgetSnap v:2 (ossa.html:10324-10332) sends Body Score, a headline, the week and a mint/amber body figure (PNG on iOS via figPng). OssaWidget.ios.js draws that old layout with hard-coded #9BFCEC/#FFB547 (24-30). The Android widget is described as 'Your body, Body Score and today's session' in app.json. Widgets can't run in Expo Go (widget.ios.js:1).",
+   "changes": [
+    {
+     "file": "web/ossa.html",
+     "change": "widgetSnap → v:3 adds {streak:n, lit:bool, weak:{name, rank, tier}, rankFig: PNG of uiRankFig via figPng}. Better as a wrapper in web/ui/ranks.js than as an in-place edit."
+    },
+    {
+     "file": "native/OssaWidget.ios.js",
+     "change": "New layout matching the promo: flame + 'N days', the rank-body image, '<muscle> needs you'. Lime/rank colours instead of mint/amber. Lock-screen variants show the streak."
+    },
+    {
+     "file": "native/widget-shared.js",
+     "change": "Map the v3 snapshot fields; keep v2 as a fallback."
+    },
+    {
+     "file": "native/widget.ios.js",
+     "change": "Save the rank-figure PNG alongside or instead of the old figure."
+    },
+    {
+     "file": "native/widget.android.js",
+     "change": "The same layout for the Android widget (if Android ships)."
+    },
+    {
+     "file": "app.json",
+     "change": "Update the android widget description text. expo-notifications color #9BFCEC → the new lime (Android only; iOS uses the app icon)."
+    },
+    {
+     "file": "native/health.ios.js",
+     "change": "OPTIONAL: read body weight (HealthKit Weight) to pre-fill S.fuel.kg. This also needs NSHealthShareUsageDescription in app.json to mention weight."
+    },
+    {
+     "file": "native/reminders.js",
+     "change": "OPTIONAL: a notification category with a 'Remind me in 15 min' action. App.js would need to forward actionIdentifier, and the web would have to own the snooze so schedule()'s cancel-all doesn't wipe it."
+    }
+   ],
+   "needsNativeBuild": true,
+   "nativeBuildWhy": "Widget layouts are SwiftUI/Android native code compiled into the binary and can't be shown in Expo Go. New HealthKit permissions and app.json changes alter native config. Batch them into one EAS build that Andrej runs himself, because build-for-app-store.bat uploads to App Store Connect/TestFlight.",
+   "effort": "L",
+   "risks": [
+    "It can only be verified on a device build. Plan one build for the whole batch.",
+    "build-for-app-store.bat auto-uploads to App Store Connect (TestFlight). Under ground rule 5 only Andrej runs it, and nothing is submitted for review.",
+    "The widget refresh budget means the streak may lag until Ossa is opened (nativeSync runs on 'fg')."
+   ],
+   "designDeviations": [
+    "The widget shows our own rank-body figure (2D, or a still of the 3D model), not the design's render."
+   ],
+   "showAtEnd": "After Andrej runs the build: a photo or screen recording of the home-screen widget (streak, rank body, weak muscle) next to the streak screen's promo, and the lock-screen variant.",
+   "stateChanges": [
+    "widgetSnap payload v:3: { v:3, day, streak:number, lit:boolean, weak:{name:string, rank:string, tier:0..5}, rankFigPng:string(base64), week:[…as v2] }"
+   ],
+   "dependsOn": [
+    "streak_summary",
+    "Andrej's go-ahead for an EAS build"
+   ],
+   "newFiles": []
+  }
+ ],
+ "openQuestions": [
+  {
+   "question": "How should the protein target work?",
+   "why": "Ossa doesn't store body weight (ossa.html:8282) and Health doesn't read it. '92 g of 140 g' needs a weight. Weight is sensitive data and the app allows 13-year-olds.",
+   "recommendation": "Grams at 1.6 g/kg once you enter your weight (optional, asked the first time you log protein). Portion mode ('Protein at 3 of 4 meals') if you skip it, and always for under-18s.",
+   "options": [
+    "Grams from weight (1.6 g/kg), with portion mode as the fallback",
+    "Portions only ('protein at N of 4 meals'), no weight",
+    "Grams with a fixed default target (no weight)"
+   ]
+  },
+  {
+   "question": "How big should the fuel game rule be?",
+   "why": "It changes every 'ready in' time, the plan's lighter days and the 3D recovery colours.",
+   "recommendation": "Up to 6 h off for hitting protein, plus 2 h for carbs at 3 of 3 meals. It counts on the day you trained and the day after, and never takes off more than 25% of the window. Label it 'Game rule'.",
+   "options": [
+    "Proportional, as recommended (allows '14 g more = 2 h sooner')",
+    "Flat: a fuelled day = 8 h sooner",
+    "No effect on recovery, display only"
+   ]
+  },
+  {
+   "question": "Where does the Fuel screen live?",
+   "why": "Ground rule 1 puts effects on our 3D body. Opening it over the 3D body lights the 'Body' tab rather than Recover.",
+   "recommendation": "Over the 3D body, reusing openSystem('fuel') with the target muscle lit. Quick logging stays inline on the Recover tab.",
+   "options": [
+    "Over the 3D body (Body tab lit)",
+    "A Recover panel with the 2D figure (Recover tab lit)"
+   ]
+  },
+  {
+   "question": "Is the post-workout reset reminder on by default?",
+   "why": "It's a new kind of notification. People who turned daily nudges off may not want it, and permission may never have been granted.",
+   "recommendation": "Ask once on the first Workout complete ('In 45 min: a 3-minute reset for your chest' toggle, which triggers the permission prompt). After that it follows that answer, with a Settings row to change it.",
+   "options": [
+    "Ask once on Workout complete",
+    "On for everyone with notifications allowed",
+    "Off unless switched on in Settings"
+   ]
+  },
+  {
+   "question": "Should finishing the 3-minute reset earn anything in the game?",
+   "why": "Without a reward it's just a stretch. With one it's another rule to explain.",
+   "recommendation": "A small, labelled boost: 2 h off 'ready' for the muscles it covered (the same family as the fuel rule).",
+   "options": [
+    "2 h off ready times",
+    "Nothing",
+    "Counts toward a future 'Recovery' trophy (Trophy room)"
+   ]
+  },
+  {
+   "question": "What colour are 'recovering' bars?",
+   "why": "The design uses #C5A059, which the brief assigns to the Stable rank, so recovering muscles would read as 'Stable'.",
+   "recommendation": "Keep a separate recovering token (amber or a new one) that doesn't match any rank colour.",
+   "options": [
+    "Separate recovering token",
+    "Use #C5A059 as designed"
+   ]
+  },
+  {
+   "question": "Is Fuel free or Pro?",
+   "why": "The paywall copy only names what Pro unlocks. Ranks, streak and dares are free (DECISIONS.md:122).",
+   "recommendation": "Free, like ranks and the streak.",
+   "options": [
+    "Free",
+    "Pro"
+   ]
+  },
+  {
+   "question": "Should the streak widget be built in the native batch?",
+   "why": "The streak screen promotes a rank-body widget that doesn't exist (the native widget still shows Body Score). It needs one EAS build that you run.",
+   "recommendation": "Yes. Batch it with any other native items (optional Apple Health weight) into one build near the end of the Recover phase.",
+   "options": [
+    "Build it in the native batch",
+    "Make the promo show today's real widget until then"
+   ]
+  }
+ ],
+ "orderNotes": "1) Restyle recovery_dashboard and streak_summary as part of Phase 0 (Look), after the tokens land. They're CSS and markup only, with no feature change. 2) In Phase 4 (Recover), work in this order:\n  R1 Fuel logging (S.fuel, the Recover card, the weight ask).\n  R2 The recovery-clock game rule, with a node check table.\n  R3 The Fuel screen on the 3D body.\n  R4 The recovery nudge and 3-minute reset (web only, tested in Expo Go).\n  R5 The native batch (streak widget, optional Apple Health weight), one EAS build that Andrej runs, nothing submitted.\nEvery web step can be checked in npm run preview at 390×844 and 375×667, then on the phone in Expo Go. Every web step still ships only inside the next binary, because ossaHtml.js is bundled and expo-updates isn't installed.\nCoordination with other areas:\n- The recovery engine (ossa.html:3874-3902) is shared with the Vessel Engine (neglect fade with pause) and Injury Mapping (pausing fade for flagged muscles). Agree one owner and keep a single override file so two redeclarations of recoveredPct/hoursLeft/stateOf don't clash.\n- The Body page Today card (uiTodayCard, shell.js:138-143) and the Home water tile belong to body_dashboard. The reset card and a possible 'Fuel' tile need their agreement.\n- The Focus area's haptic bio-rhythm reads recovery state and will pick up the fuel-adjusted clock.\n- New web/ui/recover.js/css need include markers in ossa.html, placed after train.js/train.css.\n- Log decisions in docs/DECISIONS.md and update docs/UI-SYSTEM.md."
+}

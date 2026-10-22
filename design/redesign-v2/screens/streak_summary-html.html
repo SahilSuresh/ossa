@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --primary: #D4FF00;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: #000000;
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .confetti-piece {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col text-white">
+        <!-- #header_001 -->
+        <header class="flex-shrink-0 p-6 pt-12 flex justify-end">
+            <button class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center active:scale-95">
+                <iconify-icon icon="solar:close-circle-bold" class="text-2xl text-gray-500"></iconify-icon>
+            </button>
+        </header>
+
+        <!-- #scroll-content_002 -->
+        <div class="flex-1 flex flex-col items-center justify-center relative">
+            <!-- #confetti-layer_003 -->
+            <div class="absolute inset-0 pointer-events-none">
+                <div class="confetti-piece bg-[var(--primary)] top-[10%] left-[20%] rotate-12"></div>
+                <div class="confetti-piece bg-gray-500 top-[15%] left-[60%] -rotate-45"></div>
+                <div class="confetti-piece bg-white top-[5%] left-[40%] rotate-90"></div>
+                <div class="confetti-piece bg-[var(--primary)] top-[25%] left-[80%] rotate-30"></div>
+                <div class="confetti-piece bg-gray-500 top-[40%] left-[10%] -rotate-12"></div>
+                <div class="confetti-piece bg-white top-[20%] left-[15%] rotate-60"></div>
+                <div class="confetti-piece bg-[var(--primary)] top-[45%] left-[70%] -rotate-90"></div>
+            </div>
+
+            <!-- #streak-hero_004 -->
+            <div class="flex flex-col items-center mb-12 relative z-10">
+                <div class="w-20 h-20 bg-[var(--primary)]/10 rounded-full flex items-center justify-center mb-6 ring-4 ring-[var(--primary)]/5">
+                    <iconify-icon icon="solar:fire-bold" class="text-5xl text-[var(--primary)] shadow-[0_0_20px_var(--primary)]"></iconify-icon>
+                </div>
+                <h1 class="text-8xl font-black tracking-tighter leading-none mb-2">2</h1>
+                <div class="text-xl font-bold uppercase tracking-widest">day streak</div>
+                <p class="text-sm font-medium text-gray-400 mt-4 text-center px-12">
+                    Kept today. Planned rest days<br/>never break it.
+                </p>
+            </div>
+
+            <!-- #week-tracker_005 -->
+            <div class="bg-white/5 border border-white/10 rounded-3xl p-6 mb-12 w-[85%] flex justify-between items-center">
+                <div class="flex flex-col items-center gap-3">
+                    <span class="text-[10px] font-bold text-gray-500">M</span>
+                    <div class="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center">
+                        <iconify-icon icon="solar:check-read-bold" class="text-black text-xl"></iconify-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <span class="text-[10px] font-bold text-gray-500">T</span>
+                    <div class="w-10 h-10 bg-transparent border-2 border-dashed border-white/20 rounded-full"></div>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <span class="text-[10px] font-bold text-gray-500">W</span>
+                    <div class="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center">
+                        <iconify-icon icon="solar:check-read-bold" class="text-black text-xl"></iconify-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <span class="text-[10px] font-bold text-gray-500">T</span>
+                    <div class="w-10 h-10 bg-[var(--primary)] rounded-full flex items-center justify-center">
+                        <iconify-icon icon="solar:check-read-bold" class="text-black text-xl"></iconify-icon>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-3 opacity-30">
+                    <span class="text-[10px] font-bold text-gray-500">F</span>
+                    <div class="w-10 h-10 rounded-full border-2 border-white/20"></div>
+                </div>
+                <div class="flex flex-col items-center gap-3 opacity-30">
+                    <span class="text-[10px] font-bold text-gray-500">S</span>
+                    <div class="w-10 h-10 rounded-full border-2 border-white/20"></div>
+                </div>
+                <div class="flex flex-col items-center gap-3 opacity-30">
+                    <span class="text-[10px] font-bold text-gray-500">S</span>
+                    <div class="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center">
+                        <span class="text-[10px] font-bold">Z</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- #widget-promotion_006 -->
+            <div class="w-full px-6 flex flex-col items-center">
+                <div class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-6 text-center">
+                    KEEP YOUR BODY ON YOUR HOME SCREEN
+                </div>
+                <div class="bg-[#1a1a1a] rounded-[40px] p-8 w-full max-w-[280px] aspect-square relative shadow-2xl border border-white/5">
+                    <div class="bg-black rounded-[32px] p-6 h-full flex flex-col justify-between border border-white/10">
+                        <div>
+                             <iconify-icon icon="solar:fire-bold" class="text-xl text-[var(--primary)]"></iconify-icon>
+                             <div class="text-3xl font-black mt-2">2</div>
+                             <div class="text-[10px] font-bold text-gray-500 uppercase">days</div>
+                        </div>
+                        <div class="absolute right-6 top-8">
+                             <img src="https://media.screensdesign.com/gasset/74567633f3224bc28d60274fd9c83e21_screen_image_widget_anatomy_preview_689f0c69cd.png" data-media-ref="generated:138024" alt="Small anatomical figure widget preview with neon highlights" class="w-16 h-auto" data-image-aspect="2:3" data-image-background="transparent">
+                        </div>
+                        <div>
+                            <div class="text-[10px] font-bold text-[var(--primary)] uppercase tracking-tight">Shins</div>
+                            <div class="text-[10px] font-bold text-white uppercase">needs you</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- #footer_007 -->
+        <footer class="flex-shrink-0 p-6 pb-12 flex flex-col gap-6">
+            <button class="w-full h-16 bg-[#F5F2EB] text-black rounded-3xl font-black text-xl active:scale-95 transition-transform">
+                Add widget
+            </button>
+            <button class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 text-center">
+                Not now
+            </button>
+        </footer>
+    </div>
+</body>
+</html>

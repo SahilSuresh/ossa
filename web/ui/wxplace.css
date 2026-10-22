@@ -1,0 +1,76 @@
+/* =========================================================
+   WEATHER DARES PAGE (Ossa 2.0 Phase 6, package place) — view "wxplace" in Evolve's #evV panel. See wxplace.js.
+   Class prefix wp-. Tokens only. Lives in core's .ev-body (a flex column that never scrolls): the glyph takes
+   what is left and gives way first; the text, the one bone button, the field and the links sit under it.
+   Keyboard mode (.wp-kb, while the town field has focus) keeps only the eyebrow, the field, the status and
+   the privacy line, so the field stays in the top 260 px of a 375 × 667 screen above the iOS keyboard.
+   ========================================================= */
+.ev-b-wxplace{gap:var(--sp-2)}
+.ev-b-wxplace>*{flex:none;margin:0}
+
+/* the glyph: the place pin from dpGlyph, centred in the space that is left */
+.ev-b-wxplace .wp-art{flex:1 1 0;min-height:0;overflow:hidden;display:grid;place-items:center}
+.wp-art .dp-g{max-width:168px;max-height:168px}
+
+/* the words */
+.wp-h{font-family:var(--display);font-size:var(--fs-5);font-weight:800;line-height:1.1;letter-spacing:var(--track-tight);color:var(--text-1);text-wrap:balance;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wp-p{font-size:var(--fs-2);line-height:1.45;color:var(--text-2);
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.wp-hint{margin-top:calc(-1 * var(--sp-1));font-size:var(--fs-1);line-height:1.35;color:var(--text-2);text-align:center}
+.wp-or{font-size:var(--fs-1);line-height:1.35;color:var(--text-3);text-align:center}
+.wp-priv{font-size:var(--fs-1);line-height:1.35;color:var(--text-3)}
+
+/* the status line: busy (text-2), an error (amber) or a success (lime); held open on the Off page */
+.wp-st{min-height:1.45em;font-size:var(--fs-2);line-height:1.45;color:var(--text-2);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wp-st.err{color:var(--amber)}
+.wp-st.ok{color:var(--glow);font-weight:700}
+.wp-chg{color:var(--text-1)}
+.wp-news{display:grid;gap:var(--sp-1)}
+.wp-news>*{margin:0}
+
+/* the town field: its own 44 px field (not the 42 px .sbox) and a 44 px Save */
+.wp-frow{display:flex;align-items:center;gap:var(--sp-2)}
+.wp-field{flex:1;min-width:0;display:flex;align-items:center;min-height:var(--tap);padding:0 var(--sp-4);
+  border:1px solid var(--line-2);border-radius:var(--r-pill);background:var(--surface-2);transition:border-color var(--dur-1)}
+.wp-field:focus-within{border-color:var(--line-3)}
+.wp-field input{flex:1;min-width:0;height:calc(var(--tap) - 2px);padding:0;border:0;outline:0;background:none;
+  font-family:var(--body);font-size:var(--fs-3);color:var(--text-1)}
+.wp-field input::placeholder{color:var(--text-3)}
+.u-btn.wp-save{min-height:var(--tap);padding:0 var(--sp-5);border-radius:var(--r-pill)}
+.wp-busy [aria-disabled="true"]{opacity:.4}
+.wp-busy .u-btn.wp-main[aria-disabled="true"]{opacity:.6}
+
+/* the links at the foot: 44 px, centred */
+.u-link.wp-link{align-self:center;justify-content:center;min-width:var(--tap)}
+
+/* On: the place, the reading (or an amber line), the credit */
+.wp-pl{display:grid;gap:2px;min-width:0}
+.wp-pl b{font-size:var(--fs-3);font-weight:700;line-height:1.25;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wp-pl small{font-size:var(--fs-2);line-height:1.35;color:var(--text-2)}
+.wp-rd{font-size:var(--fs-2);line-height:1.45;color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wp-cr{margin-top:calc(-1 * var(--sp-2));font-size:var(--fs-1);line-height:1.35;color:var(--text-3)}
+.wp-warn{font-size:var(--fs-2);line-height:1.45;font-weight:600;color:var(--amber);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* On: two 44 px rows (Use my location · Type a different town) */
+.wp-rows{display:grid}
+.wp-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);width:100%;min-height:var(--tap);
+  padding:var(--sp-1) 0;text-align:left;color:var(--text-1);border-top:1px solid var(--line);transition:opacity var(--dur-1)}
+.wp-row:last-child{border-bottom:1px solid var(--line)}
+.wp-row:active{opacity:.7}
+.wp-row span{display:grid;gap:1px;min-width:0}
+.wp-row b{font-size:var(--fs-3);font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wp-row small{font-size:var(--fs-1);line-height:1.3;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wp-row .u-chev{width:16px;height:16px;fill:none;stroke:var(--text-3);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* keyboard mode: the eyebrow and the field at the top, then the status and the privacy line */
+.ev-b-wxplace:not(.wp-kb) .wp-eye,.ev-b-wxplace:not(.wp-kb) .wp-kbonly{display:none}
+.ev-b-wxplace.wp-kb>:not(.wp-keep){display:none!important}
+.ev-b-wxplace.wp-kb .wp-eye{color:var(--text-2)}
+
+/* short phones (iPhone SE and similar): the glyph comes down first */
+@media (max-height:700px){
+  .wp-art .dp-g{max-width:112px;max-height:112px}
+}

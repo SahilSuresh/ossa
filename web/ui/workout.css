@@ -1,0 +1,256 @@
+/* =========================================================
+   THE WORKOUT — see workout.js. A plain black column (18 Oct): a sticky bar with the time, the live rank points
+   and a quest bar; the exercise strip; the exercise card with the muscle meter; the set table; and one sticky dock
+   at the thumb for the steppers and the Log button, where the bone rest sheet slides in while you rest.
+   Then THE RUN: Workout complete as steps you go through.
+   ========================================================= */
+.app.tactive .trainv{padding:0}
+.app.train.tactive #stage{visibility:hidden}
+.app.tactive .tflead{display:none}
+.app.tactive .trainv{display:flex;flex-direction:column;background:var(--bg);overflow-x:hidden;overflow-y:auto;scrollbar-width:none;pointer-events:auto}
+.app.tactive .trainv::-webkit-scrollbar{display:none}
+.app.tactive .trainv>.wk-bar,.app.tactive .trainv>.wk-strip,.app.tactive .trainv>.tf-top.wk-top,.app.tactive .trainv>.tf-bot.wk-bot{position:relative;inset:auto;width:auto;flex:none;pointer-events:auto}
+
+/* ---------- the bar: back · the time and the live points · Finish; the quest bar in its bottom padding ---------- */
+.app.tactive .trainv>.wk-bar{position:sticky;top:0;z-index:3;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--sp-3);margin:0 var(--gutter);padding:calc(var(--sat) + var(--sp-2)) 0 14px;background:var(--bg)}
+.wk-min{background:var(--surface-3);border-color:var(--glass-line)}
+.wk-clock{display:grid;justify-items:center;gap:4px;min-width:0}
+.wk-clock>b{font-family:var(--display);font-size:var(--fs-5);font-weight:900;letter-spacing:-.03em;color:var(--text-1);line-height:1}
+.wk-hud{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2);white-space:nowrap}
+.wk-hud b{color:var(--glow);font-weight:900;font-variant-numeric:tabular-nums}
+.wk-hud b.tick{display:inline-block;animation:fxPop .45s var(--ease)}
+.app.tactive .wk-end{min-height:36px;padding:0 var(--sp-4);border-radius:var(--r-pill);font-size:var(--fs-2);font-weight:900;background:var(--glow);border-color:var(--glow);color:var(--on-accent)}
+.app.tactive .wk-end.arm{position:relative;background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
+.wk-end.arm::after{content:"";position:absolute;left:12px;right:12px;bottom:4px;height:2px;border-radius:1px;background:var(--on-cta);transform-origin:left;animation:wkArm 3s linear forwards}
+@keyframes wkArm{to{transform:scaleX(0)}}
+.wk-pbar{position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:1px;background:var(--glass-line)}
+.wk-pbar i{display:block;height:100%;border-radius:1px;background:var(--glow);transition:width .5s var(--ease)}
+/* the quest bar: one segment per set, a gap between exercises; done lime, the current one faint lime */
+.wk-qbar{position:absolute;left:0;right:0;bottom:0;display:flex;gap:2px;height:4px}
+.wk-qbar i{flex:1;border-radius:2px;background:var(--surface-3)}
+.wk-qbar i.gap{margin-left:var(--sp-1)}
+.wk-qbar.tight i.gap{margin-left:0}
+.wk-qbar i.on{background:var(--glow)}
+.wk-qbar i.cur{background:color-mix(in srgb,var(--glow) 30%,transparent)}
+.wk-qbar i.new{animation:fxPop .45s var(--ease)}
+
+/* ---------- the strip: done pills get a lime tick disc ---------- */
+.app.tactive .trainv>.wk-strip{margin-top:var(--sp-3)}
+.app.tactive .wk-sx.ok .wk-sxn{background:var(--glow);color:var(--on-accent)}
+
+/* ---------- the exercise card: chips, the name, the target with Watch and Insights on one line, the muscle meter ---------- */
+.app.tactive .trainv>.tf-top.wk-top{margin:var(--sp-3) var(--gutter) 0;padding:var(--sp-4);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line);z-index:2}
+.wk-chips{display:flex;flex-wrap:wrap;gap:6px;font-family:var(--body);letter-spacing:0;text-transform:none;text-shadow:none}
+.wk-chips #tfDot{display:none}
+.wk-chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 10px;border-radius:var(--r-xs);background:var(--surface-3);border:1px solid var(--line);font-size:var(--fs-1);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+.wk-chip.on{background:var(--glow-a);border-color:color-mix(in srgb,var(--glow) 35%,transparent);color:var(--glow-soft)}
+.wk-chip.on::after{content:"";order:-1;width:6px;height:6px;border-radius:50%;background:var(--glow)}
+/* the chips are buttons (Kinetic chain): a 44 px tall touch area, a press state */
+button.wk-chip{position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background var(--dur-1),border-color var(--dur-1)}
+button.wk-chip::before{content:"";position:absolute;left:-3px;right:-3px;top:50%;height:var(--tap);transform:translateY(-50%)}
+button.wk-chip:active{background:var(--line-2)}
+.app.tactive .wk-top .tf-name{margin-top:var(--sp-3);font-family:var(--display);font-weight:900;font-size:var(--fs-5);line-height:1;letter-spacing:-.035em;color:var(--text-1);text-shadow:none}
+.app.tactive .wk-top .tf-meta{display:grid;grid-template-columns:1fr auto auto;gap:var(--sp-2);align-items:center;margin-top:var(--sp-3);text-shadow:none}
+.app.tactive .wk-top .tf-meta em{padding:0;border:0;background:none;font-family:var(--body);font-style:normal;font-size:var(--fs-2);font-weight:700;color:var(--text-2)}
+.app.tactive .wk-top .tf-watch{margin:0;min-height:36px;padding:0 12px;border-radius:var(--r-pill);font-family:var(--body);font-size:var(--fs-2);font-weight:700;letter-spacing:0;color:var(--text-1);background:var(--surface-3);border:1px solid var(--line)}
+.app.tactive .wk-top .tf-watch.on{color:var(--glow);border-color:var(--glow);box-shadow:none}
+.app.tactive.tresting .tf-top.wk-top{opacity:1;filter:none}
+/* the meter: the muscle you are working, its rank, today's gain, the bar to the next rank */
+.wk-mm{display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px var(--sp-2);margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px solid var(--line)}
+.wk-mm-n{display:flex;align-items:center;gap:var(--sp-2);min-width:0;font-size:var(--fs-2);font-weight:800;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wk-mm-n .rk-sq{flex:none;width:10px;height:10px;border-radius:3px;background:var(--c)}
+.wk-mm-n em{font-style:normal;font-weight:600;color:var(--text-2)}
+.wk-mm-g{font-size:var(--fs-2);font-weight:900;color:var(--glow);font-variant-numeric:tabular-nums}
+.wk-mm-g.zero{color:var(--text-3)}
+.wk-mm-b{position:relative;grid-column:1/-1;display:block;height:4px;border-radius:2px;background:var(--surface-3);overflow:hidden}
+.wk-mm-b i{position:absolute;left:0;top:0;height:100%;border-radius:2px}
+.wk-mm-b i.now{background:var(--glow)}
+.wk-mm-b i.was{background:var(--c)}
+.wk-mm small{grid-column:1/-1;text-align:right;font-size:var(--fs-1);font-weight:700;color:var(--text-3)}
+
+/* ---------- the bottom: the nudge, the sets, then the dock ---------- */
+.app.tactive .trainv>.tf-bot.wk-bot{flex:1 0 auto;display:flex;flex-direction:column;padding:var(--sp-4) var(--gutter) 0;background:none}
+.app.tactive .trainv>.tf-bot{pointer-events:none}
+.app.tactive .trainv>.tf-bot>*{pointer-events:auto}
+.wk-nudge{display:flex;gap:var(--sp-2);align-items:center;margin:0 0 var(--sp-3);padding:var(--sp-2) var(--sp-3);border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--line);font-size:var(--fs-2);line-height:1.35;color:var(--text-1)}
+.wk-nudge svg{flex:none;width:16px;height:16px;fill:none;stroke:var(--text-2);stroke-width:1.6;stroke-linejoin:round}
+.wk-nudge.up svg{stroke:var(--glow);fill:var(--glow)}
+/* the set table: done (white, tick), now (lime ring, big inputs), later (faint) */
+.wk-tbl{display:grid;gap:var(--sp-1);flex:none}
+.wk-tr{display:grid;grid-template-columns:28px minmax(0,1fr) repeat(var(--cols),64px) 32px;align-items:center;gap:var(--sp-2);min-height:44px;padding:0 var(--sp-2);border-radius:var(--r-sm);border:1px solid transparent;font-variant-numeric:tabular-nums}
+.wk-tr>b{font-family:var(--display);font-size:var(--fs-3);font-weight:900;text-align:center;color:var(--text-1)}
+.wk-th{min-height:20px;font-family:var(--body);font-size:var(--fs-1);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+.wk-th>span:nth-child(n+3){text-align:center}
+.wk-pv{font-size:var(--fs-2);font-weight:600;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wk-v{font-family:var(--display);font-size:var(--fs-3);font-weight:800;text-align:center;color:var(--text-1)}
+.wk-dim{color:var(--text-2)}
+.wk-tr:not(.wk-done):not(.wk-cur):not(.wk-th) .wk-v,.wk-tr:not(.wk-done):not(.wk-cur):not(.wk-th) .wk-pv{color:var(--text-3)}
+.wk-tr .u-tick{justify-self:center;width:28px;height:28px}
+.wk-tr:not(.wk-done):not(.wk-cur):not(.wk-th) .u-tick{opacity:.5}
+.wk-done{background:var(--surface-2);border-color:var(--line)}
+.wk-done .wk-v{color:var(--text-1)}
+.wk-cur{min-height:52px;background:var(--surface-2);border:1.5px solid color-mix(in srgb,var(--glow) 45%,transparent)}
+.wk-next{border:1px dashed var(--line-2)}
+/* the set you just logged flashes and its tick pops */
+.wk-tr.wk-just{animation:wkJust .9s var(--ease)}
+.wk-tr.wk-just .u-tick{animation:fxPop .45s var(--ease) .05s}
+@keyframes wkJust{0%{background:color-mix(in srgb,var(--glow) 30%,transparent)}100%{background:var(--surface-2)}}
+.wk-tbl .stp.wk-in{display:block;max-width:none;padding:0;border:0;border-radius:10px;background:var(--surface-3)}
+.wk-tbl .stp.wk-in input{display:block;width:100%;height:40px;padding:0;border-radius:10px;background:var(--surface-3);border:1px solid var(--line);font-family:var(--display);font-stretch:normal;font-weight:900;font-size:calc(var(--fs-3) + 4px);text-align:center;color:var(--text-1)}
+.wk-tbl .stp.wk-in input:focus{border-color:var(--glow)}
+
+/* ---------- the dock: steppers, plates, Log, Up next; sticky at the thumb ---------- */
+.app.tactive .wk-dock{position:sticky;bottom:0;z-index:2;flex:none;margin:auto calc(-1 * var(--gutter)) 0;padding:var(--sp-3) var(--gutter) calc(var(--sp-2) + var(--sab));background:var(--bg);border-top:1px solid var(--line)}
+.wk-steps{display:flex;gap:var(--sp-3);margin:0}
+.wk-steps .stp.wk-stp{flex:1;max-width:none;display:grid;grid-template-columns:var(--tap) 1fr var(--tap);align-items:center;min-height:56px;padding:0 var(--sp-2);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line)}
+.wk-steps .stp.wk-stp button{display:grid;place-items:center;justify-self:center;width:var(--tap);height:var(--tap);padding:5px;background-clip:content-box;border-radius:50%;background-color:var(--line-2);font-size:var(--fs-4);font-weight:700;line-height:1;color:var(--text-1)}
+.wk-steps .stp.wk-stp button:active{background-color:var(--line-3)}
+.wk-sv{display:grid;justify-items:center;gap:2px}
+.wk-sv b{font-size:var(--fs-4);line-height:1}
+.wk-sv b.wk-tick{animation:wkTick .12s var(--ease)}
+@keyframes wkTick{50%{transform:scale(1.08)}}
+.wk-steps .stp.wk-stp small{text-align:center;font-family:var(--body);font-size:var(--fs-1);font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2)}
+#train.wk-typing .wk-steps,#train.wk-typing .wk-plates{display:none}
+.wk-plates{margin:var(--sp-2) 0 0;font-size:var(--fs-1);text-align:center;color:var(--text-2)}
+.wk-dock .tf-cta{margin-top:var(--sp-3)}
+.wk-dock .tf-cta .btn{min-height:var(--btn-h);height:auto;border-radius:var(--r-btn);background:var(--cta);color:var(--on-cta);font-size:calc(var(--fs-3) + 4px);font-weight:900;letter-spacing:-.01em}
+.wk-dock .tf-next,.wk-dock button.tf-next.rdt-qb{display:flex;flex-direction:row;align-items:center;gap:var(--sp-2);width:100%;margin:var(--sp-2) 0 0;padding:0 2px;min-height:40px;text-align:left;font-size:var(--fs-2)}
+.wk-dock .tf-next b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;font-weight:800;color:var(--text-1)}
+.wk-dock .tf-next span,.wk-dock button.tf-next.rdt-qb span{font-size:var(--fs-1);font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2)}
+.wk-dock .tf-next em{font-style:normal;font-size:var(--fs-2);font-weight:700;color:var(--text-2)}
+.wk-dock .tf-next svg{flex:none;width:16px;height:16px;fill:none;stroke:var(--text-3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* the rest sheet: bone, in the dock's slot, the effort question inside it when an exercise is done */
+.wk-rest{display:grid;gap:var(--sp-3);max-height:50vh;overflow-y:auto;padding:var(--sp-4);border-radius:var(--r-card-lg) var(--r-card-lg) var(--r-card) var(--r-card);background:var(--cta);color:var(--on-cta);animation:wkSheet .25s var(--ease) both}
+@keyframes wkSheet{from{transform:translateY(100%);opacity:0}}
+.wk-rest-h{display:flex;justify-content:space-between;gap:var(--sp-2)}
+.wk-rest-h .u-eyebrow,.wk-rest-h em{font-style:normal;font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:color-mix(in srgb,var(--on-cta) 66%,var(--cta));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wk-rest-t{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-2)}
+.wk-rest-t b{font-size:var(--fs-6);font-weight:900;line-height:1;color:var(--on-cta)}
+.wk-rest-t small{font-size:var(--fs-1);font-weight:700;color:color-mix(in srgb,var(--on-cta) 70%,var(--cta));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wk-rest-bar{display:block;width:100%;height:4px;margin:0;border-radius:2px;overflow:hidden}
+.wk-rest-bar line{stroke-width:8}
+.wk-rest-bar .rbg{stroke:var(--cta-2)}
+.wk-rest-bar .rfg{stroke:var(--on-cta);stroke-dasharray:289;transition:stroke-dashoffset .3s linear}
+.wk-rest-why{margin:0;font-size:var(--fs-2);font-weight:600;line-height:1.4;color:color-mix(in srgb,var(--on-cta) 72%,var(--cta))}
+.wk-rest-b{display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-2)}
+.wk-rb{min-width:0;height:var(--tap);padding:0;border-radius:var(--r-sm);background:var(--cta-2);font-family:var(--body);font-size:var(--fs-3);font-weight:800;color:var(--on-cta)}
+.wk-rb.wk-skip{background:var(--on-cta);color:var(--cta)}
+.wk-rest .wk-eff{margin:0;padding:0 0 var(--sp-3);border:0;border-bottom:1px solid color-mix(in srgb,var(--on-cta) 10%,transparent);border-radius:0;background:none}
+.wk-rest .wk-eff-q .u-eyebrow{color:color-mix(in srgb,var(--on-cta) 66%,var(--cta))}
+.wk-rest .wk-eff-q b{font-size:var(--fs-3);font-weight:800;color:var(--on-cta)}
+.wk-rest .wk-eff-b button{height:56px;background:var(--cta-2);border:0;color:var(--on-cta)}
+.wk-rest .wk-eff-b button b,.wk-rest .wk-eff-b button small{color:var(--on-cta)}
+.wk-rest .wk-eff.done b,.wk-rest .wk-eff.done small,.wk-rest .wk-eff.done .u-eyebrow{color:var(--on-cta)}
+@media (max-height:700px){
+  .wk-steps .stp.wk-stp{min-height:52px}
+  .wk-rest .wk-eff-b button{height:48px}
+  .wk-rest .wk-eff~.wk-rest-why{display:none}
+  .wk-dock .tf-next{min-height:32px}
+  .wk-tr{min-height:40px} .wk-cur{min-height:48px}
+}
+@media (max-width:374px){ .app.tactive .wk-top .tf-watch{padding:0 10px} }
+@media (prefers-reduced-motion:reduce){ .wk-tr.wk-just,.wk-tr.wk-just .u-tick,.wk-end.arm::after,.wk-rest,.wk-qbar i.new,.wk-hud b.tick{animation:none} }
+
+/* ---------- Watch: the body shows the move full screen; everything else steps aside ---------- */
+.wk-watchbar{display:none}
+.app.tactive.twatch #stage{visibility:visible}
+.app.tactive.twatch .trainv{background:transparent;pointer-events:none}
+.app.tactive.twatch .trainv>:not(.wk-watchbar){display:none}
+.app.tactive.twatch .trainv>.wk-watchbar{display:flex;position:absolute;left:var(--gutter);right:var(--gutter);bottom:calc(var(--sp-4) + var(--sab));flex-direction:column;gap:var(--sp-3);pointer-events:auto}
+.wk-watchbar b{font-family:var(--display);font-size:var(--fs-4);font-weight:900;text-align:center;color:var(--text-1)}
+
+/* =========================================================
+   THE RUN — Workout complete as steps. The host fills #train; steps 1 and the last are see-through over the lit
+   body (a scrim keeps the text readable), the rest sit on black. No tab bar, no back, no edge swipe.
+   ========================================================= */
+.app.train.tdone{--tabH:0px}
+.app.tdone .hud-top{opacity:0;pointer-events:none}
+.app.tdone .hud-top *{pointer-events:none!important}
+.app.tdone .trainv>.dn.wk-run{position:absolute;inset:0;display:block;padding:0;overflow:hidden;pointer-events:auto;background:transparent;transition:background var(--dur-3)}
+.app.tdone .trainv>.dn.wk-run.solid{background:var(--bg)}
+.wk-run-s{position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:calc(var(--sat) + 56px) var(--gutter) calc(var(--btn-h) + var(--sp-7) + var(--sab))}
+.wk-run-s::-webkit-scrollbar{display:none}
+.wk-run-s[hidden]{display:none}
+.wk-run-s.lit::before{content:"";position:fixed;left:0;right:0;top:0;bottom:0;background:linear-gradient(transparent 40%,color-mix(in srgb,var(--bg) 82%,transparent) 62%,var(--bg) 80%);pointer-events:none;z-index:-1}
+.wk-run-s.lit{z-index:0}
+.wk-run-s.in>*{animation:fxUp .4s var(--ease) both}
+.wk-run-s.in>*:nth-child(2){animation-delay:.1s} .wk-run-s.in>*:nth-child(3){animation-delay:.2s} .wk-run-s.in>*:nth-child(4){animation-delay:.3s}
+.wk-run-s.out{opacity:0;transform:translateY(-8px);transition:opacity .15s,transform .15s}
+.wk-run-in{display:grid;gap:var(--sp-3);justify-items:start}
+.wk-run-eye{color:var(--glow)}
+.wk-run-eye.gold{color:var(--rk-4)}
+.wk-run-big{font-family:var(--display);font-size:var(--fs-7);font-weight:900;letter-spacing:var(--track-tight);line-height:1;color:var(--glow);font-variant-numeric:tabular-nums}
+.wk-run-sub{margin:0;font-size:var(--fs-2);color:var(--text-2)}
+.wk-run-more{margin:0;font-size:var(--fs-1);color:var(--text-2)}
+.wk-run-cta{position:absolute;left:var(--gutter);right:var(--gutter);bottom:calc(var(--sp-4) + var(--sab));display:grid;gap:var(--sp-2);justify-items:center;z-index:2}
+.wk-run-cta .u-btn{min-height:var(--btn-h)}
+.wk-run-hint{font-size:var(--fs-1);font-weight:700;color:var(--text-3)}
+/* step 1: today's numbers in a left column, the body on the right; the tease pills */
+.wk-dn .dn-top .u-h1{margin-top:var(--sp-1);font-size:var(--fs-5)}
+.wk-dn-eye{color:var(--glow)}
+.wk-dn .dn-stats b{font-family:var(--display);font-stretch:var(--wide);font-weight:800;font-variant-numeric:tabular-nums}
+.wk-dn .dn-stats .wk-rpst b{color:var(--glow)}
+.wk-tease{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-4)}
+.wk-tease span{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:var(--r-pill);background:var(--surface-3);border:1px solid var(--line);font-size:var(--fs-1);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+.wk-tease span.rp{background:var(--glow-a);color:var(--glow-soft);border-color:color-mix(in srgb,var(--glow) 35%,transparent)}
+.app.wkrun .ev-dn-tro{display:none}
+/* step 2: personal bests in gold */
+.wk-pb{display:grid;gap:var(--sp-3);width:100%}
+.wk-pb div{padding:var(--sp-4);border-radius:var(--r-card);background:var(--surface-2);border:1px solid color-mix(in srgb,var(--rk-4) 35%,transparent);animation:fxUp .4s var(--ease) both;animation-delay:calc(.2s + var(--i,0) * .11s)}
+.wk-pb b{display:block;font-size:var(--fs-4);font-weight:800;color:var(--text-1)}
+.wk-pb em{display:block;margin-top:var(--sp-1);font-style:normal;font-family:var(--display);font-size:var(--fs-6);font-weight:900;letter-spacing:var(--track-tight);line-height:1;color:var(--rk-4);font-variant-numeric:tabular-nums}
+.wk-pb small{display:block;margin-top:var(--sp-1);font-size:var(--fs-2);color:var(--text-2)}
+/* step 3: rank points per muscle, each with its bar */
+.wk-gains{display:grid;gap:var(--sp-2);width:100%}
+.wk-rpl{display:grid;gap:var(--sp-3)}
+.wk-rpr{display:grid;grid-template-columns:12px 1fr auto auto;gap:4px var(--sp-2);align-items:center;animation:fxUp .4s var(--ease) both;animation-delay:calc(.2s + var(--i,0) * .1s)}
+.wk-rpr .rk-sq{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.wk-rpr b{font-size:var(--fs-3);font-weight:700;color:var(--text-1)}
+.wk-rpr em{font-style:normal;font-size:var(--fs-2);color:var(--text-2)}
+.wk-rpr strong{font-weight:900;color:var(--glow);font-variant-numeric:tabular-nums}
+.wk-rpr .u-bar{grid-column:1/-1;height:4px}
+.wk-rpr .u-bar i{background:var(--c)}
+.wk-rpr.ov strong{color:var(--text-1)}
+.wk-run-s .dn-blk{width:100%;margin-top:var(--sp-5)}
+/* step 5: the level emblem, big */
+.wk-lvl{display:grid;justify-items:center;width:100%;margin-top:var(--sp-3);color:var(--c)}
+.wk-lvl .u-lvl-hex{width:160px;height:160px}
+.wk-lvl .u-lvl-hex b{font-size:var(--fs-7)}
+.wk-lvl-hex .p{transition:stroke-dasharray .6s var(--ease)}
+.wk-lvl-hex .p.jump{transition:none}
+.wk-lvl-t{width:100%;margin-top:var(--sp-3);text-align:center;font-size:var(--fs-6);color:var(--text-1)}
+.wk-run-s[data-id="level"] .wk-run-sub{width:100%;text-align:center}
+.wk-unl{display:grid;gap:var(--sp-2);width:100%;margin-top:var(--sp-5)}
+.wk-unl div{padding:var(--sp-3) var(--sp-4);border-radius:var(--r-card);border:1px solid color-mix(in srgb,var(--cta) 35%,transparent);text-align:left;animation:fxUp .4s var(--ease) both;animation-delay:calc(.3s + var(--i,0) * .1s)}
+.wk-unl b{display:block;font-size:var(--fs-3);font-weight:800;color:var(--text-1)}
+.wk-unl small{display:block;margin-top:2px;font-size:var(--fs-2);color:var(--text-2)}
+/* the last step: next time, the sets, the reset toggle, Done */
+.wk-run-nt{width:auto}
+.wk-run-s .dn-low{padding-bottom:var(--sp-5)}
+.wk-run-s .dn-low>*{pointer-events:auto}
+/* nothing logged: the plan over the softly lit body, and the way back into the workout */
+.wk-empty .dn-top{margin-top:calc(var(--sat) + var(--sp-6));width:52%}
+.wk-empty .dn-top .u-h1{text-wrap:balance}
+.wk-empty .dn-top .wk-run-sub{margin-top:var(--sp-2);line-height:1.4;text-shadow:0 1px 12px var(--bg)}
+.wk-empty-low{gap:var(--sp-4);padding-bottom:calc(var(--sp-4) + var(--sab))}
+.wk-empty-list{display:grid}
+.wk-empty-list div{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-2) 0;border-bottom:1px solid var(--line);animation:fxUp .4s var(--ease) both;animation-delay:calc(.15s + var(--i,0) * .06s)}
+.wk-empty-list b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:var(--fs-3);font-weight:700;color:var(--text-1)}
+.wk-empty-list span{flex:none;font-size:var(--fs-2);color:var(--text-2);font-variant-numeric:tabular-nums}
+.wk-empty .wk-run-more{margin-top:var(--sp-2)}
+.wk-empty-acts{display:grid;gap:var(--sp-2)}
+.wk-empty-acts .u-btn{min-height:var(--btn-h)}
+/* the strip over everything: the run's progress and Skip */
+.wk-run-top{position:absolute;left:var(--gutter);right:var(--gutter);top:calc(var(--sat) + 14px);z-index:31;display:grid;gap:var(--sp-2)}
+.wk-run-top[hidden]{display:none}
+.wk-run-row{display:flex;align-items:center;gap:var(--sp-3)}
+.wk-run-row .rk-segs{flex:1;margin:0}
+.wk-run-lbl{font-size:var(--fs-1);font-weight:700;color:var(--text-3);white-space:nowrap}
+.wk-run-skip{min-height:var(--tap);padding:0 var(--sp-2);font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-3);background:none;border:0}
+.wk-run-ask{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line);animation:fxUp .25s var(--ease)}
+.wk-run-ask[hidden]{display:none}
+.wk-run-ask span{flex:1;font-size:var(--fs-2);font-weight:700;color:var(--text-1)}
+.wk-run-ask .u-btn.small{min-height:36px}
+/* the app's own moment screens inside the run: one strip, no second row, no detours */
+.app.wkrun .rk-up .rk-segs,.app.wkrun .rk-up .u-link,.app.wkrun .sk-up .sk-x{display:none}
+@media (prefers-reduced-motion:reduce){ .wk-run-s.in>*,.wk-pb div,.wk-rpr,.wk-unl div,.wk-run-ask{animation:none} .wk-lvl-hex .p{transition:none} .wk-run-s.out{transition:none} }

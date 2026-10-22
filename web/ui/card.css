@@ -1,0 +1,48 @@
+/* =========================================================
+   YOUR CARD (Ossa 2.0 Phase 5 "Evolve", package card): the card view inside the Evolve panel
+   (#evV .ev-body), its Edit sheet and the act button. See card.js. Tokens only (web/ui/tokens.css).
+   One screen, no scrolling: the card takes the height that's left after the line and the button.
+   ========================================================= */
+.cd-v{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:var(--sp-3);width:100%}
+
+/* the card and its line, centred in the space left above the button */
+.cd-pv{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-3);width:100%}
+/* card.js sets the exact size from the box (4:5, at most 350 px wide); these are the fallbacks */
+.cd-frame{position:relative;flex:none;display:grid;place-items:center;height:100%;aspect-ratio:4/5;max-width:min(100%,350px);
+  border-radius:var(--r-card-lg);overflow:hidden;background:var(--surface-2);border:1px solid var(--line)}
+/* once drawn, the picture's own frame (in the rank colour) is the edge, with a soft glow in the same colour */
+.cd-frame.ready{background:var(--bg);border-color:transparent;box-shadow:0 0 36px color-mix(in srgb,var(--c,var(--text-1)) 18%,transparent)}
+.cd-ph{display:grid;place-items:center;opacity:.9}
+.cd-img{display:block;width:100%;height:100%;object-fit:contain;-webkit-user-drag:none}
+.cd-img.save{-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
+.cd-line{flex:none;margin:0;font-size:var(--fs-2);line-height:1.35;color:var(--text-2);text-align:center}
+.cd-go{flex:none}
+
+/* the act slot: Edit */
+.cd-ed{display:inline-grid;place-items:center;min-width:var(--tap);min-height:var(--tap);padding:0 var(--sp-1);
+  font-size:var(--fs-3);font-weight:700;color:var(--text-1);border-radius:var(--r-sm)}
+.cd-ed:active{color:var(--text-2)}
+
+/* the Edit sheet: two switches */
+.cd-sh{display:grid}
+.cd-tg{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);width:100%;min-height:56px;
+  padding:var(--sp-2) 0;text-align:left;border-bottom:1px solid var(--line);color:var(--text-1)}
+.cd-tg:last-child{border-bottom:0}
+.cd-tg[disabled]{opacity:.45;pointer-events:none}
+.cd-tg-l{display:grid;gap:2px;min-width:0}
+.cd-tg-l b{font-size:var(--fs-3);font-weight:700}
+.cd-tg-l small{font-size:var(--fs-1);color:var(--text-2)}
+.cd-sw{position:relative;display:block;width:52px;height:32px;border-radius:var(--r-pill);background:var(--surface-3);border:1px solid var(--line-2);
+  transition:background var(--dur-2) var(--ease),border-color var(--dur-2) var(--ease)}
+.cd-sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--text-2);
+  transition:transform var(--dur-2) var(--ease),background var(--dur-2) var(--ease)}
+.cd-tg[aria-checked="true"] .cd-sw{background:var(--glow);border-color:var(--glow)}
+.cd-tg[aria-checked="true"] .cd-sw::after{transform:translateX(20px);background:var(--on-accent)}
+@media (prefers-reduced-motion:reduce){ .cd-sw,.cd-sw::after{transition:none} }
+
+/* short phones: tighter gaps; the card shrinks by itself (card.js sizes it from the space left) */
+@media (max-height:700px){
+  .cd-v,.cd-pv{gap:var(--sp-2)}
+  .cd-ph .rk-badge.lg{width:64px;height:74px}
+  .cd-ph .rk-badge.lg b{font-size:var(--fs-5)}
+}

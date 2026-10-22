@@ -1,0 +1,157 @@
+/* =========================================================
+   MONK MODE (Ossa 2.0, Phase 3 "Focus"): styles for web/ui/monk.js. Owner: package P3. Classes .mm-*.
+   Tokens only (web/ui/tokens.css); cyan is the Focus colour, lime only for RP (the muscles' currency).
+   Included after widget.css. The three screens fill the Mind panel: focus.js sets .app.fcfull (no tab bar,
+   the panel runs to the bottom) and monk.js sets #mind.mm-on while one shows (black, its own top row).
+   Designs: monk_mode_setup.png, focus_timer_stance.png, monk_mode_completion.png.
+   ========================================================= */
+#mind.mm-on{background:var(--bg)}
+#mind.mm-on>.mv-top{display:none}
+#mind.mm-on>.mv-body{padding:0}
+
+.mm-v{position:relative;display:flex;flex-direction:column;box-sizing:border-box;min-height:100vh;min-height:100dvh;
+  padding:calc(var(--sp-2) + var(--sat)) var(--gutter) calc(var(--sp-5) + var(--sab));
+  text-align:center;color:var(--text-1);background:var(--bg)}
+.mm-v svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mm-v svg.f{fill:currentColor;stroke:none}
+
+/* the top row: close or back, a label in the middle */
+.mm-top{display:grid;grid-template-columns:var(--tap) 1fr var(--tap);align-items:center;gap:var(--sp-2);min-height:56px}
+.mm-x{background:var(--surface-2);border-color:var(--line-2)}
+.mm-x:active{background:var(--surface-3)}
+.mm-eye{color:var(--cyan);letter-spacing:.24em}
+.mm-pill{justify-self:center;display:inline-flex;align-items:center;gap:var(--sp-2);min-height:36px;padding:0 var(--sp-4);border-radius:var(--r-pill);
+  border:1px solid var(--line-3);font-size:var(--fs-1);font-weight:900;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--cyan);white-space:nowrap}
+.mm-pill i{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 3px var(--cyan-a)}
+
+/* the body still (a PNG on black from hlShot), or a soft glow without WebGL */
+.mm-fig{position:relative;display:grid;place-items:center;width:100%;max-width:380px;margin:0 auto}
+.mm-fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:lighten;opacity:0;transition:opacity var(--dur-3) var(--ease)}
+.mm-fig.on img{opacity:1}
+.mm-fig.flat::before{content:"";width:62%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--cyan) 34%,transparent) 0%,transparent 68%)}
+.mm-fig-up{height:clamp(220px,40dvh,360px);margin-top:var(--sp-1)}
+.mm-fig-seat{height:clamp(170px,38dvh,360px);margin-top:var(--sp-2)}
+/* the waist-up still melts into black at the bottom instead of a hard cut through the hands */
+.mm-fig-seat img{-webkit-mask-image:linear-gradient(to bottom,var(--bg) 70%,transparent 100%);mask-image:linear-gradient(to bottom,var(--bg) 70%,transparent 100%)}
+
+/* ---------- setup ---------- */
+.mm-setup{padding-bottom:0}
+.mm-h{margin:var(--sp-2) 0 0;font-size:var(--fs-6);color:var(--text-1)}
+.mm-line{margin:var(--sp-3) auto 0;max-width:30ch;font-size:var(--fs-3);line-height:1.45;color:var(--text-2)}
+.mm-durs{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3);margin-top:var(--sp-5)}
+.mm-dur{display:grid;justify-items:center;align-content:center;gap:2px;min-height:100px;padding:var(--sp-3) var(--sp-1);border-radius:var(--r-card-lg);
+  background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-1);transition:background var(--dur-1),border-color var(--dur-1),transform var(--dur-1) var(--ease)}
+.mm-dur:active{transform:scale(.97)}
+.mm-dur b{font-family:var(--display);font-size:calc(var(--fs-5) + 4px);font-weight:900;line-height:1.05;letter-spacing:-.03em}
+.mm-dur small{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.mm-dur em{margin-top:2px;font-style:normal;font-size:var(--fs-1);font-weight:800;color:var(--cyan)}
+.mm-dur[aria-pressed="true"]{background:var(--cta);border-color:var(--cta);color:var(--on-cta)}
+.mm-dur[aria-pressed="true"] small{color:color-mix(in srgb,var(--on-cta) 62%,var(--cta))}
+.mm-dur[aria-pressed="true"] em{color:var(--on-cta)}
+.mm-test{align-self:center;margin-top:var(--sp-3)}
+.mm-rules{display:grid;gap:var(--sp-2);margin-top:var(--sp-5);padding:var(--sp-4);border-radius:var(--r-card);text-align:left}
+.mm-rules p{margin:0;font-size:var(--fs-2);line-height:1.45;color:var(--text-2)}
+.mm-rules b{font-weight:800;color:var(--text-1)}
+.mm-rules .mm-note{color:var(--cyan)}
+.mm-f{display:block;margin-top:var(--sp-4);text-align:left}
+.mm-lab{display:block;margin-bottom:var(--sp-2);font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.mm-in{display:block;box-sizing:border-box;width:100%;min-height:52px;padding:0 var(--sp-4);border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line-2);
+  color:var(--text-1);font-family:var(--body);font-size:var(--fs-3);font-weight:600;-webkit-appearance:none;appearance:none}
+.mm-in::placeholder{color:var(--text-3);font-weight:500}
+.mm-in:focus{outline:none;border-color:var(--cyan)}
+/* the one action stays under your thumb at the bottom */
+.mm-foot{position:sticky;bottom:0;z-index:2;margin:var(--sp-4) calc(-1 * var(--gutter)) 0;padding:var(--sp-6) var(--gutter) calc(var(--sp-4) + var(--sab));
+  background:linear-gradient(transparent,var(--bg) 42%)}
+.mm-go{box-shadow:0 0 36px color-mix(in srgb,var(--cyan) 32%,transparent)}
+
+/* ---------- timer ---------- */
+.mm-clock{display:grid;justify-items:center;gap:var(--sp-2);margin-top:var(--sp-4)}
+.mm-clock b{font-size:var(--fs-8);font-weight:900;letter-spacing:-.045em;line-height:.9}
+.mm-clock .u-eyebrow{letter-spacing:.24em}
+.mm-task{display:grid;gap:2px;margin:var(--sp-2) auto 0;max-width:32ch;font-size:var(--fs-3);font-weight:700;line-height:1.35;color:var(--text-1);overflow-wrap:anywhere}
+.mm-task span,.mm-did span{font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--text-2)}
+.mm-tiles{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-top:auto;padding-top:var(--sp-4)}
+.mm-tile{display:flex;align-items:center;gap:var(--sp-3);min-width:0;min-height:72px;padding:var(--sp-3);border-radius:var(--r-card-lg);background:var(--surface-2);border:1px solid var(--line);text-align:left}
+.mm-ti{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:50%;background:var(--surface-3);color:var(--cyan)}
+.mm-tile>span:last-child{min-width:0}
+.mm-tile small{display:block;font-size:var(--fs-1);font-weight:800;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;color:var(--text-2)}
+.mm-tile b{display:block;margin-top:2px;font-family:var(--display);font-size:var(--fs-4);font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.mm-quiet{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);margin:var(--sp-4) 0 0;font-size:var(--fs-2);font-weight:600;color:var(--text-2)}
+.mm-quiet i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 3px var(--cyan-a)}
+.mm-end{margin-top:var(--sp-4);letter-spacing:.2em;text-transform:uppercase}
+.mm-endn{min-height:calc(var(--fs-2) * 1.4);margin:var(--sp-2) 0 0;text-align:center;font-size:var(--fs-2);color:var(--text-2)}
+.mm-end.arm{letter-spacing:0;text-transform:none;background:var(--bg);color:var(--text-1);border-color:var(--text-1)}
+
+/* ---------- finish ---------- */
+.mm-head{margin-top:var(--sp-5)}
+.mm-title{margin:var(--sp-2) 0 0;font-family:var(--display);font-size:var(--fs-6);font-weight:900;line-height:1;letter-spacing:var(--track-tight);text-transform:uppercase;text-wrap:balance}
+.mm-ring{position:relative;display:grid;place-items:center;align-content:center;box-sizing:border-box;width:min(66vw,260px);aspect-ratio:1;margin:var(--sp-6) auto 0;border-radius:50%;
+  border:2px solid var(--text-1);box-shadow:0 0 64px color-mix(in srgb,var(--cyan) 20%,transparent),inset 0 0 44px color-mix(in srgb,var(--cyan) 10%,transparent)}
+.mm-ring b{font-family:var(--display-italic);font-style:italic;font-size:var(--fs-6);font-weight:900;letter-spacing:-.04em;line-height:1}
+.mm-ring span{margin-top:var(--sp-2);font-size:var(--fs-1);font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--text-2)}
+.mm-ring i{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--cyan)}
+.mm-ring i.d1{left:24%;top:7%}
+.mm-ring i.d2{left:99%;top:44%}
+.mm-ring i.d3{left:72%;top:84%;background:var(--text-3)}
+.mm-xp{display:grid;justify-items:center;gap:var(--sp-2);margin-top:var(--sp-5)}
+.mm-xpp{display:inline-flex;align-items:center;gap:var(--sp-2);min-height:56px;padding:0 var(--sp-5);border-radius:var(--r-pill);background:var(--cyan);color:var(--on-accent);
+  font-family:var(--display);font-size:calc(var(--fs-4) + 4px);font-weight:900;letter-spacing:-.02em;white-space:nowrap}
+.mm-xpp svg{width:22px;height:22px}
+.mm-xpp.none{background:var(--surface-3);color:var(--text-2);font-size:var(--fs-3)}
+.mm-why,.mm-lv,.mm-up{margin:0;max-width:34ch;font-size:var(--fs-2);line-height:1.4;color:var(--text-2)}
+.mm-lv{font-weight:700;color:var(--text-1)}
+.mm-up{font-size:var(--fs-3);font-weight:900;color:var(--cyan)}
+.mm-sh{text-align:left}
+.mm-tot{font-size:var(--fs-2);font-weight:800;color:var(--cyan);white-space:nowrap}
+.mm-rows{display:grid;gap:var(--sp-3);text-align:left}
+.mm-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:var(--sp-3);min-height:72px;padding:var(--sp-3) var(--sp-4);border-radius:var(--r-card-lg);
+  background:var(--surface-2);border:1px solid var(--line)}
+.mm-ri{display:grid;place-items:center;width:48px;height:48px;border-radius:var(--r-sm);background:var(--surface-3);color:var(--c,var(--cyan))}
+.mm-rt{min-width:0}
+.mm-rt b{display:block;font-size:var(--fs-3);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mm-rt small{display:block;margin-top:2px;font-size:var(--fs-1);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+.mm-row em{font-style:normal;font-family:var(--display);font-size:var(--fs-3);font-weight:900;color:var(--c,var(--cyan));white-space:nowrap}
+.mm-did{display:grid;gap:2px;margin:var(--sp-5) auto 0;max-width:32ch;font-size:var(--fs-3);font-weight:700;line-height:1.35;overflow-wrap:anywhere}
+.mm-said{margin:var(--sp-5) auto 0;max-width:30ch;font-size:var(--fs-2);font-style:italic;line-height:1.45;color:var(--text-3)}
+.mm-done{padding-bottom:0}
+.mm-done .mm-foot{margin-top:auto}
+
+/* short phones (iPhone SE): everything on the timer fits without scrolling */
+@media (max-height:700px){
+  .mm-fig-up{height:clamp(170px,32dvh,260px)}
+  .mm-fig-seat{height:clamp(130px,27dvh,220px)}
+  .mm-top{min-height:48px}
+  .mm-clock{margin-top:var(--sp-2)}
+  .mm-tile{min-height:60px;padding:var(--sp-2) var(--sp-3)}
+  .mm-quiet{margin-top:var(--sp-3)}
+  .mm-end{margin-top:var(--sp-3)}
+  .mm-ring{width:min(56vw,210px);margin-top:var(--sp-5)}
+}
+@media (prefers-reduced-motion:reduce){
+  .mm-fig img,.mm-dur{transition:none}
+  .mm-dur:active{transform:none}
+}
+
+/* the lotus and its breathing orb (monk.js mmLotus): cyan from tokens, petals open as the session goes */
+.mm-fig.mm-lot{display:grid;place-items:center}
+.mm-fig.mm-lot svg.mm-lotus{width:auto;height:min(100%,300px);aspect-ratio:1;max-width:100%;overflow:visible}
+.mm-pt{fill:var(--cyan);fill-opacity:0;stroke:var(--cyan);stroke-opacity:.35;stroke-width:1.5;transform:scale(.55);transition:transform 1.4s var(--ease),fill-opacity 1.4s var(--ease),stroke-opacity 1.4s var(--ease)}
+.mm-pt.on{transform:scale(1);fill-opacity:.2;stroke-opacity:.9}
+.mm-orbw{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.mm-orb,.mm-orbr{grid-area:1/1;border-radius:50%;will-change:transform,opacity;animation:mmBreathe 11s ease-in-out infinite}
+.mm-orb{width:clamp(40px,14%,60px);aspect-ratio:1;background:var(--cyan);box-shadow:0 0 28px 6px var(--cyan-a)}
+.mm-orbr{width:clamp(64px,23%,96px);aspect-ratio:1;border:1.5px solid var(--cyan);opacity:.35}
+@keyframes mmBreathe{0%,100%{transform:scale(.62);opacity:.55}50%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){ .mm-orb,.mm-orbr{animation:none;transform:scale(.8)} .mm-pt{transition:none} }
+
+/* setup on one screen (Andrej, 17 Oct): the rules in one line under Start, the task as one field */
+.mm-setup .mm-rule1{margin:var(--sp-2) 0 0;text-align:center;font-size:var(--fs-1);line-height:1.45;color:var(--text-3)}
+.mm-setup .mm-note{margin:var(--sp-1) 0 0;text-align:center;font-size:var(--fs-1);color:var(--text-3)}
+.mm-setup .mm-f{margin-top:var(--sp-3)}
+.mm-setup .mm-foot{position:static;margin:var(--sp-3) 0 0;padding:0;background:none}
+.mm-setup .mm-fig-up{height:clamp(150px,30dvh,300px)}
+/* the timer: the clock, the lotus, your task and End (the two stat tiles went, Andrej 17 Oct) */
+.mm-timer .mm-tiles{display:none}
+.mm-timer .mm-fig-seat{flex:1;min-height:200px}
+@media (max-height:700px){ .mm-setup .mm-fig-up{height:clamp(120px,22dvh,200px)} }
+.mm-setup .mm-fig.mm-fig-up{grid-template-rows:100%;overflow:visible}.mm-setup .mm-fig.mm-lot.mm-fig-up svg.mm-lotus{height:100%;max-height:300px}

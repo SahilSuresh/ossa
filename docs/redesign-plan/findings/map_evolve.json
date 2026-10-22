@@ -1,0 +1,560 @@
+{
+ "key": "evolve",
+ "title": "Phase 5 Evolve: specialization, Ideal Self, prestige, trophies, card, Vault",
+ "area": "Evolve (data and screens): specialization_engine, ar_goal_projection, prestige_system, achievement_gallery, vessel_trading_cards, vessel_vault",
+ "keyFacts": [
+  {
+   "fact": "An Overall rank already exists. overall() is the average of the 9 region scores, and each region score is the average of its muscles. It shows as 'Overall' on the Muscle ranks screen and as the 'Overall rank' tile on Home. Forged II starts at score 67.",
+   "ref": "web/ossa.html:3905-3906 (rScore, overall); web/ui/ranks.js:55-64 (openRanks hero); web/ui/shell.js:196 (tile); web/ossa.html:3382 (RK_STEPS [67,4,1])"
+  },
+  {
+   "fact": "Forged II overall is months away for a normal user. I simulated finishWorkout's own gain formula: one muscle needs about 27 sessions at 3 primary sets (about 20 at 4) to reach 67, about 37-50 to reach 94 (Unbreakable III), and 40 sessions to reach 40 if it only ever gets secondary work. The default PLAN never makes traps or serratus a primary muscle, and pec_minor only appears on the Recover day, which has no items. Demo data comes out at overall 43 (Strong I).",
+   "ref": "web/ossa.html:7750 (gain = round(l*(1-s/125)), l = sets*1.2 primary / *0.4 secondary at 7748); 3817-3825 (PLAN); 5907 (Recover/Rest days have no items); 3815 (SEED)"
+  },
+  {
+   "fact": "Scores only ever go up and stop at 100. No code path lowers S.scores. Unbreakable III starts at 94, where toNext() returns null and the UI says 'Top rank. Keep it there.' 'Ranks never drop' is a logged decision.",
+   "ref": "web/ossa.html:5724 (quickLog), 5758 (dead commitLog), 7750 (finishWorkout); 3388 (toNext); web/ui/shell.js:409; docs/DECISIONS.md 2026-10-15 'Muscle ranks on the existing muscle score'"
+  },
+  {
+   "fact": "Ossa keeps no lifetime history. S.log is trimmed to 60 days, S.workouts to the last 90 sessions, S.lifts to the last 20 entries per exercise, and Health steps and sleep to 21 days (and only for days the app actually read them).",
+   "ref": "web/ossa.html:3886 (logLoad filter), 7770 (S.workouts.shift at >90), 7766 (S.lifts shift at >20), 10355-10358 (healthIn keep 21 days)"
+  },
+  {
+   "fact": "Bug: sessionsN() is S.workouts.length, which is capped at 90. So the MILES '100 sessions' milestone can never be reached. After 90 sessions, 'up' on Workout complete is always false, so the milestone buzz and the first-workout-of-the-day streak screen never show again.",
+   "ref": "web/ossa.html:7372-7373 (MILES, sessionsN), 7770; web/ui/workout.js:137 (up=N>R.n0), 157, 170 (first=up&&...)"
+  },
+  {
+   "fact": "Set shapes in S.lifts: {kg,r} for loaded and bodyweight lifts, {s} for timed holds, {kg} for carries, plus an optional rir on each day's entry. Entries record the exercise name only, not the muscle. trPrimaryOf() can map names found in MUSCLES[k].ex, but Pro-plan names come from MX.lv and EQX and are not covered.",
+   "ref": "web/ossa.html:5968-5972 (exKind), 5980-5986 (setTxt), 7765 (push); web/ui/train.js:22 (trKind), 21 (trE1 Epley capped at 12 reps), 72 (trPrimaryOf); web/ossa.html:9246-9279 (EQX, pickEx)"
+  },
+  {
+   "fact": "There is no cardio or endurance data beyond logged sets. Apple Health reads only today's and yesterday's steps, last night's sleep and resting heart rate, with no workouts. The app has no cardio logging, and the plan's Thursday zone-2 walk is never logged.",
+   "ref": "native/health.ios.js:45 (permissions StepCount, SleepAnalysis, RestingHeartRate), 70-95 (read); web/ossa.html:3821, 5907"
+  },
+  {
+   "fact": "FINISHES and UNLOCKS today: whole-body rim colours (Ice 0, Bioluminescent 10, Ember 25, Gold 50 sessions) plus the Bones layer at 3 sessions. rimColor() feeds the uRimC uniform, so a finish colours the whole body, not one muscle. The picker is the Unlocks card in Profile > Progress, and tapping a finish sets S.finish. Workout complete announces new unlocks. A code comment states the rule 'earned by showing up, never bought'.",
+   "ref": "web/ossa.html:7391-7396; 4647 (uRimC); 9797-9802 (Unlocks card), 9852-9854 (handler); 7773 (TR.result.unl); web/ui/workout.js:143"
+  },
+  {
+   "fact": "Rank colour reaches the shader per muscle as uS[N] (the scores), coloured by rkC() when rank mode is on. A per-muscle prestige material would need a parallel per-muscle uniform. That is the rendering agent's work.",
+   "ref": "web/ossa.html:4175 (uniform float uS[N]), 4188 (rkC), 4279 (uRk), 4585 (sendScores)"
+  },
+  {
+   "fact": "Today's share card: openShare() fills #card with Body.snapshot() (or the SVG figure), Body Score, Muscle score, strongest and weakest region, and streak, under the note 'Screenshot this card to share it'. It opens only from Profile > Settings > 'Share your score'. The posture scan already shares a real PNG: it draws the card on a canvas, tries navigator.share, then the native share:image bridge (React Native Share), then shows the image.",
+   "ref": "web/ossa.html:5834-5842, 3492-3498, 9825, 9863; 7273-7302 (psCard, psShare); App.js:121; native/pose.js:41-46"
+  },
+  {
+   "fact": "Pro unlocks exactly three things today: the 12-week generated plan, body-check fixes worked into sessions, and the posture-scan routine. Ranks, streak, dares and lift insights are free. Prices come only from the store (proOffer reads RevenueCat packages $rc_annual and $rc_monthly). A browser-only fallback shows GBP 49.99 a year and GBP 9.99 a month. The App Store products are ossa_pro_yearly (7-day free trial) and ossa_pro_monthly.",
+   "ref": "web/ossa.html:5905, 9303, 9312 (plan); 6369, 6375 (body check); 7313 (posture); 10120 (PRO_FALLBACK); 10138-10145 (proOffer); native/purchases.js:78-97; store/APP-STORE-LISTING.md:76"
+  },
+  {
+   "fact": "No masterclass content exists. Learn has 6 short mind lessons (LEARN) and 7 interactive questions (QUESTIONS). Of the programmes, Ossa 30 and Posture Fix are live; Sleep Reset, Monk Mode Lite and First Pull-up only show as 'coming soon'. Video and demos were ruled out in an earlier decision.",
+   "ref": "web/ossa.html:8313 (LEARN), 9489 (QUESTIONS), 9903-9908 (PROTOS), 10028, 10067-10068; docs/DECISIONS.md 2026-10-04 'No exercise video'"
+  },
+  {
+   "fact": "Real counters already exist that trophies can use: dares done (S.dares.won), the standards streak (stdStreak), Learn XP and lessons done (S.learn), check-ins, body checks and posture scans. uiStreak() can only look back as far as retained S.workouts and S.log reach.",
+   "ref": "web/ui/ranks.js:295, 157-173; web/ossa.html:9962 (stdStreak), 10611 (rdL)"
+  },
+  {
+   "fact": "Code structure: sessionsN, RANKS, FINISHES and SUBS are const, so changes to them must be made in place in ossa.html. progressCards, openShare, rimColor, drawDone, finishWorkout and openPaywall are plain function declarations, so web/ui code can wrap or redefine them. The house pattern for that already exists: closePanels and drawLayers are wrapped in ranks.js, and renderYou in shell.js.",
+   "ref": "docs/UI-SYSTEM.md:25; web/ossa.html:7373, 3380, 7392, 5261; web/ui/ranks.js:98-100; web/ui/shell.js:565"
+  },
+  {
+   "fact": "Every change reaches phones only through a new build. ossaHtml.js is imported into the app bundle and expo-updates is not installed. None of these six screens needs new native code, because the share bridge and RevenueCat bridge already exist. Whether build 8 already contains share:image is unconfirmed: git has only an 'Initial commit' and the working tree is heavily modified.",
+   "ref": "App.js:7, 107-121; package.json dependencies (no expo-updates); git log"
+  },
+  {
+   "fact": "Demo data cannot show most of Evolve. demoData() sets workouts to [], so sessionsN() is 0 and the per-workout minutes and volume stay empty. The highest demo score is 64, so no muscle can be prestiged. SEED_LIFTS has 6 weeks of real-looking lifts, mostly 6-8 reps, plus some 15-rep sets and holds.",
+   "ref": "web/ossa.html:3863-3864, 3815, 3843-3858"
+  },
+  {
+   "fact": "The token lint blocks raw hex, rgb and px font sizes in web/ui. Canvas-drawn cards in web/ui therefore have to read their colours from tokens at runtime with getComputedStyle. psCard currently hard-codes hex values, which is only allowed because it lives in ossa.html.",
+   "ref": "scripts/check-tokens.js:11-25; web/ossa.html:7275-7292"
+  }
+ ],
+ "items": [
+  {
+   "name": "evolve_foundation (system: lifetime tally, evolve.js, Evolve home in Profile)",
+   "today": "Ossa keeps no lifetime record. S.log is trimmed to 60 days (ossa.html:3886), S.workouts to 90 sessions (7770) and S.lifts to 20 entries per exercise (7766). sessionsN() reads S.workouts (7373), so MILES 100 can never be reached and workout.js:137/170 stop working after 90 sessions. Profile opens from the avatar (shell.js:470) with the tabs Progress / Profile / Settings (SUBS ossa.html:5261-5265). Progress shows the MILES track and the Unlocks picker (progressCards 9777-9804).",
+   "changes": [
+    {
+     "file": "web/ossa.html",
+     "change": "Add '/*@include ui/evolve.css*/' after line 3353 and '/*@include ui/evolve.js*/' after line 11878. Edit the const sessionsN in place (7373) so it returns Math.max(S.workouts.length, S.tally.n). This fixes the 100-session milestone and the 'up' flag."
+    },
+    {
+     "file": "web/ui/evolve.js (new)",
+     "change": "evTally() creates S.tally once and backfills it from S.workouts (count, vol), S.log (days per region with 3 or more primary-equivalent sets) and S.lifts (first and best e1RM per exercise via trE1). evAfterWorkout(R,s) adds the finished session to the tally: count, kg from R.vol, region sets and kg from TR.session.items[i].primary and TR.doneSets, and the trained day. It then runs the hooks for trophies, prestige laps and path bonus. It is installed by wrapping drawDone (ossa.html:7776), guarded by R.ev so a redraw cannot count a session twice. The wrapper covers both the 3D (drawDoneFloat) and 2D paths."
+    },
+    {
+     "file": "web/ui/evolve.js (new)",
+     "change": "Redefine progressCards() (ossa.html:9777) with an 'Evolve' block at the top: overall rank with an Ideal Self link, Path, Trophy room (N of M, top 3), Prestige (muscles that are ready), Your card, and Your body's look (finish and materials). The week review, body check, posture and patterns cards stay. If Andrej agrees, rename the Progress tab to Evolve with SUBS.you[0].name='Evolve' (the SUBS object is mutable)."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "drawDoneFloat (135-143): use S.tally.n for 'up' and the milestone, and add a 'Trophy · <name>' line beside the Milestone and Unlocked lines from R.ev.trophies."
+    },
+    {
+     "file": "web/ui/evolve.css (new)",
+     "change": "Styles for the Evolve panels, hex badges (clip-path), radar and card preview, all on tokens (gold, cyan and glass tokens come from Phase 0)."
+    },
+    {
+     "file": "docs/UI-SYSTEM.md, docs/DECISIONS.md",
+     "change": "Document Evolve and log Andrej's answers to the open questions."
+    }
+   ],
+   "dependsOn": [
+    "Phase 0 tokens (gold, cyan, glass panel, hex badge)"
+   ],
+   "designDeviations": [],
+   "effort": "M",
+   "nativeBuildWhy": "",
+   "needsNativeBuild": false,
+   "newFiles": [
+    "web/ui/evolve.js",
+    "web/ui/evolve.css"
+   ],
+   "risks": [
+    "The backfill can only see retained history (60 days of log, 90 sessions, 20 entries per lift), so some early trophies may never be awarded to existing users.",
+    "Demo data has no S.workouts, so the demo needs a seeded tally (in demoData or evTally when S.demo) or session-based items will show zero.",
+    "Wrapping drawDone must run exactly once per session and must not fight Phase 1's kinetic-chain changes to finishWorkout."
+   ],
+   "showAtEnd": "A 390x844 screenshot of Profile > Evolve with demo data, plus a console table of S.tally before and after logging one workout in the browser preview. Also a scripted check that a 91st session still counts and shows the milestone.",
+   "stateChanges": [
+    "S.tally = {v:1, since:'YYYY-MM-DD' (backfill date), n:Number (lifetime sessions), kg:Number (lifetime kg), days:['YYYY-MM-DD', ...] (every trained day, about 4 KB a year), bestStreak:Number, reg:{[regionKey]:{days:Number, sets:Number, kg:Number}}, lift:{[exerciseName]:{first:Number, best:Number} (e1RM, kg)}}"
+   ]
+  },
+  {
+   "name": "specialization_engine (Tank vs Scout)",
+   "today": "Nothing exists. Usable data: S.lifts sets with reps, load, holds and carries (ossa.html:7765, exKind 5968); S.log per-muscle daily hard sets (logLoad 3882, loadOf 5917); S.workouts {d,title,mins,sets,vol} (7770); Health steps for at most 21 days (10355-10358). There is no cardio logging. Overall rank exists (overall() 3906, Ranks screen ranks.js:55-64), and Forged II is 67 (3382). Ossa has no 'attributes' and no caps beyond the 0-100 score cap (7750). Recovery windows (recWindow 3896) are timing rules, not a priority system.",
+   "changes": [
+    {
+     "file": "web/ui/evolve.js",
+     "change": "evPathStats(30) looks at the last 30 days (d >= dkey(30)) and returns 0-100 per axis. STRENGTH = heavy sets / 30, where a heavy set is a load or bodyweight set with 6 reps or fewer, or kg at least 80% of that exercise's best trE1 in S.lifts. LOAD = kg lifted (sum of kg x r over S.lifts load sets) / 40,000. VOLUME = hard sets (sum of S.log m values) / 120. STAMINA = endurance sets / 30, where an endurance set has 15 or more reps, is a timed hold of 30 s or more, or is a carry. STEPS = average daily steps on days S.health has / 10,000; the axis greys out with 'Connect Apple Health' when there is no data. PACE = (sets per minute from S.workouts - 0.25) / 0.25. Tank = mean(STRENGTH, LOAD, VOLUME), Scout = mean(STAMINA, STEPS, PACE) over the axes that have data. A gap under 10 points reads 'Balanced'. Below 6 sessions it reports 'Not enough training yet'. All targets live in one EV_PATH constant so they are easy to tune."
+    },
+    {
+     "file": "web/ui/evolve.js",
+     "change": "openPath() opens a full panel (the u-own pattern from rkPanel, ranks.js:46-52; closePanels already closes u-own panels). It has a 6-axis SVG radar, a Tank/Scout lean bar, and tappable axes that show the raw number (e.g. '18 heavy sets in 30 days'). The perks list is followed by the choose button, gated on overall() >= the agreed threshold, with real progress ('Overall Strong I · 24 RP to Forged II' from toNext). Choosing calls Body.setArch?.(arch) for the rendering agent."
+    },
+    {
+     "file": "web/ui/evolve.js",
+     "change": "evPathBonus(R), run from evAfterWorkout. Tank gets +10% RP (rounded, at least 1 when the base gain was 1 or more) on muscles worked by heavy sets; Scout gets the same on endurance sets. It respects the cap of 100, adds into R.gains, and recomputes R.ranks so rkCelebrate (ranks.js:113-115) shows bonus rank-ups. Workout complete shows '+N RP path bonus'."
+    },
+    {
+     "file": "web/ui/ranks.js",
+     "change": "dareToday (247-252): the r<0.5 lift/life split becomes 0.65 for Tank and 0.35 for Scout, and Scout's life dares favour steps and mobility (DARE_LIFE 233-239)."
+    },
+    {
+     "file": "web/ui/evolve.css",
+     "change": "Radar, lean bar and path cards."
+    },
+    {
+     "file": "native/health.ios.js, App.js (optional, needs a build)",
+     "change": "read() fetches 30 days of daily steps (getDailyStepCountSamples), and with a new Workout read permission in init() (line 45), the minutes of running, cycling and walking workouts. healthIn (ossa.html:10358) keeps 31 days. This gives Scout real data."
+    }
+   ],
+   "dependsOn": [
+    "evolve_foundation",
+    "Phase 1 kinetic-chain RP weights (path bonus reads R.gains after them)",
+    "rendering agent: Body.setArch for the Tank/Scout physique",
+    "Andrej: unlock threshold and perk rules"
+   ],
+   "designDeviations": [
+    "'Specializing shifts your attribute caps and recovery priority' is removed. Ossa has no attributes, and its only cap is the 0-100 score. New line: 'Your path changes which sets earn bonus rank points, which dares you get, and how your body looks.'",
+    "'+25% Maximum Power Cap · Unlocks Tier IV rank requirements' becomes '+10% rank points from heavy sets (6 reps or fewer, or 80% of your best)'. The Scout version is '+10% rank points from sets of 15+, holds and carries'.",
+    "'Reinforced Joint Density · Reduces injury risk by 15%' is dropped (ground rule 3). It is replaced by 'More lift dares' for Tank and 'More step and mobility dares' for Scout.",
+    "Radar axes POWER, SPEED, AGILITY and DENSITY become LOAD (kg lifted), PACE (sets a minute), STEPS (Apple Health) and VOLUME (hard sets). STRENGTH and STAMINA keep their names but are defined from logged sets.",
+    "The two rendered characters become our own body (the rendering agent handles tint and proportions). The 'THE TANK / THE SCOUT' toggle stays as a segmented control.",
+    "'ARCHETYPE ENGINE' becomes 'Your path'. 'Evolve to Tank' becomes 'Choose Tank', and later 'Switch to Scout' with the date it can next change.",
+    "'Evolution locked until Overall Rank Forged II' stays only if Andrej keeps that threshold, and then shows real progress."
+   ],
+   "effort": "L",
+   "nativeBuildWhy": "Not needed for v1, which is web-only. Optional: 30 days of steps and Apple Health workouts would need native/health.ios.js changes and a new HealthKit read permission, so a new EAS build.",
+   "needsNativeBuild": false,
+   "newFiles": [],
+   "risks": [
+    "Scout has thin data: no cardio logging, and steps cover only up to 21 days and only days the app was opened. Bodyweight and gym users will lean Tank.",
+    "The axis targets are invented game constants and need tuning against real logs.",
+    "Bonus RP speeds up ranks and stacks with Phase 1's new weights. It also means 'ranks are your training' becomes 'ranks are training plus path'.",
+    "Overall Forged II is months away (about 20-27 direct sessions on every muscle; demo is 43), so the main choice could stay locked for most users all year.",
+    "Demo has no S.workouts, so PACE is empty in the demo."
+   ],
+   "showAtEnd": "A 390x844 screenshot of the Path screen with demo data next to the specialization_engine PNG, with a small table of each axis's raw 30-day number, target and score. Also a Workout complete screenshot showing the path bonus line, and a short recording of switching Tank and Scout (with the morph if the rendering agent's part has landed).",
+   "stateChanges": [
+    "S.path = {arch:'tank'|'scout'|null, at:'YYYY-MM-DD' (chosen), next:'YYYY-MM-DD' (earliest switch, 7 days later), n:Number (times switched)}. Radar values are computed live, not stored.",
+    "EV_PATH constants in evolve.js: {heavyReps:6, heavyPct:0.8, endureReps:15, holdS:30, tStrength:30, tLoad:40000, tVolume:120, tStamina:30, tSteps:10000, paceLo:0.25, paceHi:0.5, bonus:0.10}"
+   ]
+  },
+  {
+   "name": "ar_goal_projection (Ideal Self)",
+   "today": "There is no Ideal Self. Rank colours per muscle reach the shader as uS[] (ossa.html:4585, rkC 4188, uRk 4279). The building blocks exist: overall() 3906, rankTier 3384, RANKS 3380, toNext 3388, and rkSessionsToTier (ranks.js:18) for 'sessions to the next tier'. The Ranks screen hero shows Overall (ranks.js:61-64).",
+   "changes": [
+    {
+     "file": "web/ui/evolve.js",
+     "change": "evIdeal(): t = rankTier(overall()). The next big rank is tier t+1 of the OVERALL rank, with T = RANKS[t+1][0]; at tier 5 the target is every muscle at Unbreakable III (94). match = average over the 9 regions of (average over that region's muscles of min(score, T) / T), the same weighting as overall(). It returns {tier, T, match, target: GLORDER.map(k => max(score, T)), gaps: muscles below T sorted by RP needed, each with rkSessionsToTier-style sessions}. Demo data gives Strong I (43), target Forged (60), 70.9%."
+    },
+    {
+     "file": "web/ui/evolve.js",
+     "change": "openIdeal() panel: our 3D body in rank mode with the wireframe ghost from Body.setGhost?.(target) (rendering agent), a gauge reading '71% / of the way to Forged', and 'Close the gap': the 3 muscles furthest below T with RP to go and a Train button using trSessionFor (train.js:159) like trainThis. When a muscle is selected (renderSheet / Home pick), the per-muscle version targets that muscle's next tier."
+    },
+    {
+     "file": "web/ui/ranks.js",
+     "change": "openRanks hero (61-64): add a 'See your Ideal Self' button."
+    },
+    {
+     "file": "web/ui/evolve.css",
+     "change": "Gauge and gap list styles. The tier colour comes from --rk-N, so it is not always cyan."
+    }
+   ],
+   "dependsOn": [
+    "evolve_foundation (panel host, Evolve link)",
+    "rendering agent: wireframe ghost pass fed with target scores"
+   ],
+   "designDeviations": [
+    "The 'LIVE AR' badge is removed (no camera, ground rule 4). It becomes a 'Next rank: Forged' chip in the target tier's colour.",
+    "'AR PROJECTION' eyebrow becomes 'Ideal self'.",
+    "'82% MATCH' becomes '82% of the way to Forged', so it can't be read as a physique or body-measurement match.",
+    "'UNBREAKABLE UPGRADES: Crystalline Fibers · Enhanced visual density +12%' and 'Prismatic Sheen · Unlocks at 90% Match' become a 'Close the gap' list of real muscles with RP to go. If Andrej wants rewards, they are cosmetic and unnumbered (e.g. 'At 90%: your body's fibre lines glow in Forged gold'), never a percentage of 'density'.",
+    "The Breathe tab shown lit is wrong. It opens from Ranks and the Body page, so Body stays lit.",
+    "The rendered wireframe man becomes our own model with a ghost pass."
+   ],
+   "effort": "M",
+   "nativeBuildWhy": "",
+   "needsNativeBuild": false,
+   "newFiles": [],
+   "risks": [
+    "It depends on the rendering agent's wireframe ghost. Until then the screen shows the rank-coloured body with the gaps pulsing (Body.pulse).",
+    "The target jumps when the overall tier changes, while muscles below the old target still show as gaps. The min() keeps that honest, but the copy must say 'every muscle'.",
+    "overall() is region-weighted, so a one-muscle region (lower back) counts as much as three-muscle regions. match uses the same weighting so the two never disagree."
+   ],
+   "showAtEnd": "A 390x844 screenshot of Ideal Self with demo data (Strong I, aiming for Forged, 71%) next to the ar_goal_projection PNG, with the gap list. Also the arithmetic for the demo shown step by step, and a recording of the ghost if the rendering pass has landed.",
+   "stateChanges": [
+    "None required: everything is derived from S.scores.",
+    "Optional S.ideal = {seen:Number (highest target tier already celebrated)}, so 'Your whole body is Forged' plays once."
+   ]
+  },
+  {
+   "name": "prestige_system",
+   "today": "FINISHES (ossa.html:7392) are whole-body rim colours earned by session count. UNLOCKS (7394) adds the Bones layer. rimColor() (7396) feeds uRimC (4647), which colours the whole body only. The picker is Profile > Progress > Unlocks (9797-9802); a tap sets S.finish and refreshes the body (9852-9854). Workout complete announces unlocks (workout.js:143). There is no per-muscle material and no prestige. Scores never drop and cap at 100 (7750). Unbreakable III starts at 94 (3382). Demo's highest score is 64 (3815).",
+   "changes": [
+    {
+     "file": "web/ui/evolve.js",
+     "change": "PRESTIGE = {at:94, lapTo:80, mult:1.5, mats:[{id:'marble',name:'Black marble'},{id:'silver',name:'Silver'},...]} (material ids agreed with the rendering agent). evPrestigeReady(k) is true when score >= 94 and no lap is running. openPrestige(k) is a panel zoomed on that muscle (Body.camTo, setSel), showing the material and perks. evPrestigeStart(k) starts the lap."
+    },
+    {
+     "file": "web/ui/evolve.js",
+     "change": "In evAfterWorkout, for each prestiged muscle worked: lap += round(l * (1 - lap/125) * 1.5), where l is that muscle's load this session (1.2 per primary set, 0.4 per secondary, as finishWorkout 7748, or Phase 1's shared gain function). At lap >= 80: lv+1, the next material is earned, lap resets to 0, and a gold rank-up-style moment plays (reusing rkCelebrate markup, ranks.js:113-150). Rank and S.scores are never touched."
+    },
+    {
+     "file": "web/ui/ranks.js",
+     "change": "openRanks rows (57-60) show a prestige star with the level after the rank, plus a 'Prestige ready' tag. rkBadge (19) gets an optional star."
+    },
+    {
+     "file": "web/ui/shell.js",
+     "change": "uiFocusCardHTML (409): at 94 or above, 'Top rank. Keep it there.' becomes 'Top rank · Prestige ready', with a tap that opens openPrestige."
+    },
+    {
+     "file": "web/ui/evolve.js",
+     "change": "A wrapper on renderSheet (ossa.html:5646) adds a 'Prestige' row under the rank line (5659) for muscles at 94 or above. The 'Your body's look' sheet (from Evolve) holds the whole-body finish (moved from the Unlocks card) and each muscle's earned materials with an on/off toggle. Body.setMats?.(GLORDER.map(k => material index)) goes to the rendering agent's per-muscle material uniform."
+    },
+    {
+     "file": "web/ossa.html",
+     "change": "Demo only: 'Load demo data' (9869-9874), or a preview switch, sets one muscle (e.g. pec_major) to 96 so Prestige can be shown and checked."
+    }
+   ],
+   "dependsOn": [
+    "evolve_foundation",
+    "rendering agent: per-muscle material uniform alongside uS (ossa.html:4175/4585)",
+    "Phase 1 shared gain function (avoids copying the 1.2/0.4 weights)",
+    "Andrej: lap model vs true reset"
+   ],
+   "designDeviations": [
+    "'PRESTIGE RESET · Sacrifice current rank for the divine' becomes 'Start prestige lap · Your rank stays. Earn black marble for your chest.' Under a true reset it would be 'Start again from Fragile. The marble stays for good.'",
+    "'MAX RANK UNLOCKED' becomes 'Unbreakable III'. 'Prestige System' becomes 'Prestige · Chest' (the muscle's name).",
+    "Perk 'Permanent Texture · Unlocked visual remains after reset' becomes 'Black marble on your chest, for good'.",
+    "Perk '1.5x RP Multiplier · Reach the next tier 50% faster' becomes '1.5x rank points on this lap' (a game rule, so allowed).",
+    "Perk 'Tier V Cap Extension · Grow beyond the standard peak' is dropped (there is no cap beyond 100). It becomes 'A prestige star next to its rank'.",
+    "The rendered marble shoulder becomes our own body zoomed on that muscle, wearing the material.",
+    "The header star button opens that muscle's material picker."
+   ],
+   "effort": "L",
+   "nativeBuildWhy": "",
+   "needsNativeBuild": false,
+   "newFiles": [],
+   "risks": [
+    "The brief says 'reset a muscle', which conflicts with the 2026-10-15 decision that ranks never drop. A true reset would also drop Body Score and overall() and move the weak link and plan. The lap model avoids all of that.",
+    "Per-muscle materials need shader work (the rendering agent's area). Without it, a prestige shows only as a star and colour.",
+    "Reaching 94 takes about 37-50 direct sessions per muscle, so very few users will see this for months. It cannot be shown in demo without the preview seed.",
+    "Copying the gain formula into the lap risks it drifting from finishWorkout and Phase 1."
+   ],
+   "showAtEnd": "A 390x844 screen recording: Chest at Unbreakable III (preview seed), then Prestige, then 'Start prestige lap', then logging a workout so the lap bar fills on Workout complete, then the Body page showing the chest's material and the Ranks screen showing the star. Plus a still next to the prestige_system PNG.",
+   "stateChanges": [
+    "S.prestige = {[muscleKey]: {lv:Number (laps completed), lap:Number|null (0-80 RP in the current lap; null when none is running), mats:[String] (earned material ids), mat:String|null (material shown on the body), at:'YYYY-MM-DD' (last prestige)}}",
+    "S.finish unchanged (whole-body finish). Its picker moves from the Unlocks card to 'Your body's look'."
+   ]
+  },
+  {
+   "name": "achievement_gallery (Trophy room)",
+   "today": "MILES (ossa.html:7372) are 6 session milestones counted by sessionsN() (7373). '100 sessions' can never be reached because of the 90 cap (7770). They show as 'Who you're becoming' in Profile > Progress (9778-9781) and on Workout complete (workout.js:137,142). UNLOCKS (7394) adds 4 items, shown in the Unlocks card. Other real counters: S.dares.won (ranks.js:295), stdStreak (9962), S.learn.done (10611), check-ins (mindState), body checks (ckAll), posture scans (psAll). PRs are found each session (7760-7764) but not stored. There are no body-part trophies and no Monk Mode data.",
+   "changes": [
+    {
+     "file": "web/ui/evolve.js",
+     "change": "TROPHIES catalogue: [{id, name, group:'body'|'habit'|'lift'|'mind', rule (plain text), pts (difficulty), test(), prog() -> {n, of}}]. Body trophies: one per region, in 3 grades (Strong / Forged / Unbreakable once EVERY muscle in the region reaches that tier), e.g. Iron Core = abs + obliques; Apex Back = traps, lats, rhomboids; Steel Bicep = biceps alone reaching Forged. Leg Day Legend = 50 leg days (sessions with 3 or more sets on glutes, thighs or lower legs, from S.tally.reg). Titan Squat = a squat e1RM 25% above your first logged squat (S.tally.lift). Grit Master = 25 dares done (S.dares.won). Sessions 1/5/10/25/50/100/250 (S.tally.n, which absorbs MILES). Streak 7/30/100 (S.tally.bestStreak). Whole body: every muscle ranked, all Strong, all Forged, all Unbreakable. First prestige. Every lesson done (S.learn.done). Monk Adept (10 Monk Mode sessions) appears only once Phase 3 ships."
+    },
+    {
+     "file": "web/ui/evolve.js",
+     "change": "evAward() runs at boot (as backfill) and in evAfterWorkout, writes S.trophies, and returns the new ones to R.ev.trophies. openTrophies() panel: a 'Trophy room' heading with an 'N of M' count, earned badges newest first (2 large featured, then a grid), then locked ones with their rule and real progress ('31 of 50 leg days'). Tapping a badge shows its date and rule, with a Share button to the card."
+    },
+    {
+     "file": "web/ui/workout.js",
+     "change": "drawDoneFloat (142-143): add a 'Trophy · Iron Core' line, with confetti in the trophy's tier colour."
+    },
+    {
+     "file": "web/ui/evolve.js",
+     "change": "In the progressCards redefinition, a Trophy room card (top 3 and the count) replaces the MILES track and the Unlocks card."
+    },
+    {
+     "file": "web/ui/evolve.css",
+     "change": "Hex badge (clip-path) coloured from --rk-N or the gold token, locked state, grid."
+    }
+   ],
+   "dependsOn": [
+    "evolve_foundation (S.tally)",
+    "Phase 0 tokens (gold, hex badge)",
+    "Phase 3 Monk Mode (Monk Adept only)"
+   ],
+   "designDeviations": [
+    "'LEG DAY LEGEND · 100KM LEG VOLUME' becomes '50 leg days' (works for bodyweight users), or optionally '100,000 kg lifted on legs' as a separate lifting trophy.",
+    "'RANK III ABDOMINALS' becomes 'Abs and obliques reach Strong'. In Ossa 'III' is a level inside a tier, so 'Rank III' is ambiguous.",
+    "'12/48' becomes the real count of the catalogue, which is about 45-50 as proposed.",
+    "'UNDISCOVERED TROPHIES' show their rule and progress instead of a mystery lock.",
+    "The rendered metal badge art becomes hex badges drawn in tier colours with a simple body-part glyph (art could be commissioned later).",
+    "The Learn tab shown lit is wrong. The room lives in Profile > Evolve (Body tab lit), with links from the Ranks screen and Workout complete.",
+    "'Steel Bicep', 'Titan Squat', 'Apex Back' and 'Grit Master' keep their names with the real rules above. 'Monk Adept' is hidden until Monk Mode exists."
+   ],
+   "effort": "L",
+   "nativeBuildWhy": "",
+   "needsNativeBuild": false,
+   "newFiles": [],
+   "risks": [
+    "History rolls off (60 days, 90 sessions, 20 per lift), so the backfill under-awards existing users. Trophies are stored once earned so they never disappear later.",
+    "S.lifts has no muscle field. Older entries are mapped by trPrimaryOf (train.js:72) plus MX.lv and EQX names, and anything unmapped is skipped.",
+    "Demo needs a seeded tally or the room looks empty.",
+    "The catalogue needs balancing so trophies arrive steadily, not all in week 1 or never."
+   ],
+   "showAtEnd": "A 390x844 screenshot of the Trophy room with demo data (a few earned, the rest showing progress) next to the achievement_gallery PNG. The full catalogue as a table (name, rule, data source, grade) for Andrej to approve. A Workout complete screenshot with a 'Trophy' line.",
+   "stateChanges": [
+    "S.trophies = {[trophyId]: {at:'YYYY-MM-DD', seen:Boolean}}. Entries are only ever added, never removed.",
+    "Uses S.tally.n, S.tally.reg, S.tally.lift, S.tally.bestStreak, S.dares.won, S.learn.done and S.prestige."
+   ]
+  },
+  {
+   "name": "vessel_trading_cards",
+   "today": "openShare() (ossa.html:5834-5842) puts Body.snapshot() (4913-4916; svgFigure fallback) plus Body Score, Muscle score (overall()), strongest and weakest region and streak into #card, with the note 'Screenshot this card to share it' (3495). It is reachable only from Profile > Settings > 'Share your score' (9825, 9863). A real image share already exists for the posture scan: psCard draws a 1080x1350 canvas (7273-7294), and psShare tries navigator.share(files), then nsend share:image (App.js:121, native/pose.js:41-46, React Native Share), then shows the PNG (7295-7302).",
+   "changes": [
+    {
+     "file": "web/ui/evolve.js",
+     "change": "Redefine openShare() (5834) as the new card. evCardCanvas(size) draws 1080x1350 (and 1080x1920 for stories). It shows our own body via Body.setRank(true) + Body.snapshot(), then restores the rank state; without WebGL it uses uiRankFig drawn as an SVG image. The frame is in the overall tier colour. The headline is 'Overall · Strong I' with RP from overall(). It also shows streak (uiStreak().n), lifetime sessions (S.tally.n), the top 3 muscles with their ranks, the top trophy (highest pts in S.trophies), the path if chosen, the 30-day axis bars from evPathStats once Specialization ships, the date and 'Ossa'. Colours are read with getComputedStyle from tokens (lint), and drawing waits for document.fonts.ready."
+    },
+    {
+     "file": "web/ui/evolve.js",
+     "change": "evShareImage(canvas, name) takes psShare's chain as a shared helper: navigator.share with the file, then the native share:image bridge, then show the image in #share with 'Press and hold the image to save it'. psShare can later call it too."
+    },
+    {
+     "file": "web/ui/ranks.js, web/ui/evolve.js",
+     "change": "Entry points: Evolve > 'Your card', a 'Share' link on the rank-up moment (rkCelebrate, ranks.js:136-137), and the Trophy room badge detail. Settings 'Share your score' opens the same card."
+    }
+   ],
+   "dependsOn": [
+    "evolve_foundation",
+    "achievement_gallery (top trophy)",
+    "specialization_engine (optional stat bars)",
+    "prestige_system (materials show in the snapshot once rendered)"
+   ],
+   "designDeviations": [
+    "'LEVEL 85', 'POWER 9800', 'DEFENSE 8400', 'SPEED 7600' and 'STAMINA 9200' become the overall rank with RP, the streak, sessions, and later the real 30-day path axes (e.g. 'Strength 72', 'Stamina 40').",
+    "'NEON SURGE · Increases all stats by 20% for 3 turns' is dropped. The top trophy goes there instead ('Iron Core · abs and obliques reached Strong').",
+    "'MYTHIC RARE' is dropped. With no accounts there is no data on other users, so rarity cannot be known. 'Rarest achievement' becomes 'Top trophy', the hardest one held by catalogue points.",
+    "'RANK UNBREAKABLE · PHASE I' becomes 'Overall · Strong I' (real).",
+    "The 'Anatomical hero' render becomes our own body snapshot in rank colours.",
+    "'Your physical evolution, captured in the ledger.' becomes 'Made from your own training log.'",
+    "'SHARE VESSEL' becomes 'Share card'. 'COLLECTIBLE VESSEL' becomes 'Your card'.",
+    "Bio-armor and cyber-strength icons are dropped."
+   ],
+   "effort": "M",
+   "nativeBuildWhy": "No native change: the share:image bridge already exists in App.js:121 and native/pose.js:42. Whether build 8 already contains it is unconfirmed (git history is a single commit). Reaching phones needs a new build anyway because ossaHtml.js is bundled and expo-updates is not installed.",
+   "needsNativeBuild": false,
+   "newFiles": [],
+   "risks": [
+    "navigator.share inside WKWebView is unconfirmed, so the native bridge fallback matters.",
+    "Body.snapshot needs WebGL and the current figure state. It must not leave rank mode or the camera changed.",
+    "Privacy: Body Score is partly built from check-ins (mood). Keep it off the card by default, and the name too.",
+    "Canvas text needs the embedded fonts loaded, and Inter if Phase 0 switches fonts."
+   ],
+   "showAtEnd": "The 1080x1350 PNG generated from demo data next to the vessel_trading_cards PNG. A short recording of tapping Share card and the share sheet opening (browser preview's Web Share now; on a phone once Andrej allows a build).",
+   "stateChanges": [
+    "S.card = {name:Boolean (default false), score:Boolean (show Body Score, default false), story:Boolean (last size picked)}"
+   ]
+  },
+  {
+   "name": "vessel_vault (Ossa Pro paywall)",
+   "today": "pwMount (web/ui/onboarding.js:398-431) is the layout: eyebrow, headline, trial timeline or bullets, radio plan cards with store priceString, the CTA from pwCta (ossa.html:10156), small print, Restore/Terms/Privacy. openPaywall(reason) (ossa.html:10178-10192) and pwLeave (10159-10176) host it. uiProWelcome (onboarding.js:170-186) names 3 Pro perks. Prices come only from RevenueCat via proOffer (10138-10145) and native/purchases.js (78-97); the browser fallback is GBP 49.99 / 9.99 (10120). Pro unlocks only the 12-week plan (5905, 9303, 9312), body-check fixes (6369, 6375) and the posture routine (7313). There are no ads. There is no masterclass content (LEARN 8313, QUESTIONS 9489, PROTOS 9903 with 3 'coming soon').",
+   "changes": [
+    {
+     "file": "web/ui/onboarding.js",
+     "change": "Re-skin pwMount as the Vault. The hero is our own body wearing a Pro material preview (Body.setFinish?.) or material swatches. 'What you get' lists only real Pro features (your 12-week plan, weights that progress, body-check and posture fixes), plus Pro materials once they render. Plan cards keep the store priceString. A savings badge is computed as floor((1 - Y.price/(12*M.price))*100)% only when both prices exist in the same currency. The trial timeline and the billed price as the most prominent price stay (DECISIONS 2026-10-15). Restore, Terms and Privacy stay."
+    },
+    {
+     "file": "web/ui/onboarding.js",
+     "change": "uiProWelcome list (178) matches the new perk list exactly."
+    },
+    {
+     "file": "web/ui/evolve.js",
+     "change": "Wrap openPaywall (ossa.html:10178) for new reasons 'vault' and 'material' with their headlines. VAULT_MATS (e.g. obsidian, chrome, carbon fibre, with ids agreed with the rendering agent). Redefine rimColor() (function declaration, 7396) so a Pro material in S.finish applies only while isPro(), otherwise Ice. Locked Pro materials in 'Your body's look' open openPaywall('material')."
+    },
+    {
+     "file": "web/ui/onboarding.css",
+     "change": "Vault layout on tokens (glass panels, lime CTA)."
+    },
+    {
+     "file": "store/APP-STORE-LISTING.md",
+     "change": "Phase 7: update the 'OSSA PRO' paragraph (line 45) and the review notes if Pro gains materials."
+    }
+   ],
+   "dependsOn": [
+    "Phase 0 tokens",
+    "rendering agent: whole-body material shading (for Pro materials)",
+    "Andrej: whether to sell cosmetics, naming, products and prices"
+   ],
+   "designDeviations": [
+    "Hard-coded '$14.99' and '$99.99' become the App Store priceString (proOffer). Changing the actual prices or products is App Store Connect and RevenueCat work and is Andrej's call.",
+    "'SAVE 45%' becomes a figure computed from the real prices (it would be 58% with the browser fallback), shown only when the figure is valid.",
+    "'Ad-Free Recovery · Uninterrupted mental crystalline sync' is dropped: Ossa has no ads.",
+    "'Elite Protocols · Exclusive masterclasses from Rank V athletes' is dropped: there is no such content and no athletes. It returns only if Andrej commissions Pro programmes (e.g. the three 'coming soon' ones) and they are actually built.",
+    "'Transcend the standard organic form. Unlock legendary skins and masterclass protocols.' becomes plain copy such as 'Your plan, built around you, and new materials for your body.'",
+    "'ASCEND TO VAULT' becomes pwCta's 'Start my free week' or 'Subscribe for £X a year'.",
+    "The three spheres become our own body or flat swatches.",
+    "'VESSEL VAULT' versus the App Store product name 'Ossa Pro' is decided by Andrej (recommend 'Ossa Pro' title with a 'Vault' section label)."
+   ],
+   "effort": "M",
+   "nativeBuildWhy": "No native change while product IDs stay the same: proOffer finds packages by type ANNUAL/MONTHLY. New prices are App Store Connect and RevenueCat configuration, not code.",
+   "needsNativeBuild": false,
+   "newFiles": [],
+   "risks": [
+    "Apple review: the billed amount must be the most prominent price, trial terms must be clear, and Restore must be present. Copy must not promise ad-free or experts.",
+    "Selling materials breaks the existing 'earned by showing up, never bought' rule (ossa.html:7391) unless earned finishes and prestige materials stay free.",
+    "Pro materials depend on the rendering agent.",
+    "The welcome screen, App Store listing and review notes must all name the same perks."
+   ],
+   "showAtEnd": "A 390x844 screenshot of the Vault in the browser preview (fallback prices labelled as preview) next to the vessel_vault PNG, with a line-by-line list of where each claim comes from in the code. Later, the same screen on a phone build with real store prices, once Andrej allows a build.",
+   "stateChanges": [
+    "S.finish may hold a Pro material id (e.g. 'obsidian'); rimColor falls back to Ice when !isPro().",
+    "No change to S.pro (proIn, ossa.html:10125-10129)."
+   ]
+  }
+ ],
+ "openQuestions": [
+  {
+   "question": "Specialization: keep the unlock at Overall Forged II?",
+   "why": "Overall Forged II means averaging 67 across all 9 regions. That takes roughly 20-27 direct sessions on every muscle, and the default plan barely trains traps, serratus and pec minor, so most users would wait 7-12 months. Demo data is at 43.",
+   "recommendation": "Show the radar from the first session, since it only reads your data. Unlock choosing a path at Overall Strong I (40), or after 20 sessions, whichever comes first.",
+   "options": [
+    "Keep Forged II (67)",
+    "Strong I (40)",
+    "20 sessions logged",
+    "Radar always on, choice at Strong I"
+   ]
+  },
+  {
+   "question": "What should Tank and Scout actually change?",
+   "why": "Ossa has no 'attributes' and no caps beyond 100 points, and 'recovery priority' would be pseudo-physiology. The perks must be honest game rules.",
+   "recommendation": "+10% rank points on the matching sets (heavy for Tank; 15+ reps, holds and carries for Scout), a matching dare mix, and the body's look. Switchable once a week.",
+   "options": [
+    "RP bonus + dares + look",
+    "Look and dares only (no RP change)",
+    "Look only"
+   ]
+  },
+  {
+   "question": "Prestige: a true reset, or a lap that keeps the rank?",
+   "why": "The brief says 'reset a muscle', but the 15 Oct decision says ranks never drop. A real reset would also drop Body Score and the overall rank, and would change the weak link and the plan.",
+   "recommendation": "Lap model. The rank stays Unbreakable III, a new prestige bar fills at 1.5x, and each finished lap earns a permanent material and a star.",
+   "options": [
+    "Lap model (rank kept)",
+    "True reset to Fragile I",
+    "True reset to Unbreakable I"
+   ]
+  },
+  {
+   "question": "Where should Evolve (Trophy room, Ideal Self, Path, Prestige, Your card) live?",
+   "why": "The designs light up Learn for the Trophy room and Breathe for Ideal Self. Neither fits: Learn is lessons, and Profile is already where progress and unlocks live.",
+   "recommendation": "Rename Profile's 'Progress' tab to 'Evolve' (opened from the avatar), with links from the Muscle ranks screen and Workout complete.",
+   "options": [
+    "Profile > Evolve",
+    "A sixth tab",
+    "A row on the Body page",
+    "Learn tab (as designed)"
+   ]
+  },
+  {
+   "question": "Should Ossa Pro include cosmetic materials (obsidian, chrome, carbon fibre)?",
+   "why": "Today's rule is that unlocks are 'earned by showing up, never bought'. The Vault design sells materials.",
+   "recommendation": "Yes, but only as extra whole-body materials. All earned finishes and every prestige material stay free.",
+   "options": [
+    "Pro gets 3 extra materials",
+    "No paid cosmetics; Pro stays plan features",
+    "Make some earned finishes Pro"
+   ]
+  },
+  {
+   "question": "Should the Vault keep today's products and prices, and what is it called?",
+   "why": "The design shows $14.99 and $99.99. Today's products are ossa_pro_yearly (7-day trial) and ossa_pro_monthly. Changing them means App Store Connect and RevenueCat work. The App Store calls the subscription 'Ossa Pro'.",
+   "recommendation": "Keep the products and prices. Title the screen 'Ossa Pro', with 'Vault' only as the label over the materials.",
+   "options": [
+    "Keep products, title Ossa Pro",
+    "Keep products, title Vessel Vault",
+    "New prices (ASC work)"
+   ]
+  },
+  {
+   "question": "Should 'expert recovery masterclasses' stay as a Pro perk?",
+   "why": "No such content exists, and 'expert' or 'Rank V athletes' would be false.",
+   "recommendation": "Drop it for now. If wanted, write the three 'coming soon' programmes (Sleep Reset, Monk Mode Lite, First Pull-up) as Pro programmes in a later phase.",
+   "options": [
+    "Drop",
+    "Build Pro programmes first",
+    "Commission an expert"
+   ]
+  },
+  {
+   "question": "Should we read 30 days of steps and Apple Health workouts so Scout has real data?",
+   "why": "Today only today's and yesterday's steps are read, kept for 21 days, and there is no cardio at all. Reading more needs a native change, a new HealthKit permission and a new build.",
+   "recommendation": "Ship the web-only radar first, and add the Health read in the build that has to happen for release anyway (Phase 7).",
+   "options": [
+    "Web-only",
+    "Add in the release build",
+    "Add cardio logging in the app instead"
+   ]
+  },
+  {
+   "question": "What should the shared card show by default?",
+   "why": "Body Score is partly built from check-ins (mood), and the name is personal. The card leaves the phone as an image.",
+   "recommendation": "Overall rank, streak, sessions, top muscles and top trophy by default. Body Score and name are off, each with its own toggle.",
+   "options": [
+    "Defaults as recommended",
+    "Include Body Score",
+    "Include name"
+   ]
+  },
+  {
+   "question": "Should Leg Day Legend count leg days or kilograms?",
+   "why": "'100 km leg volume' is meaningless. Kilograms leave out bodyweight users.",
+   "recommendation": "'50 leg days' (sessions with 3 or more sets on glutes, thighs or lower legs). A separate '100,000 kg on legs' trophy can sit beside it.",
+   "options": [
+    "50 leg days",
+    "100,000 kg on legs",
+    "Both"
+   ]
+  }
+ ],
+ "orderNotes": "Evolve (brief step 5) depends on Phase 0 (gold and cyan tokens, glass panels, hex badges, possibly Inter) and on Phase 1. Kinetic-chain RP weights change finishWorkout's gains, and both the Tank/Scout bonus and prestige laps should hook in after them. Ask Phase 1 to pull out one shared gain function so the 1.2/0.4 weights are not copied. Monk Adept waits for Phase 3.\n\nWithin Evolve, this order means each step ends with the app working:\n- E1 Foundation. S.tally with backfill, evolve.js and evolve.css with their include markers, the Evolve block in Profile, the in-place sessionsN fix (this also fixes the 90-session milestone and streak-screen bug), and a demo seed. Every later step reads the tally.\n- E2 Trophy room. Pure data and UI; feeds the card.\n- E3 Ideal Self. The data and screen can ship with the rank-coloured body and pulsing gaps; the wireframe ghost slots in when the rendering agent delivers Body.setGhost.\n- E4 Prestige. The lap and stars work without the shader; materials appear when Body.setMats lands.\n- E5 Specialization. Radar and perks first; the Tank/Scout morph (Body.setArch) last.\n- E6 Trading card. Uses trophies, path and prestige.\n- E7 Vault. The re-skin with today's real Pro perks could even come earlier, in Phase 0. Pro materials come last, and product or price changes only if Andrej asks.\n\nAgree the rendering-agent interface names early (Body.setGhost(targetScores), Body.setMats(matIndex[]), Body.setArch(arch, amount), Body.setFinish(id)). The screens should call them with ?. so web work never blocks on shaders.\n\nThe optional HealthKit read for Scout is native code. Batch it into the Phase 7 release build, which is needed anyway because ossaHtml.js is bundled and expo-updates is not installed.\n\nNo code is changed until Andrej says go."
+}

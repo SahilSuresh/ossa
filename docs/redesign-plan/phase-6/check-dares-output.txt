@@ -1,0 +1,424 @@
+
+== Stage A: the gate (wxgate.js alone, real weather.js summaries) ==
+PASS  control · baseline light rain 9 °C (global) → rain / null  (light day, out true)
+PASS  control · baseline light rain 9 °C, wind 6, gust 9 (Nordic) → rain / null  (light day, out true)
+PASS  control · baseline fair 15 °C (Nordic) → bright / null  (light day, out true)
+PASS  control · baseline cloudy 6 °C dry (global) → cold / null  (light day, out true)
+PASS  severe · thunder rainandthunder now (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder rainandthunder in 1 h (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightrainshowersandthunder_day now (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightrainshowersandthunder_day in 1 h (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder heavysleetandthunder now (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder heavysleetandthunder in 1 h (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder snowandthunder now (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder snowandthunder in 1 h (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightssleetshowersandthunder_day now (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightssleetshowersandthunder_day in 1 h (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightssnowshowersandthunder_day now (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightssnowshowersandthunder_day in 1 h (global) → indoor / thunder  (light day, out false)
+PASS  severe · thunder rainandthunder now (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder rainandthunder in 1 h (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightrainshowersandthunder_day now (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightrainshowersandthunder_day in 1 h (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder heavysleetandthunder now (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder heavysleetandthunder in 1 h (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder snowandthunder now (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder snowandthunder in 1 h (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightssleetshowersandthunder_day now (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightssleetshowersandthunder_day in 1 h (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightssnowshowersandthunder_day now (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder lightssnowshowersandthunder_day in 1 h (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder probability 30 % now, fair 15 °C (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · thunder probability 30 % in 2 h, fair 15 °C (Nordic) → indoor / thunder  (light day, out false)
+PASS  severe · gust 13.9 exactly now (Nordic) → indoor / gust  (light day, out false)
+PASS  severe · gust 16 now (Nordic) → indoor / gust  (light day, out false)
+PASS  severe · wind 8.7, no gust: 8.7 × 1.6 = 13.92 now (global) → indoor / gust  (light day, out false)
+PASS  severe · mean wind 10.8, gust 12 now (Nordic) → indoor / wind  (light day, out false)
+PASS  severe · mean wind 10.8 now (global) → indoor / gust  (light day, out false)
+PASS  severe · gust 13.9 exactly in 1 h (Nordic) → indoor / gust  (light day, out false)
+PASS  severe · gust 16 in 1 h (Nordic) → indoor / gust  (light day, out false)
+PASS  severe · wind 8.7, no gust: 8.7 × 1.6 = 13.92 in 1 h (global) → indoor / gust  (light day, out false)
+PASS  severe · mean wind 10.8, gust 12 in 1 h (Nordic) → indoor / wind  (light day, out false)
+PASS  severe · mean wind 10.8 in 1 h (global) → indoor / gust  (light day, out false)
+PASS  severe · heavyrain now (global) → indoor / heavy  (light day, out false)
+PASS  severe · heavyrain in 1 h (global) → indoor / heavy  (light day, out false)
+PASS  severe · heavyrainshowers_day now (global) → indoor / heavy  (light day, out false)
+PASS  severe · heavyrainshowers_day in 1 h (global) → indoor / heavy  (light day, out false)
+PASS  severe · 4 mm in the current hour, rain 9 °C (global) → indoor / heavy  (light day, out false)
+PASS  severe · 10.2 mm over 3 h, 3.4 an hour (global) → indoor / heavy  (light day, out false)
+PASS  severe · 10.2 mm over 3 h, light now and 4.8 mm in 1 h and 2 h (global) → indoor / heavy  (light day, out false)
+PASS  severe · heavyrain now (Nordic) → indoor / heavy  (light day, out false)
+PASS  severe · heavyrain in 1 h (Nordic) → indoor / heavy  (light day, out false)
+PASS  severe · heavyrainshowers_day now (Nordic) → indoor / heavy  (light day, out false)
+PASS  severe · heavyrainshowers_day in 1 h (Nordic) → indoor / heavy  (light day, out false)
+PASS  severe · 4 mm in the current hour, rain 9 °C (Nordic) → indoor / heavy  (light day, out false)
+PASS  severe · 10.2 mm over 3 h, 3.4 an hour (Nordic) → indoor / heavy  (light day, out false)
+PASS  severe · 10.2 mm over 3 h, light now and 4.8 mm in 1 h and 2 h (Nordic) → indoor / heavy  (light day, out false)
+PASS  severe · lightsnow now (global) → indoor / snow  (light day, out false)
+PASS  severe · lightsnow in 1 h (global) → indoor / snow  (light day, out false)
+PASS  severe · snow now (global) → indoor / snow  (light day, out false)
+PASS  severe · snow in 1 h (global) → indoor / snow  (light day, out false)
+PASS  severe · heavysnow now (global) → indoor / snow  (light day, out false)
+PASS  severe · heavysnow in 1 h (global) → indoor / snow  (light day, out false)
+PASS  severe · snowshowers_day now (global) → indoor / snow  (light day, out false)
+PASS  severe · snowshowers_day in 1 h (global) → indoor / snow  (light day, out false)
+PASS  severe · lightsleet now (global) → indoor / ice  (light day, out false)
+PASS  severe · lightsleet in 1 h (global) → indoor / ice  (light day, out false)
+PASS  severe · sleet now (global) → indoor / ice  (light day, out false)
+PASS  severe · sleet in 1 h (global) → indoor / ice  (light day, out false)
+PASS  severe · sleetshowers_day now (global) → indoor / ice  (light day, out false)
+PASS  severe · sleetshowers_day in 1 h (global) → indoor / ice  (light day, out false)
+PASS  severe · lightsnow now (Nordic) → indoor / snow  (light day, out false)
+PASS  severe · lightsnow in 1 h (Nordic) → indoor / snow  (light day, out false)
+PASS  severe · snow now (Nordic) → indoor / snow  (light day, out false)
+PASS  severe · snow in 1 h (Nordic) → indoor / snow  (light day, out false)
+PASS  severe · heavysnow now (Nordic) → indoor / snow  (light day, out false)
+PASS  severe · heavysnow in 1 h (Nordic) → indoor / snow  (light day, out false)
+PASS  severe · snowshowers_day now (Nordic) → indoor / snow  (light day, out false)
+PASS  severe · snowshowers_day in 1 h (Nordic) → indoor / snow  (light day, out false)
+PASS  severe · lightsleet now (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · lightsleet in 1 h (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · sleet now (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · sleet in 1 h (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · sleetshowers_day now (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · sleetshowers_day in 1 h (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · 0 °C, clear and dry (global) → indoor / freeze  (light day, out false)
+PASS  severe · -0.1 °C, clear and dry (global) → indoor / freeze  (light day, out false)
+PASS  severe · -5 °C, clear and dry (global) → indoor / freeze  (light day, out false)
+PASS  severe · 2 °C, clear and dry (global) → indoor / ice  (light day, out false)
+PASS  severe · 3 °C, cloudy, 0.1 mm now (global) → indoor / ice  (light day, out false)
+PASS  severe · 3 °C, dry now, 0.3 mm in 1 h (global) → indoor / ice  (light day, out false)
+PASS  severe · 5 °C light rain, precipitation_amount missing (global) → indoor / ice  (light day, out false)
+PASS  severe · cloudy 4 °C dry now, lightrain in 1-2 h with no precipitation amount (global) → indoor / ice  (light day, out false)
+PASS  severe · cloudy 4 °C dry now, lightrainshowers in 1 h with no precipitation amount (global) → indoor / ice  (light day, out false)
+PASS  severe · rain now, lightsleet in 1 h, 4 °C (global) → indoor / ice  (light day, out false)
+PASS  severe · rain now, lightsnow in 1 h, 4.5 °C (global) → indoor / ice  (light day, out false)
+PASS  severe · rain now, sleet in 2 h, 5 °C (global) → indoor / ice  (light day, out false)
+PASS  severe · 0 °C, clear and dry (Nordic) → indoor / freeze  (light day, out false)
+PASS  severe · -0.1 °C, clear and dry (Nordic) → indoor / freeze  (light day, out false)
+PASS  severe · -5 °C, clear and dry (Nordic) → indoor / freeze  (light day, out false)
+PASS  severe · 2 °C, clear and dry (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · 3 °C, cloudy, 0.1 mm now (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · 3 °C, dry now, 0.3 mm in 1 h (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · 5 °C light rain, precipitation_amount missing (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · cloudy 4 °C dry now, lightrain in 1-2 h with no precipitation amount (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · cloudy 4 °C dry now, lightrainshowers in 1 h with no precipitation amount (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · rain now, lightsleet in 1 h, 4 °C (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · rain now, lightsnow in 1 h, 4.5 °C (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · rain now, sleet in 2 h, 5 °C (Nordic) → indoor / ice  (light day, out false)
+PASS  severe · fog symbol now, 6 °C (global) → indoor / fog  (light day, out false)
+PASS  severe · cloudy now, fog symbol in 1 h, 6 °C (global) → indoor / fog  (light day, out false)
+PASS  severe · fog symbol now, 6 °C (Nordic) → indoor / fog  (light day, out false)
+PASS  severe · cloudy now, fog symbol in 1 h, 6 °C (Nordic) → indoor / fog  (light day, out false)
+PASS  severe · fog_area_fraction 60 now, cloudy 6 °C (Nordic) → indoor / fog  (light day, out false)
+PASS  severe · 30 °C, clear (global) → indoor / hot  (light day, out false)
+PASS  severe · 34 °C, clear (global) → indoor / hot  (light day, out false)
+PASS  severe · 30 °C, clear (Nordic) → indoor / hot  (light day, out false)
+PASS  severe · 34 °C, clear (Nordic) → indoor / hot  (light day, out false)
+PASS  severe · 30 min before sunset (17:34, sunset 18:04) → indoor / dark  (light late, out false)
+PASS  severe · 55 min before sunset, a 15-minute walk (17:09, sunset 18:04) → indoor / dark  (light late, out false)
+PASS  severe · 55 min before sunset, walk length unknown (17:09, sunset 18:04) → indoor / dark  (light late, out false)
+PASS  severe · 30 min after sunset (18:34, sunset 18:04) → indoor / dark  (light night, out false)
+PASS  severe · polar night, Tromsø 21 Dec 12:00 → indoor / dark  (light night, out false)
+PASS  severe · 21 Jun 21:10 BST, sunset 21:21: late → indoor / dark  (light late, out false)
+PASS  control · 21 Jun 05:30 BST, sunrise 04:43: waits for 06:00 → rain / null  (light pre, out false)
+PASS  severe · no phone time zone (tz missing) → null / tz  (light night, out false)
+PASS  control · no phone time zone: light → null / tz  (light night, out false)
+PASS  severe · Edinburgh 21 Jun 20:50 BST, a 15-minute walk (sunset 22:02): ends after 21:00 → indoor / dark  (light late, out false)
+PASS  severe · Tromsø 21 Jun 20:50 CEST, midnight sun, a 15-minute walk: ends after 21:00 → indoor / dark  (light late, out false)
+PASS  severe · Tromsø 21 Jun 22:00 CEST, midnight sun → indoor / dark  (light night, out false)
+PASS  control · Tromsø 21 Jun 12:00 CEST, midnight sun → rain / null  (light day, out true)
+PASS  control · Warsaw 10 Dec 12:00 on its own phone → rain / null  (light day, out true)
+PASS  severe · Warsaw 10 Dec 23:30 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Warsaw 10 Dec 23:30, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Warsaw 10 Dec 23:45 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Warsaw 10 Dec 23:45, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Warsaw 10 Dec 23:55 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Warsaw 10 Dec 23:55, no reading (the place's coordinates only) → dwLight / night
+PASS  control · Budapest 15 Jan 12:00 on its own phone → rain / null  (light day, out true)
+PASS  severe · Budapest 15 Jan 23:30 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Budapest 15 Jan 23:30, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Budapest 15 Jan 23:45 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Budapest 15 Jan 23:45, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Budapest 15 Jan 23:55 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Budapest 15 Jan 23:55, no reading (the place's coordinates only) → dwLight / night
+PASS  control · Stockholm 10 Dec 12:00 on its own phone → rain / null  (light day, out true)
+PASS  severe · Stockholm 10 Dec 23:30 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Stockholm 10 Dec 23:30, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Stockholm 10 Dec 23:45 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Stockholm 10 Dec 23:45, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Stockholm 10 Dec 23:55 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Stockholm 10 Dec 23:55, no reading (the place's coordinates only) → dwLight / night
+PASS  control · Luleå 15 Jan 12:00 on its own phone → rain / null  (light day, out true)
+PASS  severe · Luleå 15 Jan 23:30 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Luleå 15 Jan 23:30, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Luleå 15 Jan 23:45 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Luleå 15 Jan 23:45, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Luleå 15 Jan 23:55 on its own phone (tz 60) → indoor / dark  (light night, out false)
+PASS  severe · Luleå 15 Jan 23:55, no reading (the place's coordinates only) → dwLight / night
+PASS  control · Tokyo 17 Oct 12:00 on its own phone → rain / null  (light day, out true)
+PASS  severe · Tokyo 17 Oct 23:30 on its own phone (tz 540) → indoor / dark  (light night, out false)
+PASS  severe · Tokyo 17 Oct 23:30, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Tokyo 17 Oct 23:45 on its own phone (tz 540) → indoor / dark  (light night, out false)
+PASS  severe · Tokyo 17 Oct 23:45, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Tokyo 17 Oct 23:55 on its own phone (tz 540) → indoor / dark  (light night, out false)
+PASS  severe · Tokyo 17 Oct 23:55, no reading (the place's coordinates only) → dwLight / night
+PASS  control · Kolkata 17 Oct 12:00 on its own phone → rain / null  (light day, out true)
+PASS  severe · Kolkata 17 Oct 23:30 on its own phone (tz 330) → indoor / dark  (light night, out false)
+PASS  severe · Kolkata 17 Oct 23:30, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Kolkata 17 Oct 23:45 on its own phone (tz 330) → indoor / dark  (light night, out false)
+PASS  severe · Kolkata 17 Oct 23:45, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Kolkata 17 Oct 23:55 on its own phone (tz 330) → indoor / dark  (light night, out false)
+PASS  severe · Kolkata 17 Oct 23:55, no reading (the place's coordinates only) → dwLight / night
+PASS  control · New York (EST) 10 Dec 12:00 on its own phone → rain / null  (light day, out true)
+PASS  severe · New York (EST) 10 Dec 23:30 on its own phone (tz -300) → indoor / dark  (light night, out false)
+PASS  severe · New York (EST) 10 Dec 23:30, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · New York (EST) 10 Dec 23:45 on its own phone (tz -300) → indoor / dark  (light night, out false)
+PASS  severe · New York (EST) 10 Dec 23:45, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · New York (EST) 10 Dec 23:55 on its own phone (tz -300) → indoor / dark  (light night, out false)
+PASS  severe · New York (EST) 10 Dec 23:55, no reading (the place's coordinates only) → dwLight / night
+PASS  control · Brisbane 17 Oct 12:00 on its own phone → rain / null  (light day, out true)
+PASS  severe · Brisbane 17 Oct 23:30 on its own phone (tz 600) → indoor / dark  (light night, out false)
+PASS  severe · Brisbane 17 Oct 23:30, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Brisbane 17 Oct 23:45 on its own phone (tz 600) → indoor / dark  (light night, out false)
+PASS  severe · Brisbane 17 Oct 23:45, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · Brisbane 17 Oct 23:55 on its own phone (tz 600) → indoor / dark  (light night, out false)
+PASS  severe · Brisbane 17 Oct 23:55, no reading (the place's coordinates only) → dwLight / night
+PASS  severe · a day starting at 21:30 on the phone, at 21:10: not "pre" → dwLight / late
+PASS  control · London 17 Oct 00:30 BST: waits for today's sunrise (07:27), not 06:00 → rain / null  (light pre, out false)
+PASS  control · London 17 Oct 00:30 BST, no reading: dwLight → dwLight / pre  (from 10-17 06:27Z, today's sunrise 10-17 06:27Z)
+PASS  control · Madrid 17 Oct 01:30 CEST: waits for today's sunrise, not 06:00 → rain / null  (light pre, out false)
+PASS  control · Warsaw 10 Dec 07:00 CET: waits for today's sunrise → rain / null  (light pre, out false)
+PASS  light sweep: 155520 of 155520 (15 places on their own phone zone, 24 days of 2026, every 10 minutes, 3 reading states)
+PASS  severe · Sydney typed, London phone, 12:00 BST → null / zone  (light night, out false)
+PASS  severe · Sydney typed in its daylight, London phone, quiet hours off → null / zone  (light day, out false)
+PASS  severe · New York typed, London phone → null / zone  (light pre, out false)
+PASS  severe · GPS place 13 h old → null / gps  (light day, out false)
+PASS  severe · GPS place with no time → null / gps  (light day, out false)
+PASS  severe · GPS place stamped 2 h in the future → null / gps  (light day, out false)
+PASS  severe · reading 3 h 1 min old → null / stale  (light day, out false)
+PASS  severe · reading 7 h old → null / stale  (light day, out false)
+PASS  severe · reading from 10 min in the future → null / data  (light day, out false)
+PASS  severe · the place moved (another key) → null / place  (light day, out false)
+PASS  severe · ok:false → null / none  (light day, out false)
+PASS  severe · no reading at all → null / none  (light day, out false)
+PASS  severe · temp null → null / data  (light day, out false)
+PASS  severe · temp undefined → null / data  (light day, out false)
+PASS  severe · temp NaN → null / data  (light day, out false)
+PASS  severe · wind and soon.wind undefined, wind 12 behind them → null / data  (light day, out false)
+PASS  severe · wind_speed missing from MET (summary wind null) → null / data  (light day, out false)
+PASS  severe · precip undefined → null / data  (light day, out false)
+PASS  severe · thunder undefined → null / data  (light day, out false)
+PASS  severe · thunder as the string 'false' → null / data  (light day, out false)
+PASS  severe · gust as the string '16' → null / data  (light day, out false)
+PASS  severe · a summary without soon → null / data  (light day, out false)
+PASS  severe · soon as an array → null / data  (light day, out false)
+PASS  severe · soon.thunder undefined → null / data  (light day, out false)
+PASS  severe · soon.precip NaN → null / data  (light day, out false)
+PASS  severe · null symbol now and soon → null / data  (light day, out false)
+PASS  severe · unknown symbol 'drizzle' now → null / data  (light day, out false)
+PASS  severe · unknown symbol 'drizzle' soon → null / data  (light day, out false)
+PASS  severe · at missing → null / data  (light day, out false)
+PASS  severe · negative precipitation → null / data  (light day, out false)
+PASS  control · light rain 9 °C, no re-summary (sumAt null) → rain / null  (light day, out false)
+PASS  control · light rain 9 °C, re-summarised 31 min ago → rain / null  (light day, out false)
+PASS  control · light rain 9 °C, fetched 61 min ago → rain / null  (light day, out false)
+PASS  control · light rain 9 °C, re-summary stamped in the future → rain / null  (light day, out false)
+PASS  control · light rain 9 °C at noon (global) → rain / null  (light day, out true)
+PASS  control · light rain 9 °C at noon (Nordic) → rain / null  (light day, out true)
+PASS  control · cloudy 4 °C dry → cold / null  (light day, out true)
+PASS  control · Nordic gust 11, dry, 12 °C → wind / null  (light day, out true)
+PASS  control · global wind 6, no gust (9.6 effective), dry, 12 °C → wind / null  (light day, out true)
+PASS  control · clear 15 °C at noon → bright / null  (light day, out true)
+PASS  control · cloudy 14 °C (calm) → null / calm  (light day, out true)
+PASS  control · Nordic gust 13.8 (just under 50 km/h) → wind / null  (light day, out true)
+PASS  control · clear 25 °C → bright / null  (light day, out true)
+PASS  control · clear 26 °C → null / calm  (light day, out true)
+PASS  control · rain 6 °C → rain / null  (light day, out true)
+PASS  control · light rain 1 h before sunrise (06:27, sunrise 07:27) → rain / null  (light pre, out false)
+PASS  control · Madrid typed, phone on +120 → rain / null  (light day, out true)
+PASS  control · Kashgar typed, phone on +480 (China's one zone) → rain / null  (light day, out true)
+PASS  control · GPS place 11 h old → rain / null  (light day, out true)
+PASS  control · fetched 59 min ago, re-summarised now → rain / null  (light day, out true)
+PASS  control · Sydney typed, Sydney phone (+660), 10:30 AEDT, 16 Oct 23:30 UTC → rain / null  (light day, out true)
+PASS  control · Sydney typed, Sydney phone (+660), 11:30 AEDT, 17 Oct 00:30 UTC → rain / null  (light day, out true)
+PASS  control · Sydney typed, Sydney phone, 21:10 AEDT (late) → indoor / dark  (light night, out false)
+KNOWN known · light rain 9 °C now, fog symbol in the next hours (soon.symbol keeps lightrain) → rain / null  (the summary can't show it)
+KNOWN known · cloudy 4 °C dry now, fog_area_fraction 80 in 1 h (no soon.fog) → cold / null  (the summary can't show it)
+KNOWN known · cloudy 4 °C dry now, −1 °C in 2 h (no soon temperatures) → cold / null  (the summary can't show it)
+KNOWN known · fair 15 °C, thunder probability 25 % (under 30 % is dropped) → bright / null  (the summary can't show it)
+KNOWN known · cloudy 4 °C, precipitation_amount missing in every step (reads 0 mm) → cold / null  (the summary can't show it)
+
+-- fixtures (a London phone at 12:00 BST; dwCond is the conditions line) --
+PASS  fixture rain → rain / null  (use true, light day, out true · "Light rain · 9 °C · light till 17:00")
+PASS  fixture cold → cold / null  (use true, light day, out true · "Cloudy · 4 °C · light till 17:00")
+PASS  fixture wind → wind / null  (use true, light day, out true · "Windy · gusts 40 km/h · 12 °C")
+PASS  fixture bright → bright / null  (use true, light day, out true · "Clear · 15 °C · light till 17:00")
+PASS  fixture calm → null / calm  (use true, light day, out true · "Cloudy · 14 °C")
+PASS  fixture thunder → indoor / thunder  (use true, light day, out false · "Thunder about · 14 °C")
+PASS  fixture gust → indoor / gust  (use true, light day, out false · "Gusts up to 60 km/h · 12 °C")
+PASS  fixture windy → indoor / gust  (use true, light day, out false · "Gusts up to 55 km/h · 12 °C")
+PASS  fixture heavy → indoor / heavy  (use true, light day, out false · "Heavy rain · 10 °C")
+PASS  fixture snow → indoor / snow  (use true, light day, out false · "Snow · 1 °C")
+PASS  fixture sleet → indoor / ice  (use true, light day, out false · "Could be icy · 2 °C")
+PASS  fixture wet → indoor / ice  (use true, light day, out false · "Could be icy · 4 °C")
+PASS  fixture ice → indoor / ice  (use true, light day, out false · "Could be icy · 1 °C")
+PASS  fixture freeze → indoor / freeze  (use true, light day, out false · "Below freezing · −2 °C")
+PASS  fixture fog → indoor / fog  (use true, light day, out false · "Foggy · 8 °C")
+PASS  fixture hot → indoor / hot  (use true, light day, out false · "Hot · 31 °C")
+PASS  fixture dark → indoor / dark  (use true, light night, out false · "Dark out · 9 °C")
+PASS  fixture pre → rain / null  (use true, light pre, out false · "Light rain · 9 °C · from 13:00")
+PASS  fixture polar → indoor / dark  (use true, light night, out false · "Dark out · 9 °C")
+PASS  fixture stale → null / stale  (use true, light day, out false · "Light rain · 9 °C at 08:55")
+PASS  fixture old → null / stale  (use false, light day, out false · "")
+PASS  fixture far → null / zone  (use true, light day, out false · "Light rain · 9 °C")
+PASS  fixture gpsold → null / gps  (use true, light day, out false · "Light rain · 9 °C")
+PASS  fixture junk → null / data  (use false, light day, out false · "")
+
+-- copy --
+copy: 120 strings checked, 41 symbols mapped
+
+== Stage C: the sun (dwSun === weather.js sun()) ==
+PASS  dwSun matched sun() at 980 of 980 timestamps (London, Tromsø, Sydney; 180 near solar midnight; 80 at Tromsø's polar edges)
+
+== Stage B: the real pick (dares.js and wxgate.js in one sandbox) ==
+-- every fixture through dareToday() (a London phone at 12:00 BST) --
+PASS  fixture rain → wx rain new wxTry
+PASS  fixture cold → wx cold new wxTry
+PASS  fixture wind → wx wind new wxTry
+PASS  fixture bright → wx bright new wxTry
+PASS  fixture calm → life mob new wxTry
+PASS  fixture thunder → wx indoor new why thunder wxTry
+PASS  fixture gust → wx indoor new why gust wxTry
+PASS  fixture windy → wx indoor new why gust wxTry
+PASS  fixture heavy → wx indoor new why heavy wxTry
+PASS  fixture snow → wx indoor new why snow wxTry
+PASS  fixture sleet → wx indoor new why ice wxTry
+PASS  fixture wet → wx indoor new why ice wxTry
+PASS  fixture ice → wx indoor new why ice wxTry
+PASS  fixture freeze → wx indoor new why freeze wxTry
+PASS  fixture fog → wx indoor new why fog wxTry
+PASS  fixture hot → wx indoor new why hot wxTry
+PASS  fixture dark → wx indoor new why dark wxTry
+PASS  fixture pre → wx rain new wxTry
+PASS  fixture polar → wx indoor new why dark wxTry
+PASS  fixture stale → life mob new
+PASS  fixture old → life mob new
+PASS  fixture far → life mob new wxTry
+PASS  fixture gpsold → life mob new wxTry
+PASS  fixture junk → life mob new
+PASS  173 severe summaries (London and the other places) through dareToday(): none gives an outdoor dare, no emit  (0 bad)
+PASS  no emit inside dareToday() across all those calls  (0 emits)
+-- a new outdoor rain dare meets each fixture --
+PASS  rain dare vs thunder: wx indoor new why thunder wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs gust: wx indoor new why gust wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs windy: wx indoor new why gust wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs heavy: wx indoor new why heavy wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs snow: wx indoor new why snow wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs sleet: wx indoor new why ice wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs wet: wx indoor new why ice wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs ice: wx indoor new why ice wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs freeze: wx indoor new why freeze wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs fog: wx indoor new why fog wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs hot: wx indoor new why hot wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs dark: wx indoor new why dark wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs polar: wx indoor new why dark wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs pre: wx rain new wxTry · drCanAccept pre · Accept → false new
+PASS  rain dare vs stale: wx rain new wxTry · drCanAccept stale · Accept → false new
+PASS  rain dare vs old: wx rain new wxTry · drCanAccept stale · Accept → false new
+PASS  rain dare vs junk: wx rain new wxTry · drCanAccept stale · Accept → false new
+PASS  rain dare vs far: life mob new wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs gpsold: life mob new wxTry · drCanAccept ok · Accept → false new
+PASS  rain dare vs rain: wx rain new wxTry · drCanAccept stale · Accept → true yes
+PASS  rain dare vs cold: wx rain new wxTry · drCanAccept stale · Accept → true yes
+PASS  rain dare vs wind: wx rain new wxTry · drCanAccept stale · Accept → true yes
+PASS  rain dare vs bright: wx rain new wxTry · drCanAccept stale · Accept → true yes
+PASS  rain dare vs calm: wx rain new wxTry · drCanAccept stale · Accept → true yes
+PASS  a rain dare picked on a 2 h old reading, phone offline at Accept: not accepted  (pick wx rain new wxTry, Accept false, wx rain new wxTry, force calls [true])
+PASS  the phone can only answer from its cache (stale:true): not a fresh re-summary, not accepted  (Accept false, wx rain new wxTry, sumAt null)
+PASS  the app in the background: no weather call, no outdoor accept  (drRefresh false, Accept false, nvWeather calls 0)
+PASS  accepted rain dare, then thunder: warn "Thunder in the forecast. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"thunder"}, acts warn)
+PASS  accepted rain dare, then gust: warn "Strong gusts in the forecast. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"gust"}, acts warn)
+PASS  accepted rain dare, then windy: warn "Strong gusts in the forecast. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"gust"}, acts warn)
+PASS  accepted rain dare, then heavy: warn "Heavy rain in the forecast. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"heavy"}, acts warn)
+PASS  accepted rain dare, then snow: warn "Snow in the forecast. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"snow"}, acts warn)
+PASS  accepted rain dare, then sleet: warn "It could be icy out. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"ice"}, acts warn)
+PASS  accepted rain dare, then wet: warn "It could be icy out. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"ice"}, acts warn)
+PASS  accepted rain dare, then ice: warn "It could be icy out. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"ice"}, acts warn)
+PASS  accepted rain dare, then freeze: warn "Below freezing out. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"freeze"}, acts warn)
+PASS  accepted rain dare, then fog: warn "Fog in the forecast. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"fog"}, acts warn)
+PASS  accepted rain dare, then hot: warn "Too hot for this one. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"unsafe","reason":"hot"}, acts warn)
+PASS  accepted rain dare, then dark: warn "It's getting dark. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"late"}, acts warn)
+PASS  accepted rain dare, then polar: warn "It's getting dark. Skip the walk today. It costs nothing."  (drCanAccept {"ok":false,"why":"late"}, acts warn)
+PASS  accepted rain dare at 19:30 BST, a real reading made 3 h 5 min earlier: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn)
+PASS  accepted rain dare at 19:30 BST, a real reading made 7 h earlier: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn)
+PASS  accepted rain dare at 19:30 BST, a reading with an unknown symbol: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn)
+PASS  accepted rain dare at 19:30 BST, no reading at all: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn)
+PASS  Warsaw rain dare accepted at 12:00, viewed at 23:30 CET, a reading made then: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn, card "It's getting dark. Skip the walk today. It costs nothing.")
+PASS  Warsaw rain dare accepted at 12:00, viewed at 23:30 CET, no reading: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn, card "It's getting dark. Skip the walk today. It costs nothing.")
+PASS  Warsaw rain dare accepted at 12:00, viewed at 23:45 CET, a reading made then: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn, card "It's getting dark. Skip the walk today. It costs nothing.")
+PASS  Warsaw rain dare accepted at 12:00, viewed at 23:45 CET, no reading: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn, card "It's getting dark. Skip the walk today. It costs nothing.")
+PASS  Warsaw rain dare accepted at 12:00, viewed at 23:55 CET, a reading made then: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn, card "It's getting dark. Skip the walk today. It costs nothing.")
+PASS  Warsaw rain dare accepted at 12:00, viewed at 23:55 CET, no reading: dark warn  (warn "It's getting dark. Skip the walk today. It costs nothing.", acts warn, card "It's getting dark. Skip the walk today. It costs nothing.")
+PASS  Warsaw, first open at 23:30 CET with a fresh light-rain reading: wx indoor new why dark wxTry  (card "Dark out in Warsaw. Mobility, breathing and water, indoors.")
+PASS  Warsaw, first open at 23:45 CET with a fresh light-rain reading: wx indoor new why dark wxTry  (card "Dark out in Warsaw. Mobility, breathing and water, indoors.")
+PASS  Warsaw, first open at 23:55 CET with a fresh light-rain reading: wx indoor new why dark wxTry  (card "Dark out in Warsaw. Mobility, breathing and water, indoors.")
+PASS  London, first open at 00:30 BST: "Light rain in London. The walk starts from 07:27."  (wx rain new wxTry, acts pre, from 10-17 06:27Z, today's sunrise 10-17 06:27Z, drCanAccept {"ok":false,"why":"pre","at":1792218432118})
+PASS  accepted rain dare, reading 3 h 5 min old: caution "No fresh forecast. Check the sky before you go."  (acts yes)
+PASS  thunder arrives with the same `at`: drRefresh(false) emits dare {what:"wx"} once, then nothing  (1 then 0)
+PASS  caps not here: dareToday() leaves the rain dare alone, drRefresh() resolves false without asking  (wx rain new wxTry, drRefresh false, nvWeather calls 0)
+PASS  caps arrive: the listener clears the throttle and the first refresh runs  (nvWeather calls after caps 1, soonAt 1792234800000)
+PASS  name-only place: drKey() null, a non-weather dare  (drKey null, life mob new)
+PASS  a new weather dare, then a name-only place: back to its life dare  (life mob new wxTry)
+PASS  off with forget: wxOpt off, S.wx gone, a new weather dare goes back to its life dare  (off, S.wx undefined, life mob new wxTry)
+PASS  off: an accepted outdoor dare is left for today at no cost  (wx rain no wxTry, free true, scale 1)
+PASS  off: an accepted indoor dare stays  (wx indoor yes why thunder wxTry)
+PASS  an accepted indoor dare: one minute of breathing ticks the breath row  ({"id":"breath","n":1,"src":"breath","base":null,"done":true})
+PASS  a plain check in flight, then a forced one, then Accept: "Checking the forecast…" while it waits, accepted, busy cleared  (busy shown true, Accept true, wx rain yes wxTry, busy false, busyN 0, check emits 1)
+PASS  the next day in the same session: the new rain dare shows Accept and accepts  (acts new, Accept true, wx rain yes wxTry)
+PASS  the app hides while Accept waits: not accepted, the stale toast, busy cleared  (Accept false, wx rain new wxTry, toasts Couldn't get a fresh forecast. Try again in a minute., busy false, busyN 0)
+PASS  back to the front: Accept shows and works  (acts new, Accept true, wx rain yes wxTry)
+PASS  "Check the forecast" behind a queued forced check: busy while it runs, cleared after  (busy shown true, busy false, busyN 0, acts new)
+PASS  a new day clears a stuck "Checking the forecast…"  (busy false, busyN 0)
+PASS  caps not here, a new rain dare, cached thunder: "Weather dare / Picked on the 11:55 forecast. Needs a fresh one to start.", warn "Thunder in the forecast."  (wx rain new wxTry, acts stale, lead "Picked on the 11:55 forecast. Needs a fresh one to start.")
+PASS  caps not here, a new rain dare, cached gust: "Weather dare / Picked on the 11:55 forecast. Needs a fresh one to start.", warn "Strong gusts in the forecast."  (wx rain new wxTry, acts stale, lead "Picked on the 11:55 forecast. Needs a fresh one to start.")
+PASS  caps not here, a new rain dare, cached sleet: "Weather dare / Picked on the 11:55 forecast. Needs a fresh one to start.", warn "It could be icy out."  (wx rain new wxTry, acts stale, lead "Picked on the 11:55 forecast. Needs a fresh one to start.")
+PASS  caps not here, a new rain dare, cached freeze: "Weather dare / Picked on the 11:55 forecast. Needs a fresh one to start.", warn "Below freezing out."  (wx rain new wxTry, acts stale, lead "Picked on the 11:55 forecast. Needs a fresh one to start.")
+PASS  caps not here, a new rain dare, cached far: "Weather dare / Picked on the 11:55 forecast. Needs a fresh one to start.", warn "This forecast isn't for where you are."  (wx rain new wxTry, acts stale, lead "Picked on the 11:55 forecast. Needs a fresh one to start.")
+PASS  caps not here, a new rain dare, cached dark: "Weather dare / Picked on the 11:55 forecast. Needs a fresh one to start.", warn "It's getting dark."  (wx rain new wxTry, acts stale, lead "Picked on the 11:55 forecast. Needs a fresh one to start.")
+PASS  caps not here, cached thunder: Accept refused with the toast "Thunder in the forecast.", no weather call  (Accept false, wx rain new wxTry, toasts Thunder in the forecast., nvWeather calls 0)
+PASS  caps not here, nvReady present: "Checking the forecast…" until hello, then the forced check turns it indoor, nothing accepted  (busy shown true, Accept false, wx indoor new why thunder wxTry, force calls [true])
+PASS  00:10 the next day: Done, row ticks, Not today and drCheck do nothing on yesterday's weather dare; won, wxWon and scale unchanged  (all false; won undefined, wxWon undefined, scale 1, wx rain yes wxTry)
+PASS  the next pick is today's  (life mob new)
+PASS  a life dare's Done after midnight still counts, once  (drFinish true then false, won 0 → 1)
+PASS  36 analytics events carry plain words only
+PASS  157 dare events, each with a known "what"
+PASS  the engine logged no warnings in the sandbox (a swallowed error would show here)
+
+== Stage D: purity and start-up rules (acorn) ==
+PASS  wxgate.js: 23 dw* function declarations; free names: Array, Date, Infinity, JSON, Math, NaN, Number, Object, String
+PASS  dares.js top level: 67 function declarations, 4 try-wrapped IIFEs
+PASS  dares.js globals: include-time code and 55 engine functions (the §3.4 ones and what they call) use only the allowance; behind a guard: Pulse, RDBR, TAB, addWater, brPlaySync, healthPoll, nvReady, rdWaterLog, troLine, uiWaterAdd, vxDayCheck
+
+== Stage E: ossaHtml.js and web/.preview.html hold the current wxgate.js and dares.js ==
+PASS  ossaHtml.js: ranks.js → wxgate.js → dares.js, both current
+PASS  web/.preview.html: ranks.js → wxgate.js → dares.js, both current
+
+== Stage F: nothing else declares or reassigns the gate's and the engine's names ==
+PASS  36 files: 23 dw* names only in wxgate.js, 67 engine names only in dares.js, no reassignment (plain or through window/globalThis/self), no DARE_LIFE
+
+== Summary ==
+200 severe cases: none gives an outdoor dare
+42 controls: as expected
+5 known gate limits (listed above, not failures)
+155520 light checks (the sweep): the walk never starts in the dark or outside 06:00-21:00
+110 engine checks (Stage B): all pass
+Limits the check can't see (the phone's summary hides them; Build 10 native follow-up):
+  - thunder only from the symbol outside the Nordic area, and a thunder probability under 30 % is dropped
+  - no temperatures later in the 3-hour window (soon has none)
+  - ice from air temperature only (MET has no ground temperature or freezing-rain symbol)
+  - fog and sleet masked in soon.symbol behind a higher-ranked symbol (partly covered by wet ice at ≤ 5 °C)
+  - a missing precipitation amount reads as 0 mm
+  - the place check looks at longitude only (the town's solar noon within 3.5 h of 12:00 on your phone): a typed town far north or south of you, or up to about 3 time zones east or west, can show daylight you don't have
+
+check-dares: all clear

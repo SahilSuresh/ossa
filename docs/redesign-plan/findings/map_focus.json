@@ -1,0 +1,558 @@
+{
+ "key": "focus",
+ "title": "Phase 3 Focus: Neural State XP, aura, Monk Mode, bio-rhythm",
+ "area": "Mind side (repo root C:\\Ossa\\ossa-expo): Neural State XP, focus_aura, monk_mode_setup, focus_timer_stance, monk_mode_completion, bio_rhythm_sync, and the Breathe vs Focus tab name",
+ "keyFacts": [
+  {
+   "fact": "Breathing patterns are a table: Longer exhale 4-6, Box 4-4-4-4, 4-7-8. Even breath 5.5/5.5 is added later. The Breathe UI lists Even, Box, Longer exhale and 4-7-8, plus Calm sessions Float, Deep calm and Sleep drift. Lengths are 1/2/3/5/10 min and sounds are Chime/Tidal/Silent.",
+   "ref": "web/ossa.html:8347-8351 (BREATHS), :11657 (even), :11658-11669 (RD_BR, RD_CALM, RD_SND), :11692 (durations)"
+  },
+  {
+   "fact": "A finished breathing session logs only {d, k:\"breath\", min}, and only if it ran at least 0.5 min. The technique, timestamp, planned length and whether you finished are not stored. Calm sessions log the same shape.",
+   "ref": "web/ossa.html:11772 (rdBrFinish), :8635 (startBreathing finish)"
+  },
+  {
+   "fact": "The breath log is read by mindWeek (minutes this week), the Mind home 'This week', the heart system card, and the 'breathe' standard, which ticks itself.",
+   "ref": "web/ossa.html:8517-8522, :8506, :9178, :9897"
+  },
+  {
+   "fact": "A focus timer already exists: Mind › Focus session with 15/25/50 chips and Pause/End. It lives only in memory as MIND.focus={dur,start,paused,pAt}. The time is worked out from Date.now(), so a backgrounded app catches up, but a WebView reload loses the session. It logs {d,k:\"focus\",min} (≥1 min) and ends with a toast. There's no notification.",
+   "ref": "web/ossa.html:8524-8553 (mindFocus, focusLeft, focusTick, endFocus); App.js:169-170 (reload on content-process termination)"
+  },
+  {
+   "fact": "The Breathe tab opens the Mind screen straight on the breathing tool (MIND.next=\"breath\"). '‹ Mind' leads to the full Mind home. uiCurTab reports \"breathe\" while MIND.open.",
+   "ref": "web/ui/shell.js:34 (UI_TABS), :39-46 (uiCurTab), :73-77 (uiGo breathe)"
+  },
+  {
+   "fact": "The Mind panel is opaque (radial-gradient background, z-index 7). The 3D head zoom only plays as a transition behind it. The Mind home draws an SVG brain, so today the 3D head isn't visible on the Mind screen.",
+   "ref": "web/ossa.html:340-341 (.mindv), :8426-8437 (openMind headZoom), :8476 (brainSVG)"
+  },
+  {
+   "fact": "The Mind pillar of the Body Score is the average of the check-in's focus, mood, energy and inverted stress. The one-tap check-in fills only energy and mood (both set to 'feel'), so Mind = how you said you feel. Breathing and focus sessions don't feed it, except through protocol standard bonuses.",
+   "ref": "web/ossa.html:9054-9055 (pillars), :10000 (stdBonus); web/ui/shell.js:282-286 (uiCkSave)"
+  },
+  {
+   "fact": "Ossa DOES have XP today, in Learn: S.learn={xp,done,days}, level thresholds RD_LV, rdLevel, rdAward, a learning streak, and a daily goal of 10 XP. It shows on the Learn page as 'Level N' and 'total XP'. The daily body fact awards '+5 XP'. DECISIONS.md says 'Ossa has no XP system', which is inaccurate.",
+   "ref": "web/ossa.html:10609-10623, :10631-10645 (rdLearnPage), :6703-6704 (fact +5 XP); docs/DECISIONS.md:89"
+  },
+  {
+   "fact": "Reminders are web-driven. remindPlan() builds the whole list. save() triggers nativeSoon(), which sends {t:\"remind\",list} after 1.6 s (60 ms when asking permission). Native cancels ALL pending notifications and reschedules the list (up to 60). So a Monk Mode end notification can be added with no native change, and ending early removes it on the next sync.",
+   "ref": "web/ossa.html:3868 (save), :10083-10092 (nativeSoon/nativeSync), :10279-10300 (remindPlan); native/reminders.js:46-66"
+  },
+  {
+   "fact": "Notifications show as banners even while Ossa is open, and play no sound in the foreground. Scheduled content sets no sound field (whether that means silent by default is unconfirmed).",
+   "ref": "native/reminders.js:10-18, :55-61"
+  },
+  {
+   "fact": "A tapped notification sends {t:\"open\",go}, handled by nativeOpen. Unknown 'go' values fall back to the Body tab. On return to the foreground App.js sends {t:\"fg\"}.",
+   "ref": "App.js:138-142; web/ossa.html:10096, :10106-10116"
+  },
+  {
+   "fact": "The web can only open https: and mailto: links through the bridge. App-Prefs:, shortcuts:// and the Focus settings can't be opened without changing App.js, which needs a new build. App-Prefs: URLs are private API (App Review guideline 2.5.1 risk) and should not be used.",
+   "ref": "App.js:113"
+  },
+  {
+   "fact": "Haptics bridge: navigator.vibrate is posted to native buzz(). An array longer than 1 plays the single 'Success' notification haptic, not a pattern. A total ≤6 plays selection, ≤10 a Light impact, anything more a Medium impact. A lub-dub is possible from the web as two timed calls (e.g. 14 then 9 ms → Medium then Light), with no build.",
+   "ref": "App.js:19-31; web/ossa.html:7924-7925 (Pulse.buzz)"
+  },
+  {
+   "fact": "Apple Health reads StepCount, SleepAnalysis and RestingHeartRate only. rhr is the mean of up to 7 resting-HR samples from the last 7 days. It's saved to S.health.rhr and S.bpm. No HeartRate or HRV is read. Any change to native/health.ios.js or the permission strings needs a new EAS build (no expo-updates).",
+   "ref": "native/health.ios.js:45, :93-94; web/ossa.html:10357; app.json:14 and react-native-health plugin string"
+  },
+  {
+   "fact": "A fingertip camera pulse reader (Pulse.camera: getUserMedia, torch, autocorrelation 40-180 bpm) still exists, but grep finds no caller (only stopCam). The camera permission text still promises it. A second, manual source exists: the body check's 'Resting heart rate' test (count for 30 s, or use the Apple Health value), stored in S.bchecks.",
+   "ref": "web/ossa.html:7920-8011 (callers of stopCam only at :8037, :8272), :6286-6290, :6440-6466, :6318 (bcLast); app.json:13"
+  },
+  {
+   "fact": "The 3D heart beats at a fixed ~72 bpm outside onboarding. In the onboarding/breathing scene (Body.obStart/obSet), every Body.obBeat() plays a lub-dub envelope (0.21 s apart). The Calm breathing session already uses this scene and beats at S.bpm||68.",
+   "ref": "web/ossa.html:4113 (beat()), :4625, :4860-4865, :8610-8618"
+  },
+  {
+   "fact": "The body has a rig and a pose table: MOVES holds joint rotations (thigh, shin, foot, upper arm, forearm, spine, pelvis, root, head), played by Body.startDemo({move,period,view,mask}). leg_ext is already a seated-type pose and lessons blend poses (rdSetPose). A seated 'monk_sit' could be one more MOVES entry; whether the mesh deforms well is the mesh agent's question.",
+   "ref": "web/ossa.html:4442-4473 (MOVES), :4894 (startDemo), :10426-10437 (rdSetPose, rd_* moves)"
+  },
+  {
+   "fact": "There's no head aura today. Body.setAura only tints the background with a colour wash. The organ shader has a raymarched brain at the head, but it's forced off (uBrain=0). A separate WebGL canvas with its own shader is an established pattern (rdAlienMake, used by Calm).",
+   "ref": "web/ossa.html:4097-4101, :4888 (setAura); :4139, :4615 (brain off); :11592 (rdAlienMake)"
+  },
+  {
+   "fact": "openSystem(\"heart\") already frames our own heart and lungs on the 3D body (core layer, camera on the chest). Its card shows 'bpm resting' and breathing minutes.",
+   "ref": "web/ossa.html:9155-9165, :9172-9190"
+  },
+  {
+   "fact": "The name 'Monk Mode Lite' is already taken: a 21-day programme listed as 'Coming soon' in Programmes.",
+   "ref": "web/ossa.html:9907, :10028, :10065-10069"
+  },
+  {
+   "fact": "web/ui files are pulled in with include markers (CSS at 3345-3353, JS at 11873-11878), then boot runs and uiBoot() is called last. A new focus.js, aura.js and focus.css each need one marker line in ossa.html.",
+   "ref": "web/ossa.html:3345-3353, :11873-11891; scripts/build-html.js"
+  },
+  {
+   "fact": "web/, native/ and docs/ are untracked in git (one 'Initial commit'). Past safety nets were folder backups.",
+   "ref": "git status; docs/UI-SYSTEM.md:6"
+  },
+  {
+   "fact": "Analytics (Mixpanel track()) exists but is off (MP_TOKEN=\"\"). If it's turned on later, new events must not carry the task text or heart rate.",
+   "ref": "web/ossa.html:10239-10242"
+  }
+ ],
+ "items": [
+  {
+   "name": "Neural State XP (system)",
+   "today": "No focus/breathing XP. The mind log stores {d,k,min} only (web/ossa.html:8550, :8635, :11772). A separate Learn XP exists (S.learn, rdAward at :10617, RD_LV at :10610). DECISIONS.md:89 wrongly says Ossa has no XP.",
+   "changes": [
+    {
+     "file": "web/ui/focus.js (new)",
+     "change": "Rules: breathing earns 2 XP a minute, +2 for finishing the length you picked, capped at 30 XP a day. Monk Mode earns 1 XP a minute (counts from 5 min), +2 × planned minutes for finishing (25→75, 50→150, 90→270), capped at 400 XP a day. nxXpFor(entry) and nxAward(entry) write xp onto the log entry itself. nxTotal() = sum of log xp. nxLevel(xp): the step to the next level costs 60+20×L (L2 at 80, L5 440, L10 1,440, L15 2,940, L20 4,940). nxStage(lv): Dormant 1, Spark 2-4, Facets 5-9, Crown 10-14, Crystalline 15-19, Lattice 20+. nxCharge(): last session today 100%, 1-2 days 70%, 3-6 days 45%, 7+ days 25%. Levels never drop. nxMigrate() runs once: it backfills minute-only XP on old entries and sets the level as already seen, so there's no surprise celebration. When S.demo is on it seeds about 14 days of sessions so previews show a mid-level aura."
+    },
+    {
+     "file": "web/ossa.html:8635 and :11772 (in place, one line each)",
+     "change": "Push richer entries {d,k,min,at,pat,plan,full}, then call nxAward on the new entry if it's defined. This is a small in-place edit: the Calm finish is a closure, so a wrapper can't reach it."
+    },
+    {
+     "file": "web/ui/focus.js",
+     "change": "Wrap rdBrFinish so the end cue reads 'Nicely done. +12 XP' (the cue is set at web/ossa.html:11779)."
+    },
+    {
+     "file": "docs/DECISIONS.md",
+     "change": "New entry: the Neural State XP rules, caps, curve, and that levels never drop. Correct the 'no XP' line (Learn has XP)."
+    }
+   ],
+   "dependsOn": [],
+   "needsNativeBuild": false,
+   "effort": "M",
+   "newFiles": [
+    "web/ui/focus.js"
+   ],
+   "stateChanges": [
+    "S.mind.log[] entry gains optional fields: {d:'YYYY-MM-DD', k:'breath'|'focus', min:int, at?:ms end time, pat?:'box'|'even'|'exhale'|'478'|'float'|'deep'|'drift', plan?:int minutes, full?:bool, xp?:int, task?:string ≤80 chars}. Old readers (mindWeek, the 'breathe' standard) keep working.",
+    "S.neural = {v:1 (migration done), lv:int (highest level reached, never drops), seenLv:int (last level celebrated)}. Total XP is derived as the sum of S.mind.log[].xp, not stored separately."
+   ],
+   "risks": [
+    "Two XP systems (Learn and Aura) could confuse people. See the open question.",
+    "Storing XP on each entry means a later formula change won't rewrite past levels. That's deliberate.",
+    "Demo data has no mind sessions today (mindState seeds check-ins only, web/ossa.html:8358-8373), so previews need the demo seed.",
+    "XP is time spent in a timer, which is self-reported. The daily caps limit farming."
+   ],
+   "designDeviations": [
+    "'LVL 14 AURA' becomes 'Level 14', and '320 XP TO LVL 15' becomes '320 XP to level 15'. The numbers come from logged sessions only."
+   ],
+   "showAtEnd": "A 390×844 preview screenshot of the Focus tab's level bar on demo data, with the XP rules sheet open. Then a 10-second recording: finish a 1-minute breathing session, see '+4 XP' on the cue and the bar fill."
+  },
+  {
+   "name": "Crystalline aura renderer (system)",
+   "today": "No head effect. Body.setAura is a background wash (web/ossa.html:4097-4101, :4888). The brain object in the organ shader is forced off (:4139, :4615). A separate-canvas shader precedent exists (rdAlienMake, :11592).",
+   "changes": [
+    {
+     "file": "web/ui/aura.js (new)",
+     "change": "Aura.mount(host), Aura.set({lv,charge,mode:'full'|'subtle'}), Aura.stop(). A small WebGL canvas with its own fragment shader: a halo, then crystal shards whose count, length and arcs grow with nxStage, then a wireframe lattice at Lattice. Every frame while visible it's placed over the head with Body.project([0,1.66,0]) and a projected head radius, so it follows the camera tween. Colours come from tokens via fxTok('--neural'). Reduced motion shows one still frame. It pauses when document.hidden, frees its context on stop (like RDAlienO.stop), and falls back to 2D canvas without WebGL."
+    },
+    {
+     "file": "web/ossa.html (include lines only)",
+     "change": "Add /*@include ui/aura.js*/ before focus.js, after train.js (line 11878)."
+    },
+    {
+     "file": "web/ui/tokens.css",
+     "change": "Needs --neural (brief: #00E5FF) and --neural-a, likely from the Phase 0 Look pass. Add them here if that pass hasn't."
+    }
+   ],
+   "dependsOn": [
+    "Neural State XP (system)",
+    "Phase 0 tokens (--neural)"
+   ],
+   "needsNativeBuild": false,
+   "effort": "L",
+   "newFiles": [
+    "web/ui/aura.js"
+   ],
+   "stateChanges": [],
+   "risks": [
+    "A second WebGL context costs memory and battery on iPhone. Only one aura canvas at a time, destroyed when hidden.",
+    "It's an overlay, so the head doesn't hide the shards. Keep shards around the silhouette, never across the face.",
+    "The agent restyling the body shader (rank colours, red pulse, wireframe) could clash. A separate canvas avoids touching makeGLBody.",
+    "Phones without WebGL get the flat figure: the aura draws around a simple head outline.",
+    "Precise placement depends on the head-zoom camera (headZoom zoom 5.2, py 0.78, web/ossa.html:4850-4854)."
+   ],
+   "designDeviations": [
+    "The design's head render is replaced by our own 3D head. The aura is drawn around it and grows by stage, never replacing the model (ground rule 1)."
+   ],
+   "showAtEnd": "Three 390×844 screenshots side by side at levels 1, 8 and 15 (demo), next to focus_aura.png. A 6-second recording of the shimmer, and the reduced-motion still frame."
+  },
+  {
+   "name": "focus_aura",
+   "today": "The Breathe tab lands on the breathing tool (web/ui/shell.js:73-77; web/ossa.html:8466 → rdBreathScreen :11674). '‹ Mind' opens mindHome (:8469-8515), a long opaque page with an SVG brain, check-in zones, insights, tools (Breathing, Focus session, Wind-down, Reflection), challenges, Learn, 'This week' and the support footer.",
+   "changes": [
+    {
+     "file": "web/ui/focus.js",
+     "change": "Redefine mindHome(b,M), which wins as the last declaration. Top: back button, the eyebrow 'Neural state', title 'Focus aura', level bar ('Level 14 · 320 XP to level 15'). Below that a see-through hero box where the head-zoomed 3D body shows, with Aura over it, and a status pill ('Crystalline · charged today' / 'Crown · last session 3 days ago'). Then 'Grow your aura': Monk Mode (25/50/90, up to +270 XP), Box breathing (4-4-4-4 · 5 min · +12 XP; sets MIND.next='breath:box', RDBR.dur=5, MIND.autoplay), Even breath, Longer exhale, 4-7-8, Calm, and a 'Heartbeat' row for bio-rhythm. Below, the existing Mind sections in a quieter style: check-in summary, insights, wind-down, reflection, learn, and the support/helplines footer (kept on purpose). The gear opens a small sheet: end-of-session sound, heartbeat haptics, keep Ossa's nudges quiet during Monk Mode."
+    },
+    {
+     "file": "web/ui/focus.css (new)",
+     "change": "A see-through hero (.mindv.nx background transparent over the hero box), glass cards, level bar, status pill, and XP chips in --neural. All values from tokens."
+    },
+    {
+     "file": "web/ui/shell.js:73-77",
+     "change": "The focus tab opens Mind on 'home' (Neural State) instead of 'breath'. Tapping it again while open returns to home."
+    },
+    {
+     "file": "web/ossa.html:3353 (include line)",
+     "change": "Add /*@include ui/focus.css*/."
+    }
+   ],
+   "dependsOn": [
+    "Neural State XP (system)",
+    "Crystalline aura renderer (system)",
+    "Breathe vs Focus tab naming"
+   ],
+   "needsNativeBuild": false,
+   "effort": "L",
+   "newFiles": [
+    "web/ui/focus.css"
+   ],
+   "stateChanges": [
+    "S.mind.ui = {sound:'chime'|'silent', beat:bool, quiet:bool} (the gear sheet preferences)"
+   ],
+   "risks": [
+    "Making the Mind panel see-through needs Body.frameBox to place the head in the hero box. Watch for the stage peeking through elsewhere.",
+    "Moving the long Mind content lower could hide the support link. Keep the footer.",
+    "The breathing screen's Breathe/Calm sub-tabs (web/ossa.html:11679-11681) must still work when opened from a card."
+   ],
+   "designDeviations": [
+    "'Mental Clarity' becomes 'Focus aura', because a level isn't a measure of clarity.",
+    "'CRYSTALLINE SYNCED' becomes the stage name plus a real charge state from the date of the last session.",
+    "'Stoic Focus · Meditation · 10 mins · +25 XP': Ossa has no meditation feature. It becomes Monk Mode and Calm, which do exist.",
+    "'Zen Flow · Unlocks at Lvl 15' becomes a cosmetic unlock (the next aura stage or colour). No breathing tool gets locked.",
+    "The design's static head render becomes our own 3D head with the aura overlay."
+   ],
+   "showAtEnd": "A 390×844 preview screenshot next to focus_aura.png, the same at 375×667, and a short scroll recording showing the old Mind content below."
+  },
+  {
+   "name": "monk_mode_setup",
+   "today": "mindFocus shows 15/25/50 chips and Start, with no rules (web/ossa.html:8524-8535). It's reached from Mind › Tools 'Focus session' (:8493) and from mindAction 'Start focus' (:8404, :8406).",
+   "changes": [
+    {
+     "file": "web/ui/focus.js",
+     "change": "Redefine mindFocus(b,M) to open the Monk Mode setup as a float over the 3D body (app class 'monking', tab bar hidden, like the workout float in web/ui/workout.js). Eyebrow 'Monk Mode', a big italic headline, the line 'One task. Phone face down. Your character sits with you.' Presets 25 · 50 · 90 min, remembering the last one (S.monk.pre, 25 the first time). 'The rules' card: (1) Turn on a Focus, with How: 'Ossa can't silence other apps. Open Control Centre, tap Focus, then Do Not Disturb.' (2) One task, with an optional 'What are you working on?' field. (3) Stay to the end: 'End early and you keep the minutes, not the finish bonus.' Plus a switch 'Keep Ossa's own nudges quiet until you're done', which is real. The cyan Start button calls monkStart(). The first time, nativeSoon(true) asks for notification permission, with a line before it: 'We'll tell you when time's up.'"
+    },
+    {
+     "file": "web/ui/focus.js",
+     "change": "The figure stands in the glassy scene the Calm sessions use (Body.obStart and obSet with glass, heart and lungs, as at web/ossa.html:8610). The chest glows and the aura sits at the head. Restore with obEnd when leaving."
+    },
+    {
+     "file": "web/ossa.html:9907 (in place, const)",
+     "change": "Depends on Andrej: drop or rename the 'Monk Mode Lite' programme in the Coming soon list."
+    }
+   ],
+   "dependsOn": [
+    "Neural State XP (system)",
+    "Phase 0 tokens"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "None for v1. Optional in the next build: allow shortcuts:// in App.js:113 so a 'Set up a Focus shortcut' button can open the Shortcuts app. Don't use App-Prefs: (private API).",
+   "effort": "M",
+   "newFiles": [],
+   "stateChanges": [
+    "S.monk = {pre:25|50|90, run:null|{...see timer}, howSeen:bool}"
+   ],
+   "risks": [
+    "The iOS notification prompt mid-flow: only ask once, after the pre-line.",
+    "If notifications are denied, say so in one line and still run the timer.",
+    "Andrej may expect a real 'silence notifications'. iOS doesn't allow it, so be clear (ground rule 4)."
+   ],
+   "designDeviations": [
+    "'Deep physical presence. Zero distractions. Unbreakable focus.' claims what Ossa can't enforce. It becomes plain copy.",
+    "'No Notifications' becomes 'Turn on a Focus', with iOS instructions. Only Ossa's own nudges are actually silenced.",
+    "'Character Locked' becomes 'Your character sits with you. Leave Ossa and the timer keeps going.'",
+    "'Deep Focus Only' becomes 'One task', with an optional task name.",
+    "'INITIATE PROTOCOL' becomes the 'Monk Mode' eyebrow."
+   ],
+   "showAtEnd": "A 390×844 preview screenshot next to monk_mode_setup.png, plus 375×667 to prove Start is always visible."
+  },
+  {
+   "name": "focus_timer_stance (with the Monk Mode timer engine)",
+   "today": "MIND.focus is in memory only (web/ossa.html:8533). Time comes from Date.now() (:8544), with a 500 ms interval (:8546) and only a toast at the end (:8551). The session is lost if the WebView reloads (App.js:169-170). No end notification. App.js already sends 'fg' on resume (App.js:138-140).",
+   "changes": [
+    {
+     "file": "web/ui/focus.js",
+     "change": "Engine. monkStart() saves S.monk.run={start,end,plan,task,quiet}, with no pause. monkLeft()=end−now. A 1 s ticker runs only while visible, and time is recomputed on visibilitychange, on 'fg' (wrap nrecv) and at boot (wrap uiBoot). Running → reopen the timer. Ended while away → finish as complete with minutes=plan. End session needs two taps, like the workout's Finish. monkEnd(full) logs {k:'focus',min,plan,full,at,task} and calls nxAward, then nativeSync(true) to bypass the 1.6 s wait and cancel the pending notification."
+    },
+    {
+     "file": "web/ui/focus.js",
+     "change": "Wrap remindPlan() (web/ossa.html:10279). While a run exists, add {at:end+2000, go:'monk', title:'Monk Mode done', body:'50 minutes. Come back for your XP.'}. If run.quiet, drop Ossa's own nudges and desk resets that fall between start and end. Wrap nativeOpen(go) (:10106) so go:'monk' opens the completion or the running timer."
+    },
+    {
+     "file": "web/ui/focus.js",
+     "change": "Wrap goBack (web/ossa.html:8019) and closePanels (already wrapped in ranks.js; wrap again) so back and tab taps leave the session running."
+    },
+    {
+     "file": "web/ui/shell.js:100 and web/ui/shell.css:22-23",
+     "change": "Show a live dot on the Focus tab while S.monk.run is active, like Train's live workout dot."
+    },
+    {
+     "file": "web/ui/focus.js",
+     "change": "Stance. If MOVES.monk_sit exists (mesh agent), Body.startDemo({move:'monk_sit',period:5.5,view:0,mask:[]}) with the camera framing between the timer and the tiles. Otherwise the standing glassy scene, cropped waist-up (camTo zoom ~1.6) so the chest glow is centred, with Body.breathe(true,lv) on a slow 5.5 s cycle and the aura at the head. Everything is restored on exit (stopDemo, breathe(false), obEnd)."
+    },
+    {
+     "file": "web/ui/focus.css",
+     "change": "Hero timer (Archivo, --fs-7 or larger, tabular numbers), status pill, two glass tiles, the quiet-nudges row, and a bone End session button."
+    }
+   ],
+   "dependsOn": [
+    "monk_mode_setup",
+    "Neural State XP (system)",
+    "Crystalline aura renderer (system)",
+    "Mesh agent: a MOVES.monk_sit seated pose (optional; the screen ships standing without it)"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "None for v1. Optional in the next build: give the session-end notification a sound (add a per-item 'sound' to native/reminders.js:55-61); a time-sensitive interruption level needs an entitlement and isn't recommended.",
+   "effort": "L",
+   "newFiles": [],
+   "stateChanges": [
+    "S.monk.run = null | {start:ms, end:ms, plan:25|50|90, task:string, quiet:bool}"
+   ],
+   "risks": [
+    "If Ossa is open at the end, the in-app finish and a banner can both appear (banners show in the foreground, native/reminders.js:12-17). Mitigated by scheduling at end+2 s and syncing straight away.",
+    "The end notification may be silent (no sound field, default unconfirmed). The user's own Focus will hold it back unless Ossa is allowed.",
+    "Notifications denied: the timer still works and the completion shows on return.",
+    "Body state can leak between screens (demo, glass scene, breathe), the same family of bug as the 16 Oct 'old contents' fix. Each exit path must restore it.",
+    "The seated pose depends on the mesh agent and may deform badly at the hips."
+   ],
+   "designDeviations": [
+    "The 'Silent Notifications' toggle becomes 'Ossa's nudges: off till you're done' (real), plus a 'Turn on iOS Focus' link to instructions.",
+    "'4 Days Streak' becomes 'Focus today: 25 min' (no new streak; see open question).",
+    "'880 XP Aura Score' becomes 'Level 9 · 880 XP'.",
+    "'SESSION REMAINDER' becomes 'left'. 'DEEP WORK ACTIVE' becomes 'Monk Mode · on'.",
+    "The seated render becomes our own body: seated if the rig allows, otherwise standing and breathing slowly."
+   ],
+   "showAtEnd": "A 390×844 preview screenshot next to focus_timer_stance.png (standing fallback now, seated when the pose lands). A phone screen recording in Expo Go, no EAS build needed: start a 1-minute test session (preview-only chip), lock the phone, the notification arrives, tap it, the completion opens."
+  },
+  {
+   "name": "monk_mode_completion",
+   "today": "Nothing. A finished focus session shows a toast (web/ossa.html:8551).",
+   "changes": [
+    {
+     "file": "web/ui/focus.js",
+     "change": "monkDone(entry) shows a full-screen moment with the tabs hidden. Eyebrow 'Session complete', or 'Ended early'. A ring with the real focus time. A lime pill '+150 XP' with the breakdown '50 for the minutes, 100 for finishing'. 'Today so far' lists real logs only: this session; any breathing today with its XP; today's workout from S.workouts (title · sets · minutes, web/ossa.html:7770); water from waterToday(). Then 'You worked on: <task>' if one was given, a scripted Ossa line chosen by length, and Done back to Neural State. If a level was crossed, a level-up beat reusing fx.js (fxConfetti, rays) in --neural, and S.neural.seenLv is updated."
+    },
+    {
+     "file": "web/ui/focus.css",
+     "change": "Ring, pill, rows and the level-up overlay, all from tokens."
+    }
+   ],
+   "dependsOn": [
+    "focus_timer_stance (with the Monk Mode timer engine)",
+    "Neural State XP (system)"
+   ],
+   "needsNativeBuild": false,
+   "effort": "M",
+   "newFiles": [],
+   "stateChanges": [
+    "Reads S.mind.log, S.workouts and S.water. Writes S.neural.seenLv."
+   ],
+   "risks": [
+    "Rows must never show RP or lifts unless a workout was really logged today.",
+    "Reduced motion: no confetti, a static ring."
+   ],
+   "designDeviations": [
+    "'LOGGED MOVEMENTS' with Squat and Leg press RP isn't something a focus session logs. It becomes 'Today so far', from real logs.",
+    "'TRANSCENDED' becomes a plain or game word by length (e.g. 'Done. 50 minutes.').",
+    "'+150 XP BONUS' becomes '+150 XP' with the rule shown.",
+    "The quote becomes a scripted Ossa line in house voice (DECISIONS 2026-10-04)."
+   ],
+   "showAtEnd": "Two 390×844 screenshots next to monk_mode_completion.png: completed and ended early. Plus a 5-second recording of a level-up."
+  },
+  {
+   "name": "bio_rhythm_sync",
+   "today": "Haptics map to selection/light/medium/success only (App.js:24-31). Resting HR is already read (native/health.ios.js:45, :93-94) into S.health.rhr and S.bpm (web/ossa.html:10357). A manual RHR is stored in body checks (:6286, :6463-6466). The camera pulse code exists but is unreachable (:7966). Pulse.steady exists (:7964). The 3D heart lub-dub only plays in the obStart scene (:4625, :4865). The heart system card shows bpm resting (:9178).",
+   "changes": [
+    {
+     "file": "web/ui/focus.js",
+     "change": "bioOpen() shows a screen over the body: Body.obStart and obSet with glass, org, heart and lungs, then Body.obView('heart') to frame the chest. bioBeat() loops at 60000/tempo ms: Body.obBeat(), Pulse.buzz(14) (Medium), and Pulse.buzz(9) 210 ms later (Light), matching the visual lub-dub. It stops on document.hidden, on leaving, and when switched off. The tempo is a game rule: base = S.health.rhr, else the body-check bpm, else 60, clamped to 48-80, times (1 + 0.15 × the share of GLORDER muscles where stateOf()==='recovering', web/ossa.html:3901). The state word is Settled (none recovering), Steady (<30%) or Rebuilding, with '18 of 23 muscles ready'. 'Breathe with it · 2 min' runs Even breath 5.5/5.5 while the beat eases back to base, and logs a breath session that earns XP."
+    },
+    {
+     "file": "web/ui/focus.js",
+     "change": "Entry points: the Neural State 'Heartbeat' row; a 'Feel the rhythm' button on the heart system card (wrap renderSys, web/ossa.html:9172); a row on the Recover tab (web/ui/shell.js ~540-559)."
+    },
+    {
+     "file": "web/ui/focus.css",
+     "change": "Glass status pill, the big bpm number, a source line, a decorative two-bump line that animates in time with the haptics, and a lime CTA."
+    }
+   ],
+   "dependsOn": [
+    "Neural State XP (system)",
+    "Phase 0 tokens",
+    "Vessel Engine phase if it changes the recovery or fade rules (read the shared stateOf)"
+   ],
+   "needsNativeBuild": false,
+   "nativeBuildWhy": "None for v1: existing haptic styles and the already-granted RestingHeartRate. Richer haptics (Heavy, Soft or Core Haptics) would change App.js, and new HealthKit types (HeartRate, HRV) would change native/health.ios.js and the permission strings. Both need a new EAS build. Not recommended.",
+   "effort": "M",
+   "newFiles": [],
+   "stateChanges": [
+    "S.mind.ui.beat (bool, the haptic heartbeat preference). Reads S.health.rhr and S.health.at, plus ckNow().rhr = {bpm,src,d}."
+   ],
+   "risks": [
+    "Each beat crosses the RN bridge, so there may be slight jitter (needs a device test).",
+    "Haptics don't play if iOS System Haptics is off. Low Power Mode behaviour is unconfirmed.",
+    "Apple Health RHR only exists in a real build. In Expo Go the screen shows the body-check or 'no reading yet' state (native/health.ios.js:6-13).",
+    "Battery: only beat while the screen is open, and stop when hidden.",
+    "Playing at your resting HR and speeding up with recovery could be read as a measurement. The screen must say it's a game rhythm."
+   ],
+   "designDeviations": [
+    "'LIVE SYNC' becomes 'Heartbeat on' or 'Heartbeat off'. The heart icon top right is the toggle.",
+    "'0.8 Hz PULSE FREQUENCY' becomes '58 bpm · resting heart rate', with a source line: 'Apple Health, 7-day average · an estimate', 'counted by you on 12 Oct', or 'No resting heart rate yet' with Connect Apple Health / Count it (30 s).",
+    "'HEARTBEAT WAVEFORM' becomes 'The rhythm you'll feel': a decorative lub-dub line, never an ECG.",
+    "'STABLE VIBE' becomes Settled, Steady or Rebuilding, from muscle recovery, with the count shown.",
+    "'Respiration 14 BPM' and 'Haptic Sync 98%' are dropped: neither is real data.",
+    "'STABILIZE RHYTHM' becomes 'Breathe with it · 2 min'.",
+    "The ribcage and HUD render becomes our own body's heart and lungs. Footer: 'A game rhythm, not a medical reading.'"
+   ],
+   "showAtEnd": "A 390×844 preview screenshot next to bio_rhythm_sync.png in two states (with an RHR and with none). Then Andrej holds his phone in Expo Go and feels the lub-dub, plus a screen recording where the beat line pulses in time."
+  },
+  {
+   "name": "Breathe vs Focus tab naming",
+   "today": "The tab is 'Breathe' (web/ui/shell.js:34) and lands on the breathing tool (:73-77). Docs say Breathe (docs/UI-SYSTEM.md:50, :57; docs/DECISIONS.md:75-77), and so does the store copy (store/APP-STORE-LISTING.md:35, :69, :72). The brief leaves it open (docs/REDESIGN-BRIEF.md:105).",
+   "changes": [
+    {
+     "file": "web/ui/shell.js:2-5, :34, :39, :73-77",
+     "change": "Label 'Focus' with the same wind icon. Keep the internal key 'breathe' so uiGo, uiQuick (:480), uiCurTab and the analytics keys don't churn. Land on Neural State home. Update the header comments."
+    },
+    {
+     "file": "docs/UI-SYSTEM.md, docs/DECISIONS.md",
+     "change": "Tab list and layout row; a decision entry."
+    },
+    {
+     "file": "store/APP-STORE-LISTING.md (at Ship)",
+     "change": "The review notes tab list ('Body, Train, Focus, Recover, Learn'), the Focus line (Monk Mode, breathing, heartbeat), and the 'BREATHE AND LEARN' section. The screenshots show the tab bar, so they get regenerated in the Ship phase."
+    }
+   ],
+   "dependsOn": [],
+   "needsNativeBuild": false,
+   "effort": "S",
+   "newFiles": [],
+   "stateChanges": [],
+   "risks": [
+    "The App Review notes and screen recording mention Breathe and must be refreshed before any submission (already required, brief §5)."
+   ],
+   "designDeviations": [],
+   "showAtEnd": "Before and after crops of the tab bar at 390 wide, and the Focus tab landing screenshot."
+  }
+ ],
+ "openQuestions": [
+  {
+   "question": "Rename the third tab from Breathe to Focus?",
+   "why": "The design and the brief's core loop (Train / Focus / Recover) say Focus. Monk Mode is the headline of that tab, and breathing moves one tap in.",
+   "options": [
+    "Focus",
+    "Keep Breathe",
+    "Mind"
+   ],
+   "recommendation": "Focus. Keep the internal key 'breathe' so nothing else churns."
+  },
+  {
+   "question": "One XP or two? Learn already has XP and levels (S.learn).",
+   "why": "The aura level and the Learn level side by side could confuse people. DECISIONS.md also says Ossa has no XP, which is wrong.",
+   "options": [
+    "Separate: Aura XP from focus and breathing only; rename Learn's to 'Learn level'",
+    "Merge into one Ossa XP that feeds the aura",
+    "Aura XP also counts lessons"
+   ],
+   "recommendation": "Separate for now, as the brief says (focus and breathing grow the aura). Rename Learn's label to 'Learn level'."
+  },
+  {
+   "question": "Approve the XP numbers?",
+   "why": "They set the pace of the whole Neural State. The proposal matches the design's +12 and +150.",
+   "options": [
+    "Breathing 2 XP/min +2 for finishing (30/day cap). Monk Mode 1 XP/min + 2× planned minutes for finishing (400/day cap). Next level costs 60+20×level.",
+    "Flat XP per session",
+    "Something else"
+   ],
+   "recommendation": "The first option: level 2 on day one, level 15 in about 5 weeks of one 25-minute session and one breath a day."
+  },
+  {
+   "question": "What unlocks at level 15 ('Zen Flow')?",
+   "why": "Locking a breathing tool behind a level takes away something free today.",
+   "options": [
+    "A cosmetic aura stage or colour",
+    "A new breathing pattern",
+    "Nothing: drop the locked card"
+   ],
+   "recommendation": "Cosmetic only: the Crystalline aura stage."
+  },
+  {
+   "question": "What should Monk Mode completion list under 'what you logged'?",
+   "why": "The design lists lifts with RP, which a focus session doesn't log.",
+   "options": [
+    "'Today so far': this session, breathing, today's workout, water (real logs)",
+    "Only this session and its task",
+    "The design's workout rows"
+   ],
+   "recommendation": "'Today so far', from real logs, plus the task you named."
+  },
+  {
+   "question": "The timer's streak tile: which streak?",
+   "why": "Ossa already has the plan streak (uiStreak) and a Learn streak. A third would be noise.",
+   "options": [
+    "No streak: show 'Focus today: N min'",
+    "Show the main plan streak",
+    "A new focus streak"
+   ],
+   "recommendation": "'Focus today: N min' and the aura level."
+  },
+  {
+   "question": "'Monk Mode Lite' (a 21-day programme marked Coming soon) clashes with the Monk Mode timer.",
+   "why": "Two things with nearly the same name in different places.",
+   "options": [
+    "Remove it from Coming soon",
+    "Rename it",
+    "Build it later around daily Monk Mode sessions"
+   ],
+   "recommendation": "Remove it from Coming soon now. Revisit as a programme later."
+  },
+  {
+   "question": "Can a Monk Mode session be paused?",
+   "why": "The design has End only. The old focus timer had Pause.",
+   "options": [
+    "No pause; ending early keeps the minutes",
+    "Allow pause"
+   ],
+   "recommendation": "No pause. It keeps the notification simple and the rule honest."
+  },
+  {
+   "question": "Should the haptic heartbeat start by itself when the screen opens?",
+   "why": "Unexpected vibration surprises people, and it uses battery.",
+   "options": [
+    "Tap to start, then remember the choice",
+    "Start on open"
+   ],
+   "recommendation": "Tap to start, remembered in S.mind.ui.beat."
+  },
+  {
+   "question": "Bring back the camera fingertip pulse reading on the heartbeat screen?",
+   "why": "The code exists but is unused. Torch support inside the iOS WebView is unconfirmed, and readings can be poor.",
+   "options": [
+    "Not in v1: Apple Health plus the body-check count",
+    "Test on a device, then add it as 'Read my pulse (estimate)'"
+   ],
+   "recommendation": "Not in v1. Revisit after a device test. Either way, update the camera permission text if it stays unused."
+  },
+  {
+   "question": "Show the aura on the Body page too?",
+   "why": "The brief says the actions evolve the character, but the Body page was deliberately kept a still figure.",
+   "options": [
+    "Subtle halo on the Body page from level 2, full on Focus",
+    "Focus tab only"
+   ],
+   "recommendation": "A subtle, still halo on the Body page; the full animated aura only on Focus."
+  },
+  {
+   "question": "Put the optional native extras in the next EAS build?",
+   "why": "A sound on the 'Monk Mode done' notification and a shortcuts:// button for setting up a Focus both need App.js or native changes.",
+   "options": [
+    "Batch them into the one build before Ship",
+    "Skip them"
+   ],
+   "recommendation": "Batch the notification sound. Skip shortcuts:// unless testers ask."
+  }
+ ],
+ "orderNotes": "This whole area is web-only (web/ui/focus.js, aura.js, focus.css, a few lines in shell.js, two one-line edits plus include markers in web/ossa.html). It can be tested in the preview and in Expo Go with no EAS build. Order:\n(1) Build after the Phase 0 Look pass, so the screens use the new tokens (--neural cyan, Inter, glass) once instead of being restyled twice.\n(2) Within the Focus phase: Neural XP data and migration → aura renderer → focus_aura with the tab rename → Monk Mode engine, setup and timer (standing) → completion → bio-rhythm.\n(3) The seated pose slots in when the mesh agent delivers a MOVES.monk_sit entry; the timer ships standing without it.\n(4) Bio-rhythm reads the shared stateOf(). If the Vessel Engine phase changes fading or pauses fades for injuries, use the same function so the heartbeat never disagrees with the body.\n(5) Coordinate with whoever edits the body shader (rank colours, red pulse, wireframe). The aura is deliberately a separate canvas to avoid conflicts.\n(6) Store copy, review notes and screenshots mentioning Breathe are updated in the Ship phase.\n(7) Optional native extras (notification sound) go in the single build before Ship.\nSafety: web/, native/ and docs/ are untracked in git. Before starting, take a folder backup like the earlier ones, or make a commit if Andrej approves."
+}

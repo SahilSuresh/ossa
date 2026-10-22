@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rep_density_history</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --orange: #FF6B00;
+            --red: #FF0000;
+            --panel: rgba(255, 255, 255, 0.05);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            margin: 0;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: #000000;
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .glass-panel {
+            background: var(--panel);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .label-sm-caps {
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .density-badge {
+            background: linear-gradient(90deg, #FF6B00 0%, #FF0000 100%);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col text-white">
+        <!-- #header_001 -->
+        <header class="flex-shrink-0 px-6 pt-12 pb-4 z-20">
+            <div class="flex justify-between items-center mb-4">
+                <button class="w-10 h-10 glass-panel rounded-full flex items-center justify-center active:scale-90">
+                    <iconify-icon icon="solar:alt-arrow-left-linear" class="text-xl"></iconify-icon>
+                </button>
+                <div class="text-center">
+                    <div class="label-sm-caps text-gray-500">Oct 15 Session</div>
+                    <h1 class="text-xl font-black">Density Report</h1>
+                </div>
+                <button class="w-10 h-10 glass-panel rounded-full flex items-center justify-center">
+                    <iconify-icon icon="solar:share-bold" class="text-xl"></iconify-icon>
+                </button>
+            </div>
+        </header>
+        <!-- /#header_001 -->
+
+        <!-- #scroll-content_002 -->
+        <div class="flex-1 overflow-y-auto px-6 pb-12">
+            <!-- #heatmap_003 -->
+            <div class="relative mb-8">
+                <img src="https://media.screensdesign.com/gasset/24eb5dea79f14ac2998bf39d179cb72c_screen_image_rep_density_heatmap_f73b6c83b3.png" data-media-ref="generated:138039" alt="Macro view of a 3D chest muscle with a glowing heatmap overlay, areas of intense neon orange and red indicating 'high density' zones, technical exercise mechanics data points, dark background" class="w-full h-auto rounded-3xl" data-image-aspect="1:1" data-image-background="solid">
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 density-badge px-4 py-1.5 rounded-full flex items-center gap-2">
+                    <iconify-icon icon="solar:graph-bold" class="text-sm"></iconify-icon>
+                    <span class="text-[10px] font-black uppercase tracking-widest">High Density Zone</span>
+                </div>
+            </div>
+
+            <!-- #stats-overview_004 -->
+            <div class="space-y-4">
+                <div class="label-sm-caps text-gray-500">Fiber Recruitment</div>
+                
+                <!-- #stat-card-1_005 -->
+                <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-[var(--orange)]">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 class="font-bold">Inner Chest Bias</h3>
+                            <p class="text-xs text-gray-500">Mechanical tension focus</p>
+                        </div>
+                        <span class="text-xl font-black text-[var(--orange)]">8.2</span>
+                    </div>
+                    <div class="w-full h-1 bg-white/5 rounded-full">
+                        <div class="h-full bg-[var(--orange)] w-[82%]"></div>
+                    </div>
+                </div>
+
+                <!-- #stat-card-2_006 -->
+                <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-[var(--red)]">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 class="font-bold">Lower Fiber Priority</h3>
+                            <p class="text-xs text-gray-500">Eccentric load density</p>
+                        </div>
+                        <span class="text-xl font-black text-[var(--red)]">9.4</span>
+                    </div>
+                    <div class="w-full h-1 bg-white/5 rounded-full">
+                        <div class="h-full bg-[var(--red)] w-[94%]"></div>
+                    </div>
+                </div>
+
+                <!-- #mechanics_007 -->
+                <div class="pt-4">
+                    <div class="label-sm-caps text-gray-500 mb-4">Protocol Insights</div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="glass-panel p-4 rounded-2xl">
+                            <div class="text-[10px] text-gray-500 font-bold uppercase mb-1">ROM Efficiency</div>
+                            <div class="text-base font-black">92%</div>
+                        </div>
+                        <div class="glass-panel p-4 rounded-2xl">
+                            <div class="text-[10px] text-gray-500 font-bold uppercase mb-1">Neuromuscular</div>
+                            <div class="text-base font-black tracking-tight">Optimal</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#scroll-content_002 -->
+
+        <!-- #footer_008 -->
+        <footer class="flex-shrink-0 px-6 pb-12 pt-4 bg-black">
+            <button class="w-full py-5 bg-[#1a1a1a] text-white border border-white/10 rounded-3xl font-black uppercase tracking-widest active:scale-95 transition-transform">
+                Compare to Baseline
+            </button>
+        </footer>
+        <!-- /#footer_008 -->
+    </div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --primary: #D4FF00;
+            --cyan: #00E5FF;
+            --background: #000000;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: white;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: var(--background);
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .label-sm-caps {
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+        .aura-glow {
+            box-shadow: 0 0 60px rgba(0, 229, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col">
+        <!-- #header_001 -->
+        <header class="flex-shrink-0 px-6 pt-16 pb-8 flex flex-col items-center relative overflow-hidden">
+             <div class="absolute top-0 inset-x-0 h-full bg-gradient-to-b from-[var(--cyan)]/10 to-transparent pointer-events-none"></div>
+             <div class="label-sm-caps text-[var(--cyan)] mb-2">Protocol Complete</div>
+             <h1 class="text-4xl font-black tracking-tighter">TRANSCENDED</h1>
+        </header>
+
+        <!-- #scroll-content_002 -->
+        <div class="flex-1 overflow-y-auto px-6 pb-12">
+            <!-- #main-stats_003 -->
+            <div class="flex flex-col items-center mb-10">
+                <div class="w-48 h-48 rounded-full border-2 border-[var(--cyan)]/30 flex flex-col items-center justify-center aura-glow bg-black relative mb-8">
+                    <!-- Particles simulated with dots -->
+                    <div class="absolute inset-0">
+                        <div class="absolute top-4 left-10 w-1 h-1 rounded-full bg-[var(--cyan)]"></div>
+                        <div class="absolute bottom-8 right-12 w-1.5 h-1.5 rounded-full bg-white opacity-40"></div>
+                        <div class="absolute top-20 right-4 w-1 h-1 rounded-full bg-[var(--cyan)] opacity-60"></div>
+                    </div>
+                    <div class="text-5xl font-black italic tracking-tighter">50:00</div>
+                    <div class="label-sm-caps text-xs text-gray-500">FOCUS TIME</div>
+                </div>
+
+                <div class="bg-[var(--primary)] text-black px-6 py-2 rounded-full font-black text-lg shadow-lg flex items-center gap-2">
+                    <iconify-icon icon="solar:star-bold"></iconify-icon>
+                    +150 XP BONUS
+                </div>
+            </div>
+
+            <!-- #session-summary_004 -->
+            <div class="mb-8">
+                <h3 class="label-sm-caps text-gray-500 mb-4 px-2">Logged Movements</h3>
+                <div class="flex flex-col gap-3">
+                    <div class="glass-panel rounded-2xl p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
+                                <iconify-icon icon="solar:dumbbell-bold" class="text-xl text-[var(--cyan)]"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold">Squat (High Bar)</div>
+                                <div class="text-[10px] font-bold text-gray-500">4 SETS · 32 REPS</div>
+                            </div>
+                        </div>
+                        <div class="text-[var(--primary)] font-black text-xs">+4 RP</div>
+                    </div>
+                    <div class="glass-panel rounded-2xl p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
+                                <iconify-icon icon="solar:dumbbell-bold" class="text-xl text-[var(--cyan)]"></iconify-icon>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold">Leg Press</div>
+                                <div class="text-[10px] font-bold text-gray-500">3 SETS · 45 REPS</div>
+                            </div>
+                        </div>
+                        <div class="text-[var(--primary)] font-black text-xs">+3 RP</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- #quote_005 -->
+            <div class="text-center px-8 opacity-60 italic">
+                <p class="text-xs font-medium text-gray-400">"The body is a vessel. You have forged its boundaries today."</p>
+            </div>
+        </div>
+
+        <!-- #footer_006 -->
+        <footer class="flex-shrink-0 p-6 pb-12">
+            <button class="w-full h-16 bg-white text-black rounded-3xl font-black text-xl active:scale-95 transition-transform">
+                DISMISS
+            </button>
+        </footer>
+    </div>
+</body>
+</html>

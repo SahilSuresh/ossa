@@ -1,0 +1,38 @@
+/* =========================================================
+   YOUR LOOK, option B: the body big, a name over it, Glow/Skin/Prestige chips, one swatch rail, Wear. See looks.js.
+   Tokens only (web/ui/tokens.css).
+   ========================================================= */
+.lk{flex:1;min-height:0;display:flex;flex-direction:column;gap:var(--sp-3)}
+.lk-stage{position:relative;flex:1 1 0;min-height:clamp(200px,34dvh,360px);overflow:hidden;border-radius:var(--r-card-lg);
+  background:radial-gradient(ellipse 60% 55% at 50% 45%,var(--surface-3),var(--surface-1) 70%);border:1px solid var(--line)}
+.lk-img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;animation:lkIn var(--dur-2) ease-out}
+@keyframes lkIn{from{opacity:.35;transform:scale(.985)}to{opacity:1;transform:none}}
+.lk-nm{position:absolute;z-index:1;left:var(--sp-3);bottom:var(--sp-3);display:grid;gap:2px;padding:var(--sp-2) var(--sp-3);
+  border-radius:var(--r-card);background:var(--glass-strong);border:1px solid var(--glass-line);max-width:calc(100% - var(--sp-5))}
+.lk-nm small{font-size:var(--fs-1);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2)}
+.lk-nm b{font-size:var(--fs-4);font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.01em;line-height:1.1;color:var(--text-1)}
+.lk-cats{display:flex;gap:var(--sp-1);padding:var(--sp-1);border-radius:var(--r-pill);background:var(--surface-2);border:1px solid var(--line)}
+.lk-cats button{flex:1;min-height:36px;border:0;border-radius:var(--r-pill);background:none;color:var(--text-2);font:700 var(--fs-2)/1 inherit;cursor:pointer}
+.lk-cats button.on{background:var(--surface-3);color:var(--text-1);box-shadow:inset 0 0 0 1px var(--line-2)}
+.lk-rail{display:flex;gap:var(--sp-2);overflow-x:auto;scrollbar-width:none;padding:var(--sp-1) 2px;scroll-snap-type:x proximity}
+.lk-rail::-webkit-scrollbar{display:none}
+.lk-sw{flex:none;scroll-snap-align:start;width:58px;display:grid;justify-items:center;gap:var(--sp-1);padding:0;border:0;background:none;color:var(--text-2);cursor:pointer}
+.lk-sw i{position:relative;width:46px;height:46px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px var(--line-2),inset -6px -8px 14px rgba(0,0,0,.35);transition:transform var(--dur-1)} /* token-ok */
+.lk-sw small{font-size:var(--fs-1);font-weight:600;white-space:nowrap}
+.lk-sw.on i{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--glow);transform:scale(1.04)}
+.lk-sw.on small{color:var(--text-1)}
+.lk-sw.worn i::after{content:"";position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:var(--glow);box-shadow:0 0 0 2px var(--bg)}
+.lk-sw.lk-lk i{filter:saturate(.35) brightness(.6)}
+.lk-sw.lk-lk i::before{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:var(--fs-2)}
+.lk-go{min-height:52px;border:0;border-radius:var(--r-btn);background:var(--glow);color:var(--on-accent);font:800 var(--fs-3)/1 inherit;cursor:pointer}
+.lk-go.off{background:var(--surface-3);color:var(--text-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.lk-pz{display:grid}
+.lk-pzr{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-radius:var(--r-card);
+  background:var(--surface-2);border:1px solid var(--line);color:var(--text-1);text-align:left;cursor:pointer;font:inherit}
+.lk-pzr span:first-child{display:grid;gap:2px}
+.lk-pzr b{font-size:var(--fs-3)} .lk-pzr small{font-size:var(--fs-1);color:var(--text-2)}
+@media (max-height:700px){.lk{gap:var(--sp-2)}.lk-sw i{width:40px;height:40px}.lk-go{min-height:46px}}
+@media (prefers-reduced-motion:reduce){.lk-img{animation:none}.lk-sw i{transition:none}}
+/* the Vault's skins start after a thin rule, so earned and Pro looks read as two sets */
+.lk-sw.lk-v{margin-left:var(--sp-3);position:relative}
+.lk-sw.lk-v::before{content:"";position:absolute;left:calc(-1 * var(--sp-2) - 1px);top:8px;height:30px;width:1px;background:var(--line-2)}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --primary: #D4FF00;
+            --cyan: #00E5FF;
+            --gold: #FFD700;
+            --background: #000000;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: white;
+        }
+        .iphone-frame {
+            width: 393px;
+            height: 852px;
+            background-color: var(--background);
+            position: relative;
+            border-radius: 0px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 2rem auto;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .label-sm-caps {
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+        .hexagon-badge {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="iphone-frame flex flex-col">
+        <!-- #header_001 -->
+        <header class="flex-shrink-0 px-6 pt-12 pb-6 z-20 flex justify-between items-end">
+            <div>
+                <div class="label-sm-caps text-gray-500 mb-1">Evolution</div>
+                <h1 class="text-3xl font-black italic tracking-tighter">TROPHY ROOM</h1>
+            </div>
+            <div class="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
+                <iconify-icon icon="solar:star-bold" class="text-[var(--gold)]"></iconify-icon>
+                <span class="text-sm font-black">12/48</span>
+            </div>
+        </header>
+
+        <!-- #scroll-content_002 -->
+        <div class="flex-1 overflow-y-auto px-6 pb-12 no-scrollbar">
+            <!-- #featured-badges_003 -->
+            <div class="grid grid-cols-2 gap-4 mb-10">
+                <!-- #badge-iron-core_004 -->
+                <div class="glass-panel rounded-2xl p-4 flex flex-col items-center text-center active:scale-95 transition-transform">
+                    <div class="w-full aspect-square mb-3">
+                        <img src="https://media.screensdesign.com/gasset/76c0864102be44c5a18dd5b0f1205b9a_screen_image_badge_iron_core_a4384ad653.png" data-media-ref="generated:138041" alt="A premium metallic hexagonal achievement badge for 'Iron Core', featuring a stylized 3D abdominal muscle motif in polished silver and neon cyan, high-tech aesthetic, dark background" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-sm font-black">Iron Core</h3>
+                    <p class="text-[9px] font-medium text-gray-500 mt-1 uppercase tracking-wider">Rank III Abdominals</p>
+                </div>
+                <!-- #badge-leg-day_005 -->
+                <div class="glass-panel rounded-2xl p-4 flex flex-col items-center text-center active:scale-95 transition-transform">
+                    <div class="w-full aspect-square mb-3">
+                        <img src="https://media.screensdesign.com/gasset/dd35be647aef4232b7d7c36e363ea7f0_screen_image_badge_leg_legend_203489e022.png" data-media-ref="generated:138042" alt="A premium metallic hexagonal achievement badge for 'Leg Day Legend', featuring a stylized 3D thigh and calf muscle motif in polished bronze and neon gold, high-tech aesthetic, dark background" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-sm font-black">Leg Day Legend</h3>
+                    <p class="text-[9px] font-medium text-gray-500 mt-1 uppercase tracking-wider">100km Leg Volume</p>
+                </div>
+            </div>
+
+            <!-- #locked-badges_006 -->
+            <div class="mb-8">
+                <h2 class="label-sm-caps text-gray-500 mb-6">Undiscovered Trophies</h2>
+                <div class="grid grid-cols-3 gap-4">
+                    <!-- #locked-badge-1_007 -->
+                    <div class="flex flex-col items-center opacity-40">
+                        <div class="w-full aspect-square hexagon-badge bg-white/5 border border-white/10 flex items-center justify-center mb-2">
+                            <iconify-icon icon="solar:lock-bold" class="text-xl text-gray-600"></iconify-icon>
+                        </div>
+                        <span class="text-[9px] font-black text-center">Apex Back</span>
+                    </div>
+                    <!-- #locked-badge-2_008 -->
+                    <div class="flex flex-col items-center opacity-40">
+                        <div class="w-full aspect-square hexagon-badge bg-white/5 border border-white/10 flex items-center justify-center mb-2">
+                            <iconify-icon icon="solar:lock-bold" class="text-xl text-gray-600"></iconify-icon>
+                        </div>
+                        <span class="text-[9px] font-black text-center">Monk Adept</span>
+                    </div>
+                    <!-- #locked-badge-3_009 -->
+                    <div class="flex flex-col items-center opacity-40">
+                        <div class="w-full aspect-square hexagon-badge bg-white/5 border border-white/10 flex items-center justify-center mb-2">
+                            <iconify-icon icon="solar:lock-bold" class="text-xl text-gray-600"></iconify-icon>
+                        </div>
+                        <span class="text-[9px] font-black text-center">Steel Bicep</span>
+                    </div>
+                    <!-- #locked-badge-4_010 -->
+                    <div class="flex flex-col items-center opacity-40">
+                        <div class="w-full aspect-square hexagon-badge bg-white/5 border border-white/10 flex items-center justify-center mb-2">
+                            <iconify-icon icon="solar:lock-bold" class="text-xl text-gray-600"></iconify-icon>
+                        </div>
+                        <span class="text-[9px] font-black text-center">Titan Squat</span>
+                    </div>
+                    <!-- #locked-badge-5_011 -->
+                    <div class="flex flex-col items-center opacity-40">
+                        <div class="w-full aspect-square hexagon-badge bg-white/5 border border-white/10 flex items-center justify-center mb-2">
+                            <iconify-icon icon="solar:lock-bold" class="text-xl text-gray-600"></iconify-icon>
+                        </div>
+                        <span class="text-[9px] font-black text-center">Grit Master</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- #footer_012 -->
+        <footer class="flex-shrink-0 bg-black/80 backdrop-blur-xl border-t border-white/5 pb-8 pt-4 px-6">
+            <div class="flex justify-between items-center">
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:accessibility-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Body</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:dumbbell-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Train</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:wind-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Breathe</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 opacity-40">
+                    <iconify-icon icon="solar:moon-sleep-bold" class="text-2xl"></iconify-icon>
+                    <span class="text-[10px] font-bold">Recover</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                    <iconify-icon icon="solar:book-bookmark-bold" class="text-2xl text-white"></iconify-icon>
+                    <span class="text-[10px] font-bold text-white">Learn</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
