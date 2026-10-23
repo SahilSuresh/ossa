@@ -52,3 +52,8 @@ ossaHtml.js
 # portable cloudflared for npm run share (downloaded, not part of the app)
 /tools/
 scripts/smoke/out/
+
+# headless Chrome profiles left by store/listing-src/*.js and preview builds
+store/listing-src/prof-*/
+scripts/smoke/out/
+web/.preview.html
