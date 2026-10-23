@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, Keyboard, Linking, LogBox, Platform, Share, StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { WebView } from "react-native-webview";
@@ -14,6 +14,7 @@ import * as Loc from "./native/location";
 import * as Wx from "./native/weather";
 import * as Face from "./native/face";
 import * as Sentry from "./native/sentry";
+import * as State from "./native/state";
 
 // Sentry is initialised as early as possible so it catches render-time crashes too. It no-ops without a DSN
 // and in Expo Go (where @sentry/react-native's native bits can't load), so this import is safe everywhere.
@@ -123,6 +124,34 @@ function Main() {
   const lock = useRef(null); // a running lock-in: {title, body}; its "come back" notification id while away
   const lockNote = useRef(null);
   const bgAt = useRef(0);
+  // The script that runs before the page: the bridge, plus the save kept in Documents (native/state.js) as
+  // window.OSSA_SAVED. The web view waits for it (a file read, a few ms; 1.5 s at most) so the page always starts
+  // from the newest save, even when iOS has cleared the web view's own storage. `gen` remounts the web view with a
+  // fresh read when iOS kills its process (the old injected copy would be stale by then).
+  const [boot, setBoot] = useState(null);
+  const [gen, setGen] = useState(0);
+  // After time away, the page must answer a ping within 6 s, or the web view is rebuilt (below, AppState).
+  const alive = useRef(null);
+  useEffect(() => {
+    let done = false;
+    const go = (j) => {
+      if (done) return;
+      done = true;
+      setBoot(BRIDGE + (j ? `window.OSSA_SAVED=${JSON.stringify(j)};true;` : ""));
+    };
+    const t = setTimeout(() => go(null), 1500);
+    State.read().then(go, () => go(null));
+    return () => {
+      done = true;
+      clearTimeout(t);
+    };
+  }, [gen]);
+  const relaunch = useCallback(() => {
+    clearTimeout(alive.current);
+    ready.current = false;
+    setBoot(null);
+    setGen((g) => g + 1);
+  }, []);
 
   // Android: the real system bar sizes into the page's --nst/--nsb (see useIns above)
   const pushInsets = useCallback(() => {
@@ -217,6 +246,8 @@ function Main() {
       if (!m || !m.t) return;
       try {
         if (m.t === "err") { Sentry.recv(m); return; }   // WebView-side JS error, forwarded to Sentry
+        if (m.t === "state:save") { await State.write(m.j, m.at); return; }   // the save, kept in Documents too
+        if (m.t === "pong") { clearTimeout(alive.current); alive.current = null; return; }
         if (m.t === "buzz") await buzz(m.p);
         else if (m.t === "log") {
           if (__DEV__) console.log("[page] " + String(m.s || "").slice(0, 300)); // the page's own notes, in the dev server's terminal
@@ -342,6 +373,13 @@ function Main() {
         const now = Date.now(), wasBg = bgAt.current > 0;
         if (lockNote.current) { Reminders.dropNote(lockNote.current); lockNote.current = null; }
         send({ t: "fg", at: now, from: wasBg ? "background" : prev, away: wasBg ? now - bgAt.current : 0 });
+        // Back after a while: iOS may have killed the web view's process without telling us (the page then sat
+        // blank or broken until the app was closed and reopened). If the page doesn't answer, rebuild it.
+        if (wasBg && now - bgAt.current > 30000 && web.current) {
+          clearTimeout(alive.current);
+          alive.current = setTimeout(relaunch, 6000);
+          web.current.injectJavaScript(`window.OssaNative&&window.OssaNative.recv({t:"ping",id:${now}});true;`);
+        }
         bgAt.current = 0;
       }
     });
@@ -359,12 +397,14 @@ function Main() {
       s2.remove();
       off();
     };
-  }, [send]);
+  }, [send, relaunch]);
 
   return (
     <View style={styles.root}>
       <StatusBar style="light" />
+      {boot ? (
       <WebView
+        key={gen}
         ref={web}
         style={styles.web}
         bounces={false}
@@ -373,10 +413,10 @@ function Main() {
         originWhitelist={["*"]}
         javaScriptEnabled
         domStorageEnabled
-        injectedJavaScriptBeforeContentLoaded={BRIDGE}
+        injectedJavaScriptBeforeContentLoaded={boot}
         onMessage={onMessage}
-        onContentProcessDidTerminate={() => web.current && web.current.reload()}
-        onRenderProcessGone={() => web.current && web.current.reload()}
+        onContentProcessDidTerminate={relaunch}
+        onRenderProcessGone={relaunch}
         onLoadStart={() => {
           ready.current = false;
           // a reloaded page starts with the screen allowed to sleep again
@@ -396,6 +436,7 @@ function Main() {
         allowsBackForwardNavigationGestures={false}
         textZoom={100}
       />
+      ) : null}
     </View>
   );
 }

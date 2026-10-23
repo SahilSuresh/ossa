@@ -101,7 +101,13 @@ function dkMask(c){
   const m={};
   if(c.kind==="done"){ const src=c.ld&&Object.keys(c.ld).length?c.ld:(c.w.rp||{}); const mx=Math.max(0.001,...Object.values(src));
     Object.entries(src).forEach(([k,v])=>{ if(MUSCLES[k]) m[k]=Math.round((0.3+0.7*v/mx)*100)/100; }); return m; }
-  if(c.kind==="rest"){ c.rec.slice(0,6).forEach(k=>{ m[k]=0.5; }); return m; }
+  /* a rest day shows what's still recovering. When everything has recovered that was an empty mask, the 3D still was
+     skipped and the old flat outline figure showed instead (Sahil, 23 Oct: "looks weird like a stick man"). So: the
+     muscles today's mobility moves work, and failing that the whole body, lit softly. */
+  if(c.kind==="rest"){ c.rec.slice(0,6).forEach(k=>{ m[k]=0.5; }); if(Object.keys(m).length) return m;
+    (c.s&&c.s.items||[]).forEach(it=>{ if(MUSCLES[it.primary]) m[it.primary]=0.45; });
+    if(!Object.keys(m).length) Object.keys(MUSCLES).forEach(k=>{ m[k]=0.2; });
+    return m; }
   (c.s.items||[]).forEach(it=>{ if(MUSCLES[it.primary]) m[it.primary]=1; (it.sec||[]).slice(0,3).forEach(k=>{ if(MUSCLES[k]&&!m[k]) m[k]=0.3; }); });
   return m;
 }

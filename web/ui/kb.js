@@ -24,11 +24,14 @@
     const kind=String(el.type||"text").toLowerCase();
     return !el.disabled&&!el.readOnly&&!/^(button|submit|reset|checkbox|radio|range|color|file|image|hidden)$/.test(kind);
   };
+  /* while typing, the 3D body stops drawing (ossa.html frame(): kb-typing), so the keyboard gets the phone to itself */
+  const typing=on=>{ html.classList.toggle("kb-typing",on); if(!on){ try{ if(typeof Body!=="undefined"&&Body.refresh) Body.refresh(); }catch(e){} } };
   const onFocus=e=>{ const el=e.target; if(!isField(el)) return;
+    typing(true);
     setTimeout(()=>{ apply(); bring(el); },80);
     setTimeout(()=>{ apply(); bring(el); },340);
   };
-  const onBlur=e=>{ if(!isField(e.target)) return; setTimeout(apply,120); };
+  const onBlur=e=>{ if(!isField(e.target)) return; setTimeout(()=>{ apply(); if(!isField(document.activeElement)) typing(false); },120); };
   if(vv){ vv.addEventListener("resize",apply); vv.addEventListener("scroll",apply); }
   document.addEventListener("focusin",onFocus,true);
   document.addEventListener("focusout",onBlur,true);

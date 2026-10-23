@@ -3941,20 +3941,37 @@ const fresh=()=>({ver:2,scores:{...BASE},streak:0,last:null,layers:{muscles:true
 /* the demo is built by vxDemo() in web/ui/vessel.js; this literal is only a fallback */
 const demoData=()=>{ try{ if(typeof vxDemo==="function") return vxDemo(); }catch(e){ console.warn(e); }
   return {...fresh(),scores:{...SEED},streak:6,log:SEED_LOG.map(([n,m])=>({d:dkey(n),m:{...m}})),lifts:seedLifts(),demo:true}; };
-/* load. S_RAW keeps the raw string for the one-time pre-2.0 copy. A save the app can't use is kept in KEY-bad, never lost */
-let S=fresh(), S_RAW=null;
+/* load. S_RAW keeps the raw string for the one-time pre-2.0 copy. A save the app can't use is kept in KEY-bad, never lost.
+   23 Oct: the phone app also keeps every save in its Documents folder (native/state.js), which iOS never clears, and
+   hands it in as window.OSSA_SAVED before this runs. localStorage can be wiped by iOS (low storage, or WebKit's
+   tracking prevention after days unused), which is how records "disappeared". Whichever copy is newer (S._at) wins;
+   an older save without _at counts as 0, so an existing localStorage save is never replaced by an older copy. */
+function stOk(s){ return !!(s&&s.scores&&typeof s.scores==="object"&&Object.keys(SEED).every(k=>k in s.scores)); }
+let S=fresh(), S_RAW=null, S_LOCAL=false;
 try{ S_RAW=localStorage.getItem(KEY); }catch(e){}
-try{ const s=JSON.parse(S_RAW||"null"); if(s&&s.scores&&typeof s.scores==="object"&&Object.keys(SEED).every(k=>k in s.scores)) S=s; else if(S_RAW) throw 0; }
+try{ const s=JSON.parse(S_RAW||"null"); if(stOk(s)){ S=s; S_LOCAL=true; } else if(S_RAW) throw 0; }
 catch(e){ try{ if(S_RAW&&localStorage.getItem(KEY+"-bad")==null) localStorage.setItem(KEY+"-bad",S_RAW); }catch(_){} }
+try{ const N=typeof window.OSSA_SAVED==="string"?JSON.parse(window.OSSA_SAVED):null;
+  if(stOk(N)&&(!S_LOCAL||(+N._at||0)>(+S._at||0))){
+    S=N; S_RAW=window.OSSA_SAVED; try{ localStorage.setItem(KEY,S_RAW); }catch(e){} } }catch(e){ console.warn("Ossa: the kept save couldn't be read",e); }
+try{ delete window.OSSA_SAVED; }catch(e){}
 if(!S.done||S.done.day!==new Date().toDateString()) S.done={day:new Date().toDateString(),items:[]};
 /* save. If the phone's storage is full: slim old workout records, then drop the backup copies, and try again */
 function save(){
+  S._at=Date.now();
   let j=null; try{ j=JSON.stringify(S); localStorage.setItem(KEY,j); }
   catch(e){ const full=e&&(e.name==="QuotaExceededError"||e.code===22||e.code===1014||/quota/i.test(e.message||""));
     if(!full) console.warn("Ossa: couldn't save",e);
     else try{ const W=S.workouts||[]; W.forEach((w,i)=>{ if(w&&i<W.length-30){ delete w.ex; delete w.ld; } }); j=JSON.stringify(S); localStorage.setItem(KEY,j); }
     catch(e2){ try{ localStorage.removeItem(KEY+"-pre2"); localStorage.removeItem(KEY+"-bad"); if(j) localStorage.setItem(KEY,j); }catch(e3){ console.warn("Ossa: couldn't save",e3); } } }
-  try{ nativeSoon(); }catch(e){} }
+  try{ nativeSoon(); }catch(e){}
+  keepSoon(); }
+/* the copy in the app's Documents folder (native/state.js): batched, since save() runs often; flushed on pagehide */
+function keepSoon(){ if(!window.ReactNativeWebView) return; clearTimeout(keepSoon.t); keepSoon.t=setTimeout(keepNow,700); }
+function keepNow(){ clearTimeout(keepSoon.t); keepSoon.t=0;
+  try{ if(window.ReactNativeWebView) window.ReactNativeWebView.postMessage(JSON.stringify({t:"state:save",j:JSON.stringify(S),at:+S._at||Date.now()})); }catch(e){} }
+window.addEventListener("pagehide",()=>{ if(keepSoon.t) keepNow(); });
+document.addEventListener("visibilitychange",()=>{ if(document.hidden&&keepSoon.t) keepNow(); });
 if(!S.log) S.log=fresh().log;
 if(!S.lifts) S.lifts={};
 if(!S.workouts) S.workouts=[];
@@ -4938,7 +4955,9 @@ function makeGLBody(){
         liveB=bones=liveE>0.004&&liveP?boneMats(liveP,S.body==="f"&&FIGURES.f?"f":"m",liveE*liveE*(3-2*liveE)):REST; more=true; }
     }
     const busy=more||dragging;
-    const onScreen=!document.hidden&&(!$("app").classList.contains("train")||$("app").classList.contains("tactive")||$("app").classList.contains("tplan")||$("app").classList.contains("tdone"))&&(!$("app").classList.contains("tabbed")||(window.RDHOME&&!$("app").classList.contains("homeoff")))&&!$("app").classList.contains("minding");   // not behind the Focus panel (tweens, OBS, Body.breathe and drags still draw: they set `more`)
+    /* kb-typing (web/ui/kb.js): the 3D body rests while a text field has the keyboard up. On a hot, low-memory iPhone the
+       keyboard's own animation froze the app for 4-5 s with the body still drawing at 60 fps (Sentry OSSA-2, App Review, 22 Oct) */
+    const onScreen=!document.hidden&&!document.documentElement.classList.contains("kb-typing")&&(!$("app").classList.contains("train")||$("app").classList.contains("tactive")||$("app").classList.contains("tplan")||$("app").classList.contains("tdone"))&&(!$("app").classList.contains("tabbed")||(window.RDHOME&&!$("app").classList.contains("homeoff")))&&!$("app").classList.contains("minding");   // not behind the Focus panel (tweens, OBS, Body.breathe and drags still draw: they set `more`)
     if(window.RDHOME&&!BRon){ br=0;   // the Body page: a still figure, but a moving scene behind it keeps moving (18 Oct)
       if(!reduced&&onScreen&&(S.scene??1)){ if(!busy&&now-lastDraw<33){ kick(); return; } more=true; } }
     else if(!reduced&&onScreen){
@@ -10710,6 +10729,7 @@ function nativeSync(force){
     if(NPLAT()==="ios") figPng(w.fig,1.5).then(b=>nsend({t:"widget",snap:{...w,fig:null,figPng:b}})); else nsend({t:"widget",snap:w}); }
 }
 function nrecv(m){
+  if(m.t==="ping"){ nsend({t:"pong",id:m.id}); return; }   // App.js checks the page is alive after time away
   if(m.t==="pose:chunk"){ psRecv(m); return; }
   if(m.t==="caps"){ NATIVE.caps=m; nativeSync(true); healthPoll(true); if(TAB==="you"&&SUB.you==="settings") renderYou(); return; }
   if(m.t==="fg"){ if(+m.away>1000) ossAudioRebuildSoon("fg"); nativeSync(true); healthPoll(false); return; }   // WKWebView may never fire visibilitychange: the app's own "back" is the sure sign
