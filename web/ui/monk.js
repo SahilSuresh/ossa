@@ -18,7 +18,7 @@
                   otherwise the setup. 'monk:setup' | 'monk:timer' | 'monk:done' ask for one.
    'focus'        the setup (the timer while one runs). Keeps mindAction's go:'focus' and old links working.
    Setup: 25 · 50 · 90 with real aura (auPreview), the rules, an optional task, the standing still
-   (hlShot 'setup'), Start. A '2 min · test' chip only on localhost or while nvCheck.on.
+   (hlShot 'setup'), Start. A '2 min · test' chip only in the desktop preview (localhost).
    Timer: the countdown, the seated still (hlShot 'seated'), Focus today and the Aura level, the quiet
    line, End session (two taps, 3 s to confirm): whole minutes at 1 aura each, no finish bonus.
    Finish: '+N aura' with its breakdown, a level-up line and confetti once, Today so far
@@ -66,10 +66,9 @@ function mmLast(){ try{ const L=S.monk&&S.monk.last; return L&&typeof L==="objec
 function mmTask(t){ return String(t==null?"":t).replace(/[\u0000-\u001f\u007f-\u009f<>]/g," ").replace(/\s+/g," ").trim().slice(0,80); }
 function mmEsc(t){ return String(t==null?"":t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function mmClock(ms){ const s=Math.max(0,Math.ceil((+ms||0)/1000)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
-/* the 2-minute test length: the preview on this computer, or the Build 9 phone check */
+/* the 2-minute test length: only the desktop preview on this computer (the app loads at ossa.app, never localhost) */
 function mmTest(){
-  try{ if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return true; }catch(e){}
-  try{ return typeof nvCheck==="function"&&!!nvCheck.on; }catch(e){ return false; }
+  try{ return /^(localhost|127\.0\.0\.1)$/.test(location.hostname); }catch(e){ return false; }
 }
 function mmPlat(){ try{ return typeof NPLAT==="function"?String(NPLAT()||""):""; }catch(e){ return ""; } }
 function mmLv(){ try{ if(typeof auView==="function") return auView().lv; if(typeof auLv==="function") return auLv(); }catch(e){} return 1; }

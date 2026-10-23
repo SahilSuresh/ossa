@@ -247,10 +247,10 @@ function fcRulesHTML(){
   const br=T?R.br.cap-T.left.breath:0, mk=T?R.mk.cap-T.left.monk:0;
   /* 19 Oct audit: "Lock in" (not Monk Mode), the five tiers, every other way aura comes, and that a relapse can cost a level */
   return `<p><b>Levels</b> Study, Focus and Offline are skills. A session earns 3 XP a minute, +50% if you finish it, ×1.2 with a 3-day streak. Offline only counts minutes with your phone face down. Your difficulty sets how much a level needs and what leaving costs.</p>
-    <p><b>Aura is your discipline.</b> Stay clean, show up daily, and it grows. Relapse and it fades.</p>
-    <p><b>Aura comes from</b> every clean day in Break free (+10), an urge beaten (+15, 3 a day), milestones, the nightly report (+5), today's directives, and your daily streak (+10 a day; +50 at 7, +200 at 30, +500 at 100). A day counts when you finish a session or report in.</p>
+    <p><b>Aura is your discipline.</b> Show up daily, and it grows.</p>
+    <p><b>Aura comes from</b> the nightly report (+5), today's directives, and your daily streak (+10 a day; +50 at 7, +200 at 30, +500 at 100). A day counts when you finish a session or report in.</p>
     <p><b>Tiers</b> Faint (1–4) · Steady (5–9) · Bright (10–14) · Radiant (15–19) · Ascended (20+).</p>
-    <p>A relapse in Break free can cost an aura level. Training earns RP for your muscles.</p>`;
+    <p>Training earns RP for your muscles.</p>`;
 }
 
 /* ---------- include time: the home, and the three wrappers (renderMind, go, goBack) ---------- */

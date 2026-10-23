@@ -24,10 +24,6 @@
 .mm-setup .mm-foot{padding-top:var(--sp-3);background:linear-gradient(transparent,var(--bg) 35%)}
 #ckGo,#psGo{box-shadow:0 -16px 20px var(--bg)}
 
-/* 4. Break free, one habit: the big aura orb repeated the header's number and pushed "I feel an urge" off the
-      screen; the habit's own numbers stay (the relapse screen keeps its counting orb) */
-.cl-v>.cl-orb:not(#clOrbR){display:none}
-
 /* 5. The session's chip row scrolls sideways: fade its right edge so it reads as "there's more" */
 .u-tp .tp-acts{-webkit-mask-image:linear-gradient(90deg,var(--bg) 88%,transparent);mask-image:linear-gradient(90deg,var(--bg) 88%,transparent)}
 

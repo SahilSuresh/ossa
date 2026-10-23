@@ -122,7 +122,7 @@ function luHome(b){
   const st=luStreak(), mins=luMins(), down=S.sess.down;
   b.innerHTML=`<div class="u-screen lu" style="--c:${luCol(k)}">
     <header class="lu-top"><div><div class="u-eyebrow">${uiShortDate()}</div><h1 class="u-h1">Focus</h1></div>
-      <div class="lu-tr">${luBadge()}${st?`<span class="lu-chip lu-fire">🔥 ${st}d${st>=3?" ×1.2":""}</span>`:""}<button class="lu-more" id="luMore" aria-label="More: Break free, Eyes, Breathe, Check in, Learn">⋯</button></div></header>
+      <div class="lu-tr">${luBadge()}${st?`<span class="lu-chip lu-fire">🔥 ${st}d${st>=3?" ×1.2":""}</span>`:""}<button class="lu-more" id="luMore" aria-label="More: Eyes, Breathe, Check in, Learn">⋯</button></div></header>
     ${down?`<button class="lu-down" id="luDown"><b>LEVEL DOWN</b><span>${down.d==="night"?`Missed ${down.missed} day${down.missed>1?"s":""}: every skill dropped a level.`:`Missed ${down.missed} day${down.missed>1?"s":""}: −${down.xp} XP on each skill.`}</span></button>`:""}
     <div class="lu-skills" role="tablist">${luKeys().map(j=>{ const y=S.skills[j]; return `<button class="lu-sk${j===k?" on":""}" data-k="${j}" role="tab" aria-selected="${j===k}" style="--c:${luCol(j)}"><b>${T[j].n}</b><small>LV ${y.lv} · ${R[luRank(y.lv)][0]}</small><i><em style="width:${(y.xp/luNeed(y.lv)*100).toFixed(1)}%"></em></i></button>`; }).join("")}</div>
     <div class="lu-hero" id="luHero"><canvas id="luCv" aria-hidden="true"></canvas>
@@ -187,15 +187,12 @@ function luDurAsk(k,home){
 function luSheet(){
   let s=$("luSh"); if(s) s.remove();
   s=document.createElement("div"); s.id="luSh"; s.className="lu-sheet";
-  let h=null; try{ h=typeof fhHabit==="function"?fhHabit():null; }catch(e){}
-  const rows=[[h?"clean:"+h.id:"clean","Break free",h?`${uiEsc(clName(h))} · day ${clDays(h)}`:"Quit a habit, one clean day at a time"],["eyes","Eyes","Today's directives and screen time"],["breath","Breathe","Box, even, long exhale, 4-7-8"],["checkin","Check in","Mood and energy"],["learn","Learn","Three-minute lessons"],["more","How it works","Levels, difficulty and aura"]];
+  const rows=[["eyes","Eyes","Today's directives and screen time"],["breath","Breathe","Box, even, long exhale, 4-7-8"],["checkin","Check in","Mood and energy"],["learn","Learn","Three-minute lessons"],["more","How it works","Levels, difficulty and aura"]];
   s.innerHTML=`<div class="lu-sh-bg" data-x="1"></div><div class="lu-sh"><span class="u-eyebrow">More</span>
-    ${rows.map(([g,t,d])=>`<button class="lu-row" data-g="${g}"><b>${t}</b><small>${d}</small></button>`).join("")}
-    <button class="lu-urge" data-g="urge">I feel an urge</button></div>`;
+    ${rows.map(([g,t,d])=>`<button class="lu-row" data-g="${g}"><b>${t}</b><small>${d}</small></button>`).join("")}</div>`;
   $("app").appendChild(s); requestAnimationFrame(()=>s.classList.add("on"));
   s.onclick=e=>{ const r=e.target.closest("[data-g]"); if(r){ const g=r.dataset.g; s.remove(); Pulse.buzz(6);
       if(g==="learn") return uiGo("explore");
-      if(g==="urge"){ try{ if(h) clCur(h.id); }catch(x){} return mindGo(h?"urge":"clean"); }
       return mindGo(g); }
     if(e.target.dataset.x) s.remove(); };
 }

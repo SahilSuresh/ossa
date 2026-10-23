@@ -292,8 +292,8 @@ function rstOnWorkout(rec,R){
     save(); rstSync();
   }catch(e){ console.warn("Ossa: reset nudge",e); }
 }
-/* 45 min; one minute while testing (localhost or the phone check) */
-function rstDelay(){ try{ if(rstDelay.test||(typeof nvCheck==="function"&&nvCheck.on)) return 60e3; }catch(e){} return 45*60e3; }
+/* 45 min; one minute only when a desktop test sets rstDelay.test */
+function rstDelay(){ return rstDelay.test?60e3:45*60e3; }
 function rstSync(){ try{ if(typeof nativeSoon==="function") nativeSoon(false); if(typeof nativeSync==="function") nativeSync(false); }catch(e){} }
 function rstRemind(){
   const n=S.recNudge; if(!rstOk(n)||!(S.resetOn===true||n.snooze)) return [];

@@ -32,7 +32,7 @@ Ossa is Andrej's iPhone app: a 3D human body you level up by training, recoverin
   - `Body`: the 3D model's API.
   - `setMode`/`setTab`/`uiGo`: navigation.
 - **Copy** is British English, short and plain. Ossa has no accounts and no ads. Health wording stays general, never diagnostic.
-- **Expo changes every SDK.** Before touching any Expo, EAS or React Native API, check the SDK 57 docs (https://docs.expo.dev/versions/v57.0.0/, index at https://docs.expo.dev/llms.txt). Add packages with `npx expo install`, never `npm install <pkg>`. Native code changes need a new EAS build. Web-only changes can be tried on the phone in Expo Go without one, but still reach TestFlight only inside a new build (ossaHtml.js is bundled and there's no expo-updates).
+- **Expo changes every SDK.** Before touching any Expo, EAS or React Native API, check the SDK 57 docs (https://docs.expo.dev/versions/v57.0.0/, index at https://docs.expo.dev/llms.txt). Add packages with `npx expo install`, never `npm install <pkg>`. Native code changes need a new EAS build. Web-only changes can be tried on the phone in Expo Go without one, but still reach TestFlight only inside a new build (ossaHtml.js is bundled, and expo-updates is installed but switched off: `updates.enabled:false` in app.json since 23 Oct).
 - `AGENTS.md` is the generic Expo template, and its Expo Router / `src/app` part doesn't apply here, because there is no router. Claude Code skips it anyway while this CLAUDE.md exists.
 
 ## Rules from Andrej
@@ -40,10 +40,18 @@ Ossa is Andrej's iPhone app: a 3D human body you level up by training, recoverin
 - Never type or ask for his passwords, keys or 2FA codes. He signs in himself.
 - Deleting anything in App Store Connect needs his OK.
 - Log every product decision in `docs/DECISIONS.md`.
+
+## App Review rules (since the 23 Oct 2026 rejections: 4.3 spam on Ossa, 5.6 "hidden features" on Unknot)
+- **Nothing hidden.** No secret taps, gestures, codes, URL switches or settings rows that only reviewers or testers know about. If a feature exists, a user can find it; if it shouldn't be found, delete it. Reviewers get Pro through the sandbox free trial, never a shortcut.
+- **No over-the-air updates.** `updates.enabled` stays false. Every change, even a typo, ships in a new build that App Review sees.
+- **Test-only code** runs only on localhost (the desktop preview) or in Expo Go, and says so plainly in its comment. Never "hidden", never "for reviewers".
+- **No feature overlap with Andrej's other apps** (Unknot, Onus, Last Tin) without asking first: Apple's 4.3 questions ask about exactly that. Break free (quitting habits, incl. nicotine) was removed for that reason; web/ui/clean.js is kept on disk but not included.
+- **The listing, the review notes, the privacy label and the privacy policy must all match the build.** Change one, check the other three.
 - He's a visual learner: show things (screenshots, diagrams) and keep text short.
 
 ## Shipping
-- `build-for-app-store.bat`: Andrej runs it. It rebuilds the web bundle, then runs an EAS build for iOS with auto-submit to App Store Connect (TestFlight). It doesn't submit for review.
-- `npm run update` (from Build 9 on): rebuilds the web bundle and publishes it over the air (EAS Update, channel "production") to TestFlight phones. Andrej runs it, signed in to EAS himself. Native changes still need a build.
+- iPhone builds now go through **Codemagic** (`codemagic.yaml`, workflow "Ossa for iPhone", env group `ossa_appstore`). It runs `build-html.js` itself and numbers builds in epoch-minutes (e.g. 29878404 = 22 Oct 2026 21:24 GMT), uploading to TestFlight. It doesn't submit for review.
+- `build-for-app-store.bat`: the older EAS route (Andrej, signed in himself). Builds 8–18 came from it.
+- `npm run update` is disabled (it prints a message and stops): over-the-air updates are off, see the App Review rules above.
 - Store copy and screenshots are in `store/`. Version 1.0 is on hold until the redesign ships. Status is in `docs/REDESIGN-BRIEF.md` §5.
 - More docs: `docs/UI-SYSTEM.md` (UI system and file map), `docs/SPEC.md`, `docs/BUGS.md`, `HOW-TO-RUN.txt`.

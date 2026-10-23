@@ -3394,7 +3394,6 @@ button.tf-next.rdt-qb span{color:var(--glow-soft)}
 /*@include ui/forge.css*/
 /*@include ui/eyes.css*/
 /*@include ui/aurabody.css*/
-/*@include ui/clean.css*/
 /*@include ui/focushome.css*/
 /*@include ui/polish.css*/
 /*@include ui/rank.css*/
@@ -10438,8 +10437,8 @@ function renderYou(){
     ${phoneCard()}
     <div class="td-card"><div class="eyebrow">Scene</div><p class="yu-p">What's behind your body. Moving scenes pause when you're on other tabs.</p>
       <div class="scn">${SCENES.map((x,i)=>`<button class="scn-i s${i}${(S.scene??1)===i?" on":""}" data-scene="${i}" aria-pressed="${(S.scene??1)===i}"><i></i><b>${x}</b></button>`).join("")}</div></div>
-    <div class="td-card"><div class="eyebrow" id="yuDataEye" style="cursor:default;user-select:none">Your data</div><p class="yu-p">${S.demo?"You're looking at demo data: a few weeks of made-up training and check-ins.":"Everything starts at zero and fills in as you train, check in and keep your standards."}</p>
-      <div class="td-acts">${(S.demo||S.demoUnlock)?`<button class="btn" id="yuDemo">${S.demo?"Start fresh":"Load demo data"}</button>`:""}${S.demo?"":`<button class="btn" id="yuReset">Reset everything</button>`}</div></div>
+    <div class="td-card"><div class="eyebrow">Your data</div><p class="yu-p">${S.demo?"You're looking at demo data: a few weeks of made-up training and check-ins.":"Everything starts at zero and fills in as you train, check in and keep your standards."}</p>
+      <div class="td-acts"><button class="btn" id="yuDemo">${S.demo?"Start fresh":"Load demo data"}</button>${S.demo?"":`<button class="btn" id="yuReset">Reset everything</button>`}</div></div>
     <p class="tv-foot">Everything you log, including mood and stress, stays on this device.<br>Ossa is for general wellbeing. It doesn't diagnose or treat anything.</p>`;
   else b.innerHTML=`<div class="tv-head"><div class="eyebrow">Progress</div><h1>${isStart()?"Day one starts here.":"Look how far you've come."}</h1></div>
     ${!wk?`<div class="td-card td-empty"><div class="em-ico"><i></i><i></i><i></i></div><h3>No workouts yet.</h3><p>Tap any muscle on your body to learn it and train it, or start today's plan. Everything you do lights up here.</p>
@@ -10477,17 +10476,6 @@ function renderYou(){
   if($("yuRedo")) $("yuRedo").onclick=()=>{ setTab("body"); startOnboarding(); };
   if($("yuMusic")) $("yuMusic").onclick=()=>{ drawMusic(); $("musicP").classList.add("on"); };
   if($("yuSupport")) $("yuSupport").onclick=()=>toBody(()=>{ openMind(); setTimeout(()=>mindGo("support"),reduced?50:700); });
-  /* 22 Oct, Sahil: hide "Load demo data" from end users; reveal with 7 taps on the "Your data" eyebrow.
-     Apple reviewers get the tap sequence in Note 3. Taps 4+ buzz for feedback near the threshold; the
-     seventh toggles S.demoUnlock and re-renders. Hidden again after a demo is loaded + "Start fresh" clears it. */
-  if($("yuDataEye")){ $("yuDataEye").dataset.taps="0";
-    $("yuDataEye").onclick=function(){
-      const n=(+this.dataset.taps||0)+1; this.dataset.taps=String(n);
-      clearTimeout(this.resetT); this.resetT=setTimeout(()=>{ this.dataset.taps="0"; },1500);
-      if(n>=4&&n<7) Pulse.buzz(3);
-      if(n>=7){ this.dataset.taps="0"; S.demoUnlock=!S.demoUnlock; save(); toast(S.demoUnlock?"Demo mode unlocked.":"Demo mode hidden."); Pulse.buzz(10); renderYou(); }
-    };
-  }
   if($("yuDemo")) $("yuDemo").onclick=function(){
     if(this.dataset.armed!=="1"){ this.dataset.armed="1"; this.textContent=S.demo?"Tap again: clears demo data":"Tap again: replaces your data"; setTimeout(()=>{ if(this.isConnected){ this.dataset.armed=""; this.textContent=S.demo?"Start fresh":"Load demo data"; } },3000); return; }
     const keep={body:S.body,bpm:S.bpm,goal:S.goal,profile:S.profile,flagged:S.flagged,focus:S.focus,hinted:true,pro:S.pro,remind:S.remind,program:S.program,wx:S.wx&&S.wx.place?{place:S.wx.place,last:null}:undefined,dares:S.dares?{scale:1,tone:S.dares.tone||"coach",wxOpt:S.dares.wxOpt}:undefined};
@@ -10790,9 +10778,11 @@ function openPaywall(reason){}
 async function proBuy(plan,where){
   if(IAP.busy) return null;
   const o=IAP.cur||PRO_FALLBACK, pk=o[plan]; track("paywall_cta",{plan,where});
-  /* no App Store here (the desktop preview, or Expo Go on a phone): Pro turns on locally so the hard paywall can be passed
-     while testing. Nothing is charged, and the real App Store build never takes this path (its caps.iap is true). */
-  const testBed=!NATIVE.on||!!(NATIVE.caps&&NATIVE.caps.expoGo&&!iapLive());
+  /* development only: the desktop preview on localhost, or Expo Go (which has no App Store). Nothing is charged.
+     The installed app is never either: it loads at ossa.app inside the native shell and isn't Expo Go (23 Oct: narrowed
+     from "any browser" so no installed copy can ever reach this). */
+  let devHost=false; try{ devHost=/^(localhost|127\.0\.0\.1)$/.test(location.hostname); }catch(e){}
+  const testBed=(!NATIVE.on&&devHost)||!!(NATIVE.on&&NATIVE.caps&&NATIVE.caps.expoGo&&!iapLive());
   if(testBed){ S.pro={active:true,demo:true,trial:plan==="year",product:plan,at:Date.now()}; save(); proChanged(); toast(NATIVE.on?"Expo Go has no App Store: Pro is on for testing and nothing was charged.":"Preview only: Pro is on and nothing was charged."); return {ok:true}; }
   if(!iapLive()){ toast("The App Store isn't available right now. Try again in a moment."); return null; }
   if(!pk){ toast("The App Store isn't answering right now. Try again in a moment."); return null; }
@@ -10817,7 +10807,6 @@ function proCard(){
     <div class="yu-row"><span>Your plan</span><b class="t">${on?"Ossa Pro":"Free"}</b>${line?`<em>${line}</em>`:""}</div>
     ${on?`<button class="yu-row" id="yuManage"><span>Manage subscription</span><em>›</em></button>`:`<button class="yu-row" id="yuUpgrade"><span>Get Ossa Pro</span><em>${trialTxt(((iapLive()?IAP.cur:PRO_FALLBACK)||{}).year)?"Free week ›":"›"}</em></button>`}
     <button class="yu-row" id="yuRestore"><span>Restore purchase</span><em>›</em></button>
-    <button class="yu-row" id="yuAnalytics" aria-pressed="${S.analytics!==false}"><span>Share anonymous usage data</span><em>${S.analytics!==false?"On":"Off"}</em></button>
     <button class="yu-row" id="yuContact"><span>Contact support</span><em>›</em></button>
     <button class="yu-row" id="yuTerms"><span>Terms of Use</span><em>›</em></button>
     <button class="yu-row" id="yuPrivacy"><span>Privacy Policy</span><em>›</em></button>
@@ -10827,28 +10816,16 @@ function wirePro(){
   if($("yuUpgrade")) $("yuUpgrade").onclick=()=>openPaywall("settings");
   if($("yuManage")) $("yuManage").onclick=proManage;
   if($("yuRestore")) $("yuRestore").onclick=async()=>{ await proRestore(); if(TAB==="you"&&SUB.you==="settings") renderYou(); };
-  if($("yuAnalytics")) $("yuAnalytics").onclick=()=>{ const on=S.analytics===false; if(!on) track("analytics_off"); S.analytics=on; save(); if(on) track("analytics_on"); Pulse.buzz(5); renderYou(); };
   if($("yuContact")) $("yuContact").onclick=()=>{ const id=(S.pro&&S.pro.userId)||"none";
     openLink(`mailto:${PRO_LINKS.support}?subject=${encodeURIComponent("Ossa support")}&body=${encodeURIComponent(`\n\n\n---\nPlease keep this so we can find your account:\nApp user ID: ${id}\nPhone: ${NPLAT()||"web"}`)}`); };
   if($("yuTerms")) $("yuTerms").onclick=()=>openLink(PRO_LINKS.terms);
   if($("yuPrivacy")) $("yuPrivacy").onclick=()=>openLink(PRO_LINKS.privacy);
   if($("yuOss")) $("yuOss").onclick=()=>{ Pulse.buzz(6); ossNotices(); };
 }
-/* anonymous usage events (Mixpanel, EU data centre). A random ID, no IP-based location, never health data.
-   Off until a project token is set, and the person can switch it off in Settings. */
-const MP_TOKEN="";
-function track(ev,props){
-  try{
-    if(!MP_TOKEN||S.analytics===false||S.demo) return;
-    /* people's own exercises (S.myEx) are theirs alone: their names are never sent, whatever event carries them (21 Oct) */
-    if(props&&S.myEx&&S.myEx.length){ const mine=new Set(S.myEx.map(x=>String(x.n).toLowerCase())); props={...props};
-      Object.keys(props).forEach(k=>{ const v=props[k]; if(typeof v==="string"&&mine.has(v.toLowerCase())) props[k]="custom"; }); }
-    if(!S.uid){ S.uid=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2); save(); }
-    const e={event:ev,properties:{token:MP_TOKEN,distinct_id:S.uid,time:Date.now(),$insert_id:Date.now().toString(36)+Math.random().toString(36).slice(2,10),
-      platform:NPLAT()||"web",pro:isPro(),...(props||{})}};
-    fetch("https://api-eu.mixpanel.com/track?ip=0",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify([e]),keepalive:true}).catch(()=>{});
-  }catch(e){}
-}
+/* usage events: Ossa sends none. 23 Oct: the Mixpanel code, its empty token and the Settings switch were
+   removed; track() stays as a no-op so the many call sites need no change. Adding analytics later needs a new build,
+   the privacy label (Analytics) and the privacy policy updated together. */
+function track(ev,props){}
 /* the nudges: next 7 days from the plan, in the body's voice, then a few gentle ones if Ossa isn't opened */
 const REM_SLOTS=[["morning","Morning","07:30"],["lunch","Lunch","12:30"],["evening","Evening","18:30"]];
 function regionOf(k){ return REGION_ORDER.find(r=>REGIONS[r].muscles.includes(k)); }
@@ -12584,7 +12561,6 @@ function rdtQuickLine(){ try{ const s=rdtQuick(RDT.g,RDT.m); return s.items.map(
 /*@include ui/forge.js*/
 /*@include ui/eyes.js*/
 /*@include ui/aurabody.js*/
-/*@include ui/clean.js*/
 /*@include ui/focushome.js*/
 /*@include ui/polish.js*/
 /*@include ui/taps.js*/

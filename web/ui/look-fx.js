@@ -11,9 +11,9 @@
                                  and gets hologram lines and a rim in the target's rank colour, by the gap
      bx-arch   (vdecl + vertex)  the Tank / Scout shape (moved here from the shape spike, same maths): the skin
                                  moves along its normal, up to 1 cm × bxArGain(). Live changes ease over 0.6 s
-   and bx-gl, a draw-only probe that reads the GL limits once (bxGlLine, for the hidden Phone check panel).
+   and bx-gl, a draw-only probe that reads the GL limits once (bxGlLine, a diagnostic line for development).
    When the body's shader with effects never links, no effect draws and the probe can't run: the fallback then
-   reads the limits straight from the stage's context (bxGlDirect), so the Phone check still shows them.
+   reads the limits straight from the stage's context (bxGlDirect), so the diagnostic line still has them.
    Pull model: the live look comes from the data owners' pure readers, cached here until bxKick(), a new S
    (Load demo), Body.refresh() or 2 s pass: pzMatsNow() (prestige.js), pthArchNow() (path.js) and
    vtFinishNow() (vault.js). Each one is optional.
@@ -190,7 +190,7 @@ function bxRimFor(fin){
   }catch(e){ return null; }
 }
 
-/* ---------- the GL limits, read once (the phone has no console: bxGlLine goes in the Phone check panel) ---------- */
+/* ---------- the GL limits, read once (bxGlLine: a one-line summary for development; nothing in the app shows it) ---------- */
 function bxGlVec(gl,t){
   if(t===gl.FLOAT_MAT2) return 2;
   if(t===gl.FLOAT_MAT3||t===gl.FLOAT_MAT2x3||t===gl.FLOAT_MAT3x2) return 3;
@@ -216,7 +216,7 @@ function bxGlRead(gl){
 }
 /* the limits straight from the stage's own context (getContext returns the one the body made), for when the body's
    shader with effects never linked: BODY_FX.active stays false, no effect draws and the bx-gl probe never runs.
-   The active uniforms can't be read then (linked:false); the limits are what the Phone check needs most */
+   The active uniforms can't be read then (linked:false); the limits are what the diagnostic line needs most */
 function bxGlDirect(){
   const g={frag:0,vert:0,n:0,vec:0,bx:0,looks:false,linked:false};
   try{
@@ -227,7 +227,7 @@ function bxGlDirect(){
   if(bxDev()) console.log("Ossa body looks: "+bxGlLine());
   return g;
 }
-/* one line for the Phone check panel: the phone's uniform limits, the body shader's active uniforms
+/* one diagnostic line (development only): the phone's uniform limits, the body shader's active uniforms
    (vectors, unpacked: an upper bound; the bx share in brackets) and whether the body looks are on */
 function bxGlLine(){
   const g=bxOk.gl, on=bxOk()?"on":"off";

@@ -483,7 +483,7 @@ function vxFlagLabel(f,lower){
                                rpBonus (ctx,X) → {muscle: extra load ≥ 0}: read in vxBonusL, capped at 10% of X.L[k]
                                (path.js: the Tank/Scout +10% on matching sets). ctx = {items,done,src,none,logs,plans}.
    vxRoute(go, fn)             a notification or widget link "go" (or "go:…") opens fn(go); return false to fall through.
-                               Taken: review train score check desk scan pro today sore phonecheck ranks streak, and
+                               Taken: review train score check desk scan pro today sore ranks streak, and
                                "monk" (monk.js: the Monk Mode finish or timer; a toast only during a live workout)
    vxRemind(fn)                fn(list) returns more reminders {at,title,body,go,lead?}; the list stays sorted, at most 60.
                                An item must be more than 60 s away (lead: a shorter minimum in ms, never under 31 s,

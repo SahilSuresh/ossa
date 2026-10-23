@@ -44,7 +44,7 @@
     "lint:tokens": "node scripts/check-tokens.js",
     "preview": "node scripts/preview-server.js",
     "postinstall": "patch-package",
-    "update": "node scripts/build-html.js && npx -y eas-cli@latest update --platform ios --channel production --environment production"
+    "update": "echo Over-the-air updates are off since 23 Oct 2026 (App Review): ship every change in a new build. See docs/DECISIONS.md. && exit 1"
   },
   "private": true,
   "devDependencies": {

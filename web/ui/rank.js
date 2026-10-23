@@ -6,8 +6,8 @@
                       and your aura level as its own bar (the aura is the mind's half of the character)
      next unlock      the soonest thing you'll unlock, "about N days at your pace" from your last 21 days of
                       training or 14 days of aura, and the one button that gets you there
-     level up         the old Focus tools, one tap each: Train, Lock in, Break free, Eyes, Reset, Check in,
-                      Learn, How it works
+     level up         the old Focus tools, one tap each: Train, Lock in, Breathe, Eyes, Reset, Check in,
+                      Learn, How it works (Breathe took Break free's place on 23 Oct, when Break free left the app)
      your muscles     your three strongest and three weakest; a tap shows the muscle on the body
      unlock road      what you've unlocked (chips) and everything still to come, with how far along and when:
                       body unlocks (Bones, the Bio, Ember and Gold finishes) and the aura tiers
@@ -58,7 +58,7 @@ function rnHexSVG(lv,frac,col){
 function rnIc(k){
   const P={train:'<path d="M3 9.5v5M6 7v10M18 7v10M21 9.5v5M6 12h12"/>',
     lock:'<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5M12 14.5v2"/>',
-    free:'<rect x="2" y="14.7" width="9" height="5.6" rx="2.8" transform="rotate(-45 6.5 17.5)"/><rect x="13" y="3.7" width="9" height="5.6" rx="2.8" transform="rotate(-45 17.5 6.5)"/><path d="M10.9 10.9 9.5 9.5M13.1 13.1l1.4 1.4"/>',
+    breath:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".6"/>',
     eyes:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
     reset:'<path d="M3 9h10.5a2.75 2.75 0 1 0-2.75-2.75M3 13.5h14a2.5 2.5 0 1 1-2.5 2.5M3 18h6"/>',
     check:'<path d="M3 12.5h4l2-5 4 10 2-5h6"/>',
@@ -81,9 +81,8 @@ function rnHome(b){
   const you=Math.max(1,tier), lo=RANKS[you][0], hi=RANKS[you+1]?RANKS[you+1][0]:100, yp=Math.max(8,Math.min(92,(ov-lo)/Math.max(1,hi-lo)*100));
   const ladder=RANKS.slice(1).map((r,i)=>`<span class="rn-rung${tier>i+1?" past":""}${tier===i+1?" on":""}" style="--c:var(--rk-${i+1})"><i></i><small>${r[1]}</small>${you===i+1?`<span class="rn-you" style="left:${yp.toFixed(1)}%"><b>You</b></span>`:""}</span>`).join("");
   const aNext=auXpFor(al.n+1), aAt=auXpFor(al.n), af=Math.max(0,Math.min(1,(axp-aAt)/Math.max(1,aNext-aAt)));
-  const nextGo=next?(next.kind==="aura"?"clean":"train"):"", nextCta=next?(next.kind==="aura"?"Break free":"Train"):"";
-  const h=typeof fhHabit==="function"?fhHabit():null;
-  const tools=[["train","train","Train","var(--glow)"],["home","lock","Sessions","var(--cyan)"],[h?"clean:"+h.id:"clean","free","Break free","var(--glow)"],["eyes","eyes","Eyes","var(--cyan)"],
+  const nextGo=next?(next.kind==="aura"?"eyes":"train"):"", nextCta=next?(next.kind==="aura"?"Eyes":"Train"):"";
+  const tools=[["train","train","Train","var(--glow)"],["home","lock","Sessions","var(--cyan)"],["breath","breath","Breathe","var(--glow)"],["eyes","eyes","Eyes","var(--cyan)"],
     ["reset","reset","Reset","var(--cyan)"],["checkin","check","Check in","var(--amber)"],["learn","learn","Learn","var(--gold)"],["more","info","How it works","var(--text-2)"]];
   b.innerHTML=`<div class="u-screen rn">
     <header class="u-top"><div class="u-top-tx"><div class="u-eyebrow">${uiShortDate()}</div><h1 class="u-h1">Rank</h1></div></header>

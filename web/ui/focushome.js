@@ -2,8 +2,9 @@
    FOCUS HOME: "AURA CORE" (19 Oct, Focus page redesign; Andrej: "I like 3 … do it").
    Mockup: https://claude.ai/artifact/HGbhmPa5B9DGWx14U42iRK, phone C. Prefix fh*. Function declarations only.
    Replaces the Focus home layout (the orb dial, the Eyes strip, the chip row); every screen they opened is still
-   reached: the core opens More, the cards open Eyes, Break free, today's directives, a Reset sheet (Breathe,
-   Unwind, Heartbeat) and Check-in; the buttons open Lock in and the urge screen. "More" (fcHome(…, true)) is unchanged.
+   reached: the core opens More, the cards open Eyes, today's directives, a Reset sheet (Breathe,
+   Unwind, Heartbeat) and Check-in; the button opens Lock in. "More" (fcHome(…, true)) is unchanged.
+   23 Oct: Break free (web/ui/clean.js) and the urge button were taken out of the app for 1.0.
    - The core: a canvas (4 breathing tier-coloured glows, the level ring, rising sparks; Radiant adds a halo, Ascended
      orbiting hexes; grey with no sparks while a relapse dims the glow) behind the level, "xp / next · Tier".
    - The gain: aura earned since Focus last showed it (S.aura.fhXp) counts up, flares the glow and floats "+N aura";
@@ -14,16 +15,12 @@ function fhS(){ return fhS.s||(fhS.s={raf:0,last:0,sp:[],flare:0,wave:0}); }
 function fhLv(){ try{ return auLevel((S.aura&&S.aura.xp)||0).n; }catch(e){ return 1; } }
 function fhToday(){ const A=S.aura||{}, d=A.day; return d&&d.d===dkey(0)?Math.max(0,Math.round(+d.n||0)):0; }
 function fhCheckStreak(){ try{ const M=mindState(); let n=0; for(let i=M.check[dkey(0)]?0:1;i<400;i++){ if(M.check[dkey(i)]) n++; else break; } return n; }catch(e){ return 0; } }
-function fhHabit(){ try{ const H=clRoot().habits.filter(h=>h.start); return H.sort((a,b)=>a.start-b.start)[0]||null; }catch(e){ return null; } }
 function fhPre(){ try{ const p=S.monk&&+S.monk.pre; return [25,50,90].includes(p)?p:50; }catch(e){ return 50; } }
 
 function fhCards(){
   const out=[];
   try{ const E=eyS(), t=eyTier(E.score), done=E.lastCheck===dkey(0);
     out.push({k:"eyes",eye:"Eyes",v:String(E.score),c:t.c,sub:done?`${t.n}${t.next?` · ${t.to} to ${t.next.n}`:""}`:`${t.n} · report in 21:30`,go:"eyes"}); }catch(e){}
-  try{ const h=fhHabit();
-    if(h){ const d=clDays(h), nx=clMs().find(([m])=>m>d); out.push({k:"free",eye:"Break free",v:`${d}d`,c:"var(--glow)",sub:`${clName(h)}${nx?` · ${nx[0]-d} to milestone`:""}`,go:"clean:"+h.id}); }
-    else out.push({k:"free",eye:"Break free",v:"+",c:"var(--glow)",sub:"Pick a habit to quit",go:"clean"}); }catch(e){}
   try{ const E=eyS(), D=eyToday(), dn=E.dir.date===dkey(0)?E.dir.done:[], nx=D.find(x=>!dn.includes(x.id)), sum=D.reduce((a,x)=>a+x.x,0);
     out.push({k:"quests",eye:"Directives",v:`${dn.length}/3`,c:"var(--text-1)",sub:nx?nx.t:`All done · +${sum} aura`,subc:nx?"":"var(--glow)",go:"eyes"}); }catch(e){}
   out.push({k:"reset",eye:"Reset",v:"≋",c:`var(${abTier(fhLv()).c})`,sub:"Breathe · Unwind · Pulse",go:"reset"});
@@ -46,11 +43,9 @@ function fhHome(b){
     <div class="fh-pills"><span class="fh-pill">${(nx-xp).toLocaleString("en-GB")} to LV ${lv+1}</span>${today>0?`<span class="fh-pill lime">+${today} today</span>`:""}</div>
     <div class="fh-cards" role="list">${fhCards().map(c=>`<button class="fh-card" role="listitem" data-fh="${c.go}"><span class="fh-ce">${uiEsc(c.eye)}</span><b style="color:${c.c}">${uiEsc(c.v)}</b><small${c.subc?` style="color:${c.subc}"`:""}>${uiEsc(c.sub)}</small></button>`).join("")}</div>
     <button class="fh-lock" id="fhLock">${run?`Back to lock-in · <span id="fhLockT">${mmClock(mmLeft(run))}</span>`:`Lock in · ${pre} min${pv}`}</button>
-    <button class="fh-urge" id="fhUrge">I feel an urge</button>
   </div>`;
   $("fhCore").onclick=()=>{ Pulse.buzz(8); mindGo(run?"monk":"more"); };
   $("fhLock").onclick=()=>{ Pulse.buzz(8); if(run){ mindGo("monk"); return; } try{ mmUi().pick=pre; }catch(e){} mindGo("monk:setup"); };
-  $("fhUrge").onclick=()=>{ Pulse.buzz(8); const h=fhHabit(); if(h){ clCur(h.id); mindGo("urge"); } else mindGo("clean"); };
   b.querySelectorAll("[data-fh]").forEach(x=>x.onclick=()=>{ Pulse.buzz(6); const g=x.dataset.fh; if(g==="reset") fhReset(); else mindGo(g); });
   fhGain(); fhStart();
 }
