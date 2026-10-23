@@ -44,7 +44,7 @@ Ossa is Andrej's iPhone app: a 3D human body you level up by training, recoverin
 ## App Review rules (since the 23 Oct 2026 rejections: 4.3 spam on Ossa, 5.6 "hidden features" on Unknot)
 - **Nothing hidden.** No secret taps, gestures, codes, URL switches or settings rows that only reviewers or testers know about. If a feature exists, a user can find it; if it shouldn't be found, delete it. Reviewers get Pro through the sandbox free trial, never a shortcut.
 - **No over-the-air updates.** `updates.enabled` stays false. Every change, even a typo, ships in a new build that App Review sees.
-- **Test-only code** runs only on localhost (the desktop preview) or in Expo Go, and says so plainly in its comment. Never "hidden", never "for reviewers".
+- **Test-only code** lives in `@include-preview` files (web/ui/spikes.js, web/ui/devpro.js = Pro without an App Store). They go into web/.preview.html always, and into ossaHtml.js only when you build with `OSSA_DEV=1 node scripts/build-html.js` for Expo Go testing. Never set that flag for a store build; Codemagic runs the plain command and rebuilds ossaHtml.js itself, so the IPA never contains them. Nothing test-only goes in ossa.html or a normal `@include` file. Never "hidden", never "for reviewers".
 - **No feature overlap with Andrej's other apps** (Unknot, Onus, Last Tin) without asking first: Apple's 4.3 questions ask about exactly that. Break free (quitting habits, incl. nicotine) was removed for that reason; web/ui/clean.js is kept on disk but not included.
 - **The listing, the review notes, the privacy label and the privacy policy must all match the build.** Change one, check the other three.
 - He's a visual learner: show things (screenshots, diagrams) and keep text short.

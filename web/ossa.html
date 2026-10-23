@@ -10798,12 +10798,8 @@ function openPaywall(reason){}
 async function proBuy(plan,where){
   if(IAP.busy) return null;
   const o=IAP.cur||PRO_FALLBACK, pk=o[plan]; track("paywall_cta",{plan,where});
-  /* development only: the desktop preview on localhost, or Expo Go (which has no App Store). Nothing is charged.
-     The installed app is never either: it loads at ossa.app inside the native shell and isn't Expo Go (23 Oct: narrowed
-     from "any browser" so no installed copy can ever reach this). */
-  let devHost=false; try{ devHost=/^(localhost|127\.0\.0\.1)$/.test(location.hostname); }catch(e){}
-  const testBed=(!NATIVE.on&&devHost)||!!(NATIVE.on&&NATIVE.caps&&NATIVE.caps.expoGo&&!iapLive());
-  if(testBed){ S.pro={active:true,demo:true,trial:plan==="year",product:plan,at:Date.now()}; save(); proChanged(); toast(NATIVE.on?"Expo Go has no App Store: Pro is on for testing and nothing was charged.":"Preview only: Pro is on and nothing was charged."); return {ok:true}; }
+  /* Pro comes only from the App Store (RevenueCat). The development-only path (desktop preview, Expo Go) is a
+     preview-only include that the store build never contains (see CLAUDE.md, App Review rules). */
   if(!iapLive()){ toast("The App Store isn't available right now. Try again in a moment."); return null; }
   if(!pk){ toast("The App Store isn't answering right now. Try again in a moment."); return null; }
   IAP.busy=true; let r; try{ r=await iapAsk({t:"iap:buy",pkg:pk.id},"buy",10*60e3); } finally { IAP.busy=false; }
@@ -10842,7 +10838,7 @@ function wirePro(){
   if($("yuPrivacy")) $("yuPrivacy").onclick=()=>openLink(PRO_LINKS.privacy);
   if($("yuOss")) $("yuOss").onclick=()=>{ Pulse.buzz(6); ossNotices(); };
 }
-/* usage events: Ossa sends none. 23 Oct: the Mixpanel code, its empty token and the Settings switch were
+/* usage events: Ossa sends none. 23 Oct: the analytics code, its empty token and the Settings switch were
    removed; track() stays as a no-op so the many call sites need no change. Adding analytics later needs a new build,
    the privacy label (Analytics) and the privacy policy updated together. */
 function track(ev,props){}
@@ -12552,6 +12548,7 @@ function rdtQuickLine(){ try{ const s=rdtQuick(RDT.g,RDT.m); return s.items.map(
 /*@include ui/look-fx.js*/
 /*@include ui/rock.js*/
 /*@include-preview ui/spikes.js*/
+/*@include-preview ui/devpro.js*/
 /*@include ui/injury.js*/
 /*@include ui/discover.js*/
 /*@include ui/density.js*/

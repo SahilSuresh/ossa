@@ -7,7 +7,7 @@
      next unlock      the soonest thing you'll unlock, "about N days at your pace" from your last 21 days of
                       training or 14 days of aura, and the one button that gets you there
      level up         the old Focus tools, one tap each: Train, Lock in, Breathe, Eyes, Reset, Check in,
-                      Learn, How it works (Breathe took Break free's place on 23 Oct, when Break free left the app)
+                      Learn, How it works (Breathe took the habit tile's place on 23 Oct, when that feature left the app)
      your muscles     your three strongest and three weakest; a tap shows the muscle on the body
      unlock road      what you've unlocked (chips) and everything still to come, with how far along and when:
                       body unlocks (Bones, the Bio, Ember and Gold finishes) and the aura tiers

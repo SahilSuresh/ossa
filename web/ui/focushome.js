@@ -4,7 +4,7 @@
    Replaces the Focus home layout (the orb dial, the Eyes strip, the chip row); every screen they opened is still
    reached: the core opens More, the cards open Eyes, today's directives, a Reset sheet (Breathe,
    Unwind, Heartbeat) and Check-in; the button opens Lock in. "More" (fcHome(…, true)) is unchanged.
-   23 Oct: Break free (web/ui/clean.js) and the urge button were taken out of the app for 1.0.
+   23 Oct: the habit card and the urge button were taken out of the app for 1.0 (web/ui/clean.js, no longer included).
    - The core: a canvas (4 breathing tier-coloured glows, the level ring, rising sparks; Radiant adds a halo, Ascended
      orbiting hexes; grey with no sparks while a relapse dims the glow) behind the level, "xp / next · Tier".
    - The gain: aura earned since Focus last showed it (S.aura.fhXp) counts up, flares the glow and floats "+N aura";
