@@ -1147,7 +1147,7 @@ button.wkchip:hover{border-color:#4A4A4A;color:var(--hair)}
 .td-one .eyebrow{color:var(--c)}
 .td-one .dot{width:7px;height:7px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
 .td-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.td-acts .btn{flex:1;min-width:120px}
+.td-acts .btn{flex:1;min-width:120px;touch-action:manipulation}
 .td-mus{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .td-mus span{padding:4px 9px;border-radius:999px;border:1px solid var(--line);font-size:11.5px;color:#D1D5DB}
 .td-train.live{border-color:rgba(212,255,0,.45)}
@@ -10495,12 +10495,27 @@ function renderYou(){
   if($("yuRedo")) $("yuRedo").onclick=()=>{ setTab("body"); startOnboarding(); };
   if($("yuMusic")) $("yuMusic").onclick=()=>{ drawMusic(); $("musicP").classList.add("on"); };
   if($("yuSupport")) $("yuSupport").onclick=()=>toBody(()=>{ openMind(); setTimeout(()=>mindGo("support"),reduced?50:700); });
+  /* 26 Oct, Sahil: "just give a button that can add demo data". One tap now (the two-tap confirm didn't load on his
+     iPhone). Nothing is lost: your own data rides along in S._preDemo, and "Start fresh" puts it back. Each redraw is
+     guarded, so one view failing can't stop the rest or the toast. */
   if($("yuDemo")) $("yuDemo").onclick=function(){
-    if(this.dataset.armed!=="1"){ this.dataset.armed="1"; this.textContent=S.demo?"Tap again: clears demo data":"Tap again: replaces your data"; setTimeout(()=>{ if(this.isConnected){ this.dataset.armed=""; this.textContent=S.demo?"Start fresh":"Load demo data"; } },3000); return; }
+    Pulse.buzz(8);
     const keep={body:S.body,bpm:S.bpm,goal:S.goal,profile:S.profile,flagged:S.flagged,focus:S.focus,hinted:true,pro:S.pro,remind:S.remind,program:S.program,wx:S.wx&&S.wx.place?{place:S.wx.place,last:null}:undefined,dares:S.dares?{scale:1,tone:S.dares.tone||"coach",wxOpt:S.dares.wxOpt}:undefined};
-    S=Object.assign(S.demo?fresh():demoData(),keep); S.done={day:new Date().toDateString(),items:[]}; save(); try{ applyProgram(); }catch(e){}
-    TR={...TR,view:"plan",custom:false,day:todayIdx,session:sessionForDay(todayIdx)};
-    Body.refresh(); drawLayers(); drawWeek(); refreshWhole(); renderYou(); toast(S.demo?"Demo data loaded. Explore, then start fresh when you're ready.":"Fresh start. Everything's at zero."); };
+    let msg, back=false;
+    if(!S.demo){
+      let mine=null; try{ if((S.workouts||[]).length||(S.log||[]).some(l=>l&&l.m&&Object.keys(l.m).length)) mine=JSON.stringify(S); }catch(e){}
+      S=Object.assign(demoData(),keep); if(mine) S._preDemo=mine;
+      msg="Demo data loaded. Explore, then start fresh when you're ready.";
+    } else {
+      let mine=null; try{ mine=S._preDemo?JSON.parse(S._preDemo):null; }catch(e){}
+      if(mine&&stOk(mine)){ S=mine; delete S._preDemo; S.pro=keep.pro; back=true; msg="Demo cleared. Your own data is back."; }
+      else { S=Object.assign(fresh(),keep); msg="Fresh start. Everything's at zero."; }
+    }
+    if(!back||!S.done||S.done.day!==new Date().toDateString()) S.done={day:new Date().toDateString(),items:[]};
+    save();
+    [()=>applyProgram(),()=>{ TR={...TR,view:"plan",custom:false,day:todayIdx,session:sessionForDay(todayIdx)}; },()=>Body.refresh(),drawLayers,drawWeek,refreshWhole,renderYou]
+      .forEach(f=>{ try{ f(); }catch(e){ console.warn("Ossa: demo redraw",e); } });
+    toast(msg); };
   if($("yuReset")) $("yuReset").onclick=function(){
     if(this.dataset.armed!=="1"){ this.dataset.armed="1"; this.textContent="Tap again to reset"; setTimeout(()=>{ this.dataset.armed=""; this.textContent="Reset demo"; },3000); return; }
     const keep={body:S.body,bpm:S.bpm,goal:S.goal,profile:S.profile,flagged:S.flagged,focus:S.focus,hinted:true,pro:S.pro,remind:S.remind,program:S.program,wx:S.wx&&S.wx.place?{place:S.wx.place,last:null}:undefined,dares:S.dares?{scale:1,tone:S.dares.tone||"coach",wxOpt:S.dares.wxOpt}:undefined}; S=Object.assign(fresh(),keep); S.done={day:new Date().toDateString(),items:[]};
