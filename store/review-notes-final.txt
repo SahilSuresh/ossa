@@ -1,0 +1,26 @@
+0. RESUBMISSION after the 23 Oct rejection (4.3, 4.2.6). Our answers to your nine questions are in our 24 Oct reply on the previous submission. New since then: Offline is a plain timer with no sensors, and the "Coming soon" line is gone.
+
+1. SCREEN RECORDING: attached. Recorded on a physical iPhone from launch: the stone intro, the subscription screen, a sandbox purchase of the yearly free trial, then the five tabs (Body, Train, Focus, Recover, Learn).
+
+2. PURPOSE AND AUDIENCE: Ossa is for adults who train and study. It shows the user's own body in 3D as a character: every muscle has a rank (Fragile to Unbreakable) that rises with logged workouts, and timed Study and Focus sessions ("Lock in") add marks to the body's head and eyes. It also has recovery tools (food log, routines for sore areas, mobility, posture scan, breathing) and short lessons. General fitness and wellbeing only: ranks, levels and XP are game scores, not health measures.
+
+3. ACCESS: No account, sign-in or sample files. All data stays on the device. Answer the intro questions (about three minutes), then start the free trial on the subscription screen (sandbox). There is no free tier: if the subscription lapses, a lock screen covers the app. Restore, Terms and Privacy are on the subscription and lock screens.
+- Body: the ranked 3D body; drag to turn it; Rank, Recovery and Bones views.
+- Train: today's session; Start, log sets, Finish, then the result screens (they hide the tab bar on purpose).
+- Focus: Study, Focus and Offline sessions with a 25, 50 or 90-minute Lock in timer. Offline is a plain timer: it uses no motion sensor, and the phone can lie any way up.
+- Recover: Fuel, Mobility, sore-spot routines, and Posture scan and Body check under "Checks" (not on the Body page).
+- Demo data: avatar > Settings > Your data > "Load demo data", a normal visible button, one tap. "Start fresh" clears it.
+- Some body looks unlock as the user's level rises. Nothing is unlocked by a code, a date or a server switch.
+
+4. EXTERNAL SERVICES:
+- Apple In-App Purchase (StoreKit), through the RevenueCat SDK, which checks whether Pro is active. It receives an anonymous app user ID and purchase details only.
+- Apple HealthKit, optional and read only: steps, sleep and resting heart rate, used on the device for the Body Score. Nothing is written or uploaded.
+- Google MediaPipe Pose Landmarker for the posture scan. It runs on the device with usage logging off; photos are never uploaded.
+- Local notifications only (no push server).
+- Weather (optional): MET Norway's Locationforecast API (api.met.no), called by the app itself only while it's open. It receives approximate coordinates rounded to about 1 km and an app User-Agent ("Ossa/1.0.0 https://getossa.app"), with no account or device identifier. The user can type a town instead of sharing location. Apple's geocoder (part of iOS) turns the rounded position or the typed town into a place name.
+- No analytics, advertising, AI or login services.
+- Crash reports (Sentry): the error, the app version, the device model and iOS version, with no name, email or account.
+
+5. REGIONS: Ossa works the same in every country and region. No features or content differ by region. The app is in English.
+
+6. REGULATED AREAS AND THIRD-PARTY MATERIAL: Ossa is not in a highly regulated industry and is not a medical device. It doesn't diagnose or treat anything. Body age and the posture score are fitness estimates and are labelled in the app ("not a medical assessment", "not a medical measure"). It contains no protected third-party material such as licensed brands, characters, music or video. MediaPipe (Apache 2.0) is credited in avatar > Settings > Open-source licences. The Inter font (SIL Open Font License) is credited there too. Heartbeat (Focus) buzzes gently at a resting heart rate the user already has (from Apple Health, or counted or typed by the user), labelled an estimate. It measures nothing and stops after 5 minutes.
