@@ -4,7 +4,7 @@ Made after the 23 Oct 4.3 rejection, from real captures of the App Store build (
 
 - **Name** (26/30): `Ossa: Train, Focus, Evolve` (Andrej, 26 Oct; replaces `Ossa: Level Up Your Body` and the draft `Ossa: 3D Body Workout RPG`)
 - **Subtitle** (26/30): `Muscle ranks & study timer`
-- **Keywords** (96/100): `gym,tracker,log,strength,lifting,3d,body,pomodoro,habit,level,gamified,recovery,mobility,posture`
+- **Keywords** (96/100): `gym,tracker,log,strength,lifting,3d,body,pomodoro,study,level,gamified,recovery,mobility,posture`
 - **Promotional text** (142/170): Your body is the character. Rank every muscle from Fragile to Unbreakable, lock in to study and focus, and watch both show up on your 3D body.
 
 ## Description (3137/4000)
