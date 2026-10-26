@@ -142,7 +142,8 @@ How they were made:
   > - Google MediaPipe Pose Landmarker for the posture scan. It runs on the device with usage logging off; photos are never uploaded.
   > - Local notifications only (no push server).
   > - Weather (optional): MET Norway's Locationforecast API (api.met.no), called by the app itself only while it's open. It receives approximate coordinates rounded to about 1 km and an app User-Agent ("Ossa/1.0.0 https://getossa.app"), with no account or device identifier. The user can type a town instead of sharing location. Apple's geocoder (part of iOS) turns the rounded position or the typed town into a place name. Credited in avatar > Settings > Open-source licences.
-  > - No analytics, advertising, AI or login services. The "Share anonymous usage data" switch in Settings has no analytics service behind it in this build, so nothing is sent.
+  > - No analytics, advertising, AI or login services.
+  > - (Only for a Codemagic build with the Sentry DSN set; leave this line out for an EAS build from build-for-app-store.bat, which has no DSN:) Crash reports go to Sentry: the error, the device model and iOS version, with no name, email or account.
   >
   > 5. REGIONS: Ossa works the same in every country and region. No features or content differ by region. The app is in English.
   >
