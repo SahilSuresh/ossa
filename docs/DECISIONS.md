@@ -1424,3 +1424,4 @@ Why: Ossa 1.0 (build 29878404, Codemagic, 22 Oct 21:24 GMT) was rejected under 4
 - **Offline is a plain timer.** No face-down sensing: the accelerometer bridge (native/face.js) is removed from App.js and every minute counts, like Study and Focus, including the finish top-up. Copy says "Phone away" instead of "face down". `expo-sensors` stays in package.json, unused.
 - **Rating prompt unchanged** (Andrej, 26 Oct: "don't change it if not needed").
 - **Review notes updated:** Posture scan and Body check are on Recover (Checks), not Body › 3D; "Load demo data" is a normal visible button, one tap.
+- **App name: `Ossa: Level Up Your Body`** (Andrej, 26 Oct: "I like Ossa: Level Up Your Body"). Replaces the v4 draft `Ossa: 3D Body Workout RPG`. Subtitle stays `Muscle ranks & study timer`, which keeps the 3D body and study angle in the listing.

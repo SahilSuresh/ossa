@@ -2,7 +2,7 @@
 
 Made after the 23 Oct 4.3 rejection, from real captures of the App Store build (ossaHtml.js, no preview-only code). Nothing is uploaded. Review page: https://claude.ai/artifact/FtJ7RuFRqprCJo9hFaeJPd
 
-- **Name** (25/30): `Ossa: 3D Body Workout RPG`
+- **Name** (24/30): `Ossa: Level Up Your Body` (Andrej, 26 Oct; replaces the draft `Ossa: 3D Body Workout RPG`)
 - **Subtitle** (26/30): `Muscle ranks & study timer`
 - **Keywords** (94/100): `gym,tracker,log,strength,lifting,focus,pomodoro,habit,level,gamified,recovery,mobility,posture`
 - **Promotional text** (142/170): Your body is the character. Rank every muscle from Fragile to Unbreakable, lock in to study and focus, and watch both show up on your 3D body.
