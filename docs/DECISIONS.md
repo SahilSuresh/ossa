@@ -1425,3 +1425,4 @@ Why: Ossa 1.0 (build 29878404, Codemagic, 22 Oct 21:24 GMT) was rejected under 4
 - **Rating prompt unchanged** (Andrej, 26 Oct: "don't change it if not needed").
 - **Review notes updated:** Posture scan and Body check are on Recover (Checks), not Body › 3D; "Load demo data" is a normal visible button, one tap.
 - **App name: `Ossa: Level Up Your Body`** (Andrej, 26 Oct: "I like Ossa: Level Up Your Body"). Replaces the v4 draft `Ossa: 3D Body Workout RPG`. Subtitle stays `Muscle ranks & study timer`, which keeps the 3D body and study angle in the listing.
+- **App name changed again: `Ossa: Train, Focus, Evolve`** (Andrej, 26 Oct: "Yes do Train, Focus, Evolve"), picked from six checked against the UK App Store; no app with a close name. Replaces `Ossa: Level Up Your Body` ("level up" is what GymLevels, Arise and Level-UP : Fitness already use, a 4.3 risk). Subtitle stays `Muscle ranks & study timer`.
