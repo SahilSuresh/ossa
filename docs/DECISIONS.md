@@ -1412,3 +1412,15 @@ Why: Ossa 1.0 (build 29878404, Codemagic, 22 Oct 21:24 GMT) was rejected under 4
 - Now one tap loads it. Nothing is lost: if you had workouts or check-ins, they're kept inside the save (`S._preDemo`, so the Documents copy has them too), and "Start fresh" puts them back ("Demo cleared. Your own data is back."); with nothing of your own it goes to zero as before. Same button wording.
 - Every redraw after loading is guarded on its own, so one view failing can't stop the rest or the toast. `.td-acts .btn` gets `touch-action:manipulation` (no double-tap delay).
 - Checked: one tap loads 15 workouts, Start fresh restores a real workout, no errors (simulated iPhone taps + native bridge); smoke test passes at 390×844 and 375×667. Needs a new Codemagic build; the review notes' "Tap twice to confirm" must change to one tap if that build is attached.
+
+## 2026-10-24: App Store listing v4 (draft, after the 4.3 rejection)
+- New name `Ossa: 3D Body Workout RPG`, subtitle `Muscle ranks & study timer`. GymLevels and Arise already sell "level up" and "muscle rank"; Ossa's own angle is the 3D body plus Study/Focus sessions that change it.
+- 8 new screenshots and a 25 s app preview from real captures of the App Store build (no Break free). Higgsfield not used: Apple allows only real app footage in previews (2.3.4).
+- Break free, Offline and Heartbeat kept out of the listing. Details: store/APP-STORE-LISTING-v4.md. (The 388 MB `store/listing-v4/` source folder stays on Andrej's PC, not in git.)
+
+## 2026-10-26 · Resubmission fixes (Andrej's PC moves to Sahil's main)
+- **This PC now builds from Sahil's `main`** (github.com/SahilSuresh/ossa, 26 Oct demo-data fix included) on the branch `resubmit-fixes`. The old `redesign-v2` branch is kept, with the v4 listing files committed as a backup.
+- **Programmes: no "Coming soon" line.** Explore › Programmes lists only the programmes you can start; the "Coming soon: Sleep Reset, First Pull-up" line is gone (App Review 2.1: no placeholder content).
+- **Offline is a plain timer.** No face-down sensing: the accelerometer bridge (native/face.js) is removed from App.js and every minute counts, like Study and Focus, including the finish top-up. Copy says "Phone away" instead of "face down". `expo-sensors` stays in package.json, unused.
+- **Rating prompt unchanged** (Andrej, 26 Oct: "don't change it if not needed").
+- **Review notes updated:** Posture scan and Body check are on Recover (Checks), not Body › 3D; "Load demo data" is a normal visible button, one tap.

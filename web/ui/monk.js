@@ -487,7 +487,7 @@ function mmBest(exceptId){
   try{ const L=(S.mind&&S.mind.log||[]).filter(l=>l&&l.k==="focus"&&+l.min>0&&String(l.id)!==String(exceptId)); if(!L.length) return null;
     const b=L.reduce((a,x)=>+x.min>+a.min?x:a); return {min:+b.min,day:new Date(b.d+"T12:00:00").toLocaleDateString("en-GB",{weekday:"short"})}; }catch(e){ return null; }
 }
-function mmStatus(f){ return f<0.25?"Eyes are recovering. Phone face down.":f<0.5?"Attention returning.":f<0.8?"Most people quit around here. Keep going.":"Almost there."; }
+function mmStatus(f){ return f<0.25?"Eyes are recovering. Phone away.":f<0.5?"Attention returning.":f<0.8?"Most people quit around here. Keep going.":"Almost there."; }
 /* back from the background: more than 10 s away (and before the end) breaks the session. iOS "inactive" never counts */
 function mmBreakCheck(m){
   const r=mmRun(); if(!r||!m||m.from!=="background") return;

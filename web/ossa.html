@@ -9129,7 +9129,7 @@ function mindFocus(b,M){
   const F=MIND.focus;
   if(!F){
     let dur=25;
-    b.innerHTML=`<h2 class="mv-h">Focus session</h2><p class="mv-sub">One task. Phone face down, or in another room. The focus zone lights up while you work.</p>
+    b.innerHTML=`<h2 class="mv-h">Focus session</h2><p class="mv-sub">One task. Phone away, or in another room. The focus zone lights up while you work.</p>
       ${brainSVG(todayCheck(),"focusing")}
       <div class="mv-chips center">${[15,25,50].map(m=>`<button class="mv-chip${m===dur?" sel":""}" data-m="${m}">${m} min</button>`).join("")}</div>
       <button class="btn primary big" id="mvGo">Start</button>`;
@@ -10709,8 +10709,7 @@ function openStdPick(){
 
 function renderProtoList(){
   const pd=protoDay();
-  return `<div class="ex-pr">${PROTOS.filter(x=>x.free).map(x=>`<button class="ex-p${pd&&pd.def.id===x.id?" on":""}" data-pr="${x.id}" style="--c:${x.col}"><div><b>${x.name}</b><small>${x.s}</small></div><em>${pd&&pd.def.id===x.id&&!pd.over?`Day ${pd.n}`:`${x.days} days · Free`}</em></button>`).join("")}
-    <p class="ex-more">Coming soon: ${PROTOS.filter(x=>!x.free).map(x=>x.name).join(", ")}.</p></div>`;
+  return `<div class="ex-pr">${PROTOS.filter(x=>x.free).map(x=>`<button class="ex-p${pd&&pd.def.id===x.id?" on":""}" data-pr="${x.id}" style="--c:${x.col}"><div><b>${x.name}</b><small>${x.s}</small></div><em>${pd&&pd.def.id===x.id&&!pd.over?`Day ${pd.n}`:`${x.days} days · Free`}</em></button>`).join("")}</div>`;
 }
 function wireProtoList(b){ b.querySelectorAll("[data-pr]").forEach(x=>x.onclick=()=>{ const pd=protoDay(); if(pd&&pd.def.id===x.dataset.pr&&!pd.over) openProto(); else startProto(x.dataset.pr); }); }
 

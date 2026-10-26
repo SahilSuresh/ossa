@@ -2,7 +2,7 @@
    SESSION SKILLS: the Focus tab (20 Oct, Andrej: "make it like a level up progression … for study sessions and
    focus sessions and also productive/away from phone sessions", and a difficulty picked in the intro).
    LEVELS-SPEC.md from the Focus redesign thread. Prefix lu*. Function declarations only, state on function props.
-   - Three skills, each with a level and a rank: study, focus, off (Offline: only face-down minutes count).
+   - Three skills, each with a level and a rank: study, focus, off (Offline: a timer for time away from the phone).
      S.skills = {study:{lv,xp,min}, focus, off}; S.diff = easy|normal|hard|night; S.sessStreak = {days,last,chk,forg}.
      need(n) = round((100+25n) × M), M 0.5 / 1 / 2.5 / 5. Ranks E 1–4, D 5–9, C 10–19, B 20–34, A 35–49, S 50+.
    - A session is a lock-in (monk.js) with run.lu = {type, xp, min, face}: +3 XP a minute, live; +50% on a full
@@ -19,7 +19,7 @@ function luTypes(){ return {
     status:["One task. Nothing else.","Attention is locking in.","Most people quit here. Keep going.","Almost there."],
     unl:["Dim eyes","Lime eyes","Cyan eyes with trails","Burning eyes","Eyes of light","Void eyes"]},
   off:{n:"Offline",c:"--sk-off",verb:"Go offline",task:"What are you doing instead?",titles:["Online","Muted","Unplugged","Off-grid","Ghost","Unreachable"],
-    status:["Phone face down. Be somewhere.","The feed can wait.","Most people pick it up here. Don't.","Almost there."],
+    status:["Phone away. Be somewhere.","The feed can wait.","Most people pick it up here. Don't.","Almost there."],
     unl:["No shadow","A purple floor shadow","An after-image","Smoke wisps","A phantom double","Phantom form"]}}; }
 function luKeys(){ return ["study","focus","off"]; }
 function luDiffs(){ return {
@@ -97,22 +97,16 @@ function luStart(k,mins,task){
   if(typeof mmStart!=="function") return;
   try{ mmUi().stake=0; }catch(e){}
   const r=mmStart(mins,task||""); if(!r) return;
-  r.lu={type:k,xp:0,min:0,face:0,faceAt:0}; S.sess.type=k; S.sess.mins=mins; S.sess.task=task||"";
+  r.lu={type:k,xp:0,min:0}; S.sess.type=k; S.sess.mins=mins; S.sess.task=task||"";
   luUi().mins[k]=mins; save();
-  if(k==="off"){ luFace.down=null; luFace.need=true; try{ nsend({t:"face",on:true}); }catch(e){} }
   try{ track("session_start",{k,mins,d:luDiff()}); }catch(e){}
   mindGo("monk");
 }
-/* face down or not (native/face.js through App.js); with no sensor every minute counts */
-function luFace(){ return luFace.down; }
-function luFaceDown(){ return luFace.ok===false||luFace.down!==false; }
 /* every second while a session runs: count its minutes and pay their XP live */
 function luTick(){
   const r=typeof mmRun==="function"?mmRun():null; if(!r||!r.lu) return;
   const L=r.lu, now=Date.now();
-  let min;
-  if(L.type==="off"){ const dt=L.faceAt?Math.min(5000,now-L.faceAt):0; L.faceAt=now; if(luFaceDown()) L.face=(+L.face||0)+dt; min=Math.min(Math.round(r.plan),Math.floor(L.face/60000)); }
-  else min=mmMin(r);
+  const min=mmMin(r);   /* Offline is a plain timer too (26 Oct): no motion sensing, the phone can lie any way up */
   if(min>L.min){ const add=Math.round(3*(min-L.min)*luMult()), x=luAdd(L.type,add); L.xp+=add; L.min=min; luS()[L.type].min+=0; save(); luLive(x); }
   else luLive(null);
 }
@@ -206,7 +200,6 @@ function luTimer(b,r){
       <b class="lu-gain" id="luGain">+${L.xp} XP</b>
       <div class="lu-xp"><i><em id="luXb" style="width:${(x.xp/luNeed(x.lv)*100).toFixed(1)}%"></em></i><span><small id="luLvl">LV ${x.lv}</small><b id="luXt">${x.xp} / ${luNeed(x.lv)}</b></span></div>
       <p class="lu-status" id="luSt">${T.status[0]}</p>
-      ${L.type==="off"?`<span class="lu-face" id="luFace">▼ Face down · counting</span>`:""}
     </div>
     <input class="lu-task" id="luTask" maxlength="80" placeholder="${T.task}" value="${uiEsc(r.task||"")}">
     <p class="lu-warn"><b>If you leave:</b> ${D.leave}</p>
@@ -229,7 +222,7 @@ function luEndTap(){
   if(!L||L.none){ try{ toast("Ended. Under a minute, so nothing counted."); }catch(e){} mindGo("home"); return; }
   mmShow("done");
 }
-/* live bits on the session screen: XP, the bar, a level-up flash, the status line, face down */
+/* live bits on the session screen: XP, the bar, a level-up flash, the status line */
 function luLive(x){
   const r=mmRun(); if(!r||!r.lu||!$("luGain")) return;
   const L=r.lu, T=luTypes()[L.type], s=luS()[L.type];
@@ -237,7 +230,6 @@ function luLive(x){
   const p=1-mmLeft(r)/(r.plan*60000), st=T.status[Math.min(3,Math.floor(p*4))]; if($("luSt").textContent!==st) $("luSt").textContent=st;
   if(x&&x.lv>x.lv0){ const h=document.querySelector(".lu-runhero"); if(h){ h.classList.remove("flash"); void h.offsetWidth; h.classList.add("flash"); } try{ hap("success"); }catch(e){ Pulse.buzz([10,40,14]); } luCanvas.burst=3; }
   else if(x) luCanvas.burst=1;
-  const f=$("luFace"); if(f){ const dn=luFaceDown(); f.classList.toggle("up",!dn); f.textContent=dn?"▼ Face down · counting":"▲ Put it back face down"; }
 }
 /* the finish: LEVEL UP or SESSION COMPLETE, the three tiles, share and the rank road */
 function luDone(b,L){
@@ -383,10 +375,10 @@ try{ fcView("road",{render:b=>luRoad(b)}); fcView("rank",{render:b=>{ if(typeof 
   if(lu){ try{ luTick(); const r2=mmRun(); if(r2&&r2.lu) Object.assign(lu,r2.lu); }catch(e){} }
   const L=_f.apply(this,arguments);
   if(!lu) return L;
-  try{ nsend({t:"face",on:false}); }catch(e){}
+ 
   if(!L||L.none){ return L; }
   const k=lu.type, x=luS()[k], lv0=x.lv-0, rk0=luRank(x.lv);
-  let min=lu.min; if(full&&k!=="off") { const add=Math.round(3*(plan-min)*luMult()); if(add>0){ luAdd(k,add); lu.xp+=add; min=plan; } }
+  let min=lu.min; if(full) { const add=Math.round(3*(plan-min)*luMult()); if(add>0){ luAdd(k,add); lu.xp+=add; min=plan; } }
   const before={lv:lv0};
   const bonus=full?Math.round(lu.xp*0.5):0; const a=bonus?luAdd(k,bonus):null;
   x.min=(+x.min||0)+min;
@@ -405,13 +397,11 @@ try{ fcView("road",{render:b=>luRoad(b)}); fcView("rank",{render:b=>{ if(typeof 
       if(d==="hard"){ luAdd(k,-(lu.xp+100)); lost=`−${lu.xp+100} XP`; }
       else if(d==="night"){ if(luLevelDown(k,1)) lost="−1 level"; }
       else if(lu.xp) lost=`+${lu.xp} XP kept`;
-      M.broken.lu={type:k,lost}; try{ nsend({t:"face",on:false}); }catch(e){} save();
+      M.broken.lu={type:k,lost}; save();
       try{ if(typeof MIND!=="undefined"&&MIND.open&&/^monk/.test(String(MIND.view))) mmRender(null,"monk"); }catch(e){} } }catch(e){ console.warn(e); }
   return v; }; })();
 /* sessions keep their level at the start (for the finish screen) */
 (()=>{ const _s=luStart; luStart=function(k){ const lv=luS()[k].lv; const v=_s.apply(this,arguments); try{ const r=mmRun(); if(r&&r.lu) r.lu.lv0=lv; save(); }catch(e){} return v; }; })();
-/* the phone's sensor */
-try{ vxOn("native",m=>{ if(!m) return; if(m.t==="face"){ luFace.down=!!m.down; luLive(null); } else if(m.t==="face:status"){ luFace.ok=!!m.ok; } }); }catch(e){}
 setInterval(()=>{ try{ luTick(); }catch(e){} },1000);
 /* aura is discipline only (BONES-SPEC): no aura for session minutes, Breathe, a stake or passing your longest */
 (()=>{ if(typeof auAdd!=="function") return; const _a=auAdd; auAdd=function(e){

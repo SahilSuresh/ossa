@@ -12,7 +12,6 @@ import * as IAP from "./native/purchases";
 import * as Pose from "./native/pose";
 import * as Loc from "./native/location";
 import * as Wx from "./native/weather";
-import * as Face from "./native/face";
 import * as Sentry from "./native/sentry";
 import * as State from "./native/state";
 
@@ -284,9 +283,6 @@ function Main() {
           pushInsets(); // an older page asking: answer with the real sizes
         } else if (m.t === "lockin") {
           lock.current = m.on ? { title: String(m.title || "Your lock-in is breaking"), body: String(m.body || "") } : null;
-        } else if (m.t === "face") {
-          if (m.on) send({ t: "face:status", ...(await Face.start((down) => send({ t: "face", down }))) });
-          else Face.stop();
         } else if (m.t === "review") {
           // Apple decides whether the prompt shows (at most 3 times a year; never in TestFlight)
           if (SR && (await SR.isAvailableAsync())) await SR.requestReview();

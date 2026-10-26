@@ -71,8 +71,6 @@
 .lu-tm{font-size:clamp(56px,10dvh,var(--fs-7));font-weight:900;line-height:1;letter-spacing:-.02em;color:var(--text-1)}
 .lu-gain{font-size:var(--fs-4);font-weight:900;color:var(--c)}
 .lu-status{margin:4px 0 0;font-size:var(--fs-1);font-weight:700;letter-spacing:.04em;color:var(--c)}
-.lu-face{display:inline-flex;align-items:center;gap:6px;margin-top:4px;padding:5px 10px;border-radius:var(--r-pill);border:1px solid var(--sk-off);color:var(--sk-off);font-size:var(--fs-1);font-weight:800}
-.lu-face.up{border-color:var(--amber);color:var(--amber);animation:luBlink 1.2s ease-in-out infinite}
 @keyframes luBlink{50%{opacity:.45}}
 .lu-runhero.flash::after{content:"LEVEL UP";position:absolute;inset:auto 0 50%;font-family:var(--display-italic);font-style:italic;font-weight:900;font-size:var(--fs-6);color:var(--c);text-shadow:0 0 24px var(--c);animation:luFlash 1.4s var(--ease) both;pointer-events:none}
 @keyframes luFlash{0%{opacity:0;transform:scale(.8)}20%{opacity:1;transform:scale(1.05)}80%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
