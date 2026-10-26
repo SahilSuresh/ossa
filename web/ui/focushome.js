@@ -1,6 +1,6 @@
 /* =========================================================
    FOCUS HOME: "AURA CORE" (19 Oct, Focus page redesign; Andrej: "I like 3 … do it").
-   Mockup: https://claude.ai/artifact/HGbhmPa5B9DGWx14U42iRK, phone C. Prefix fh*. Function declarations only.
+   Prefix fh*. Function declarations only.
    Replaces the Focus home layout (the orb dial, the Eyes strip, the chip row); every screen they opened is still
    reached: the core opens More, the cards open Eyes, today's directives, a Reset sheet (Breathe,
    Unwind, Heartbeat) and Check-in; the button opens Lock in. "More" (fcHome(…, true)) is unchanged.

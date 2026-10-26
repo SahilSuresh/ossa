@@ -34,7 +34,7 @@
    ========================================================= */
 
 /* the preview host */
-function bxDev(){ try{ return /^(localhost|127\.0\.0\.1)$/.test(location.hostname); }catch(e){ return false; } }
+function bxDev(){ try{ return window.OSSA_PREVIEW===true&&/^(localhost|127\.0\.0\.1)$/.test(location.hostname); }catch(e){ return false; } }
 
 /* the looks' own tables (a function property, never a top-level const) */
 function bxDefs(){

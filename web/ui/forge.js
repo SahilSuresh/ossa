@@ -1,6 +1,6 @@
 /* =========================================================
    THE FORGE (19 Oct, "Train tab design lab"; Andrej: "yes I like your idea, implement it").
-   Mockups: https://claude.ai/artifact/FxKHBaUx66eHLinSt1zB1Y. Prefix fg*. Function declarations only.
+   Prefix fg*. Function declarations only.
    - The cold-muscle swap: a sheet of every muscle coloured by stateOf (fading and never-trained picked),
      one move each for your kit, total RP and minutes, "Start this workout" opens the Session screen with them.
    - The side quest ticks in place: a checkbox row, +15 RP (vxBonusXp) with a pop, the dare struck through.

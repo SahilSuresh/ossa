@@ -1,6 +1,6 @@
 /* =========================================================
    EYES (19 Oct, "Focus tab design lab"; Andrej: "yes I like it, implement it").
-   Mockup: https://claude.ai/artifact/GU9o66gjhkPxReVV3LMJ8F. Prefix ey*. Function declarations only.
+   Prefix ey*. Function declarations only.
    Your eyes are a 0–100 score with the Body tiers (Fragile 0–19 … Unbreakable 80+). Screen time lowers it,
    lock-ins, directives and a falling nightly total raise it. Eyes feed the Mind side through aura.
    - S.eyes = {score, hist:{date:min}, dir:{date, done:[]}, checkStreak, lastCheck, back (minutes taken back)}

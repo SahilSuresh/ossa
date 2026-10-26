@@ -4,7 +4,7 @@
    Kinds: porn, nicotine or vaping, alcohol, weed, doomscrolling, gaming, junk food and sugar, gambling, or your own.
    S.clean = {v:2, habits:[habit], cur:id}; each habit = {id, kind, name, …the fields below}. The old single streak
    becomes the first habit (kind "porn"). Everything below works on the current habit (clS()).
-   Mockup: https://claude.ai/artifact/SnqSEKg2frtX1paWKLwtCm. Prefix cl*. Function declarations only.
+   Prefix cl*. Function declarations only.
    Quitting porn, as an opt-in Focus tool (never in the intro). Copy stays clinical; share cards never name it.
    Discreet mode renames it "Willpower" everywhere. Every clean day earns aura; a relapse costs it and can drop the level.
    - S.clean = {start, best, total, granted (full days already paid), ms:[days], urges:{date,n}, dimUntil, discreet,

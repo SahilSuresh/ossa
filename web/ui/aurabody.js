@@ -1,5 +1,5 @@
 /* =========================================================
-   AURA ON THE CHARACTER (19 Oct, Focus lab; Andrej: "yes"). Mockup: https://claude.ai/artifact/UjQnbcUGDrL6bFP2n27fp2.
+   AURA ON THE CHARACTER (19 Oct, Focus lab; Andrej: "yes").
    Prefix ab*. Function declarations only, state on abS().
    - Tiers by Aura level: Faint 1–4 · Steady 5–9 · Bright 10–14 · Radiant 15–19 · Ascended 20+ (abTier). Inside a tier,
      within = (lv − min)/5 makes each level a little stronger; a new tier is a visible jump.

@@ -12,7 +12,7 @@
    Nothing in here saves anything but S.pro, which proIn owns.
    ========================================================= */
 function gtS(){ return gtS.s||(gtS.s={on:false,m:null,pre:false}); }
-function gtPreview(){ try{ return !NATIVE.on&&/^(localhost|127\.0\.0\.1)$/.test(location.hostname); }catch(e){ return false; } }
+function gtPreview(){ try{ return window.OSSA_PREVIEW===true&&!NATIVE.on&&/^(localhost|127\.0\.0\.1)$/.test(location.hostname); }catch(e){ return false; } }
 function gtForced(){ try{ return /[?&]lock=1\b/.test(location.search); }catch(e){ return false; } }
 function gtLocked(){
   try{
